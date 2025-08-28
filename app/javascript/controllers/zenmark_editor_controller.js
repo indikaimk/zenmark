@@ -1,7 +1,10 @@
 import { Controller } from "@hotwired/stimulus"
+import { get, post, put, patch, destroy } from '@rails/request.js'
 
 export default class extends Controller {
-  static targets = [ "mdtextarea", "linkDialog", "linkText", "linkUrl", "fileInput", "previewArea" ]
+  static targets = [ "mdtextarea", "linkDialog", "linkText", "linkUrl", "fileInput", "previewArea", "uploadImage" ]
+  static values = { imageUploadUrl: String }
+
 
   connect() {
     console.log("Zenmark editor controller connected")
@@ -67,19 +70,37 @@ export default class extends Controller {
     this.fileInputTarget.click()
   }
 
-  uploadImage(event) {
+  async uploadImage(event) {
     const file = event.target.files[0]
     const formData = new FormData()
-    formData.append("file", file)
+    formData.append('post[file]', file)
+    console.log("Uploading image...")
+    console.log(this.imageUploadUrlValue)
+    this.uploadImageTarget.click()
+    // this.submitForm(event)
+    // this.imageDialogTarget.style.display = "block"
 
-    fetch("/zenmark/images", {
-      method: "POST",
-      body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-      this.insertText(`![${file.name}](/rails/active_storage/blobs/${data.signed_id}/${file.name})`)
-    })
+
+    // const response = await patch(this.imageUploadUrlValue, { body: formData })
+    // if (response.ok) {
+    //   const body = await response.json()
+    //   console.log(body)
+    // }
+
+  // const response = await post('localhost:3000/my_endpoint', { body: JSON.stringify({ name: 'Request.JS' }) })
+  // if (response.ok) {
+  //   const body = await response.json
+    
+  // }
+
+    // fetch(this.imageUploadUrlValue, {
+    //   method: "PATCH",
+    //   body: formData
+    // })
+    // .then(response => response.json())
+    // .then(data => {
+    //   this.insertText(`![${file.name}](/rails/active_storage/blobs/${data.signed_id}/${file.name})`)
+    // })
   }
 
   submitForm(event) {

@@ -208,6 +208,8 @@ GEM
     regexp_parser (2.10.0)
     reline (0.6.1)
       io-console (~> 0.5)
+    requestjs-rails (0.0.13)
+      railties (>= 7.1.0)
     rubocop (1.78.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
@@ -278,6 +280,7 @@ PLATFORMS
 DEPENDENCIES
   propshaft
   puma
+  requestjs-rails
   rubocop-rails-omakase
   sqlite3
   zenmark!
