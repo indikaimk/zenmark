@@ -2,12 +2,18 @@ import { Controller } from "@hotwired/stimulus"
 import { get, post, put, patch, destroy } from '@rails/request.js'
 
 export default class extends Controller {
-  static targets = [ "mdtextarea", "linkDialog", "linkText", "linkUrl", "fileInput", "previewArea", "uploadImage" ]
+  static targets = [ "mdtextarea", "linkDialog", "linkText", "linkUrl", "fileInput", "previewArea", 
+                    "uploadImage", "wordCount" ]
   static values = { imageUploadUrl: String }
 
 
   connect() {
-    console.log("Zenmark editor controller connected")
+    this.countWords()
+  }
+
+  countWords(){
+    let words = this.mdtextareaTarget.value.trim().split(/\s+/).length
+    this.wordCountTarget.innerHTML = words + " words"
   }
 
   bold(event) {

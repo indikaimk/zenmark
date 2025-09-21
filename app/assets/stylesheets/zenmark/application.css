@@ -36,6 +36,8 @@
 
 .zenmark-toolbar {
   display: flex;
+  margin-left: 1rem;
+  margin-right: 1rem;
   gap: 5px;
   padding: 5px;
   border: 1px solid #ccc;
@@ -79,7 +81,13 @@
   font-size: 1.1rem;
   line-height: 1.4rem;
   font-weight: 400;
-  min-height: 400px;
-  padding: .5rem;
-
+  height: 800px;
+  padding: 1rem;
+  border: none;
 }
+
+.zenmark-textarea:focus {
+  outline: none; /* Removes the default browser outline, if desired */
+}
+
+
