@@ -1,10 +1,12 @@
 <div class="zenmark-dialog" data-zenmark-editor-target="linkDialog">
   <div class="zenmark-dialog-content">
     <label for="zenmark-link-text">Text</label>
-    <input type="text" id="zenmark-link-text" data-zenmark-editor-target="linkText">
+    <input type="text" id="zenmark-link-text" data-zenmark-editor-target="linkText" class="link-dialog-input">
     <label for="zenmark-link-url">URL</label>
-    <input type="text" id="zenmark-link-url" data-zenmark-editor-target="linkUrl">
-    <button data-action="zenmark-editor#insertLink">Insert</button>
-    <button data-action="zenmark-editor#closeLinkDialog">Cancel</button>
+    <input type="text" id="zenmark-link-url" data-zenmark-editor-target="linkUrl", class="link-dialog-input">
+    <div class="flex-right">
+      <button data-action="zenmark-editor#insertLink" class="grey-button">Insert</button>
+      <button data-action="zenmark-editor#closeLinkDialog" class="grey-button">Cancel</button>
+    </div>
   </div>
 </div>

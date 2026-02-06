@@ -90,4 +90,18 @@
   outline: none; /* Removes the default browser outline, if desired */
 }
 
+.link-dialog-input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.image-text-box{
+  border: #888 1px solid;
+  padding: 4px;
+  margin: 4px;
+}
+
 

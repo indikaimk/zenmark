@@ -3,12 +3,13 @@ import { get, post, put, patch, destroy } from '@rails/request.js'
 
 export default class extends Controller {
   static targets = [ "mdtextarea", "linkDialog", "linkText", "linkUrl", "fileInput", "previewArea", 
-                    "uploadImage", "wordCount" ]
+                    "uploadImage", "wordCount", "imageMdDialog" ]
   static values = { imageUploadUrl: String }
 
 
   connect() {
     this.countWords()
+    // console.log("counted words")
   }
 
   countWords(){
@@ -76,12 +77,29 @@ export default class extends Controller {
     this.fileInputTarget.click()
   }
 
+  // close image dialog when close button is clicked
+  closeImageDialog(event) {
+    event.preventDefault()
+    this.imageMdDialogTarget.style.display = "none"
+  }
+
+  // copy image markdown to clipboard
+  copyImageMarkdown(event) {
+    event.preventDefault()
+    const imageMdText = this.imageMdDialogTarget.querySelector("#image-md-text").innerText
+    navigator.clipboard.writeText(imageMdText)
+    this.closeImageDialog(event)
+  }
+
   async uploadImage(event) {
     const file = event.target.files[0]
     const formData = new FormData()
     formData.append('post[file]', file)
     console.log("Uploading image...")
+
     console.log(this.imageUploadUrlValue)
+
+    this.imageMdDialogTarget.style.display = "block"
     this.uploadImageTarget.click()
     // this.submitForm(event)
     // this.imageDialogTarget.style.display = "block"
