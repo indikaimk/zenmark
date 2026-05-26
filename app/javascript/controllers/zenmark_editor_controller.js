@@ -95,9 +95,9 @@ export default class extends Controller {
     const file = event.target.files[0]
     const formData = new FormData()
     formData.append('post[file]', file)
-    console.log("Uploading image...")
+    // console.log("Uploading image...")
 
-    console.log(this.imageUploadUrlValue)
+    // console.log(this.imageUploadUrlValue)
 
     this.imageMdDialogTarget.style.display = "block"
     this.uploadImageTarget.click()
