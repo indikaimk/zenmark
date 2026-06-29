@@ -1,3 +1,5 @@
+require_relative "../../app/helpers/zenmark/editor_helper"
+
 module Zenmark
   class Engine < ::Rails::Engine
     isolate_namespace Zenmark
