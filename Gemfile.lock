@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    zenmark (0.1.0)
+    zenmark (0.1.1)
       activestorage
       rails (>= 8.0.2)
       redcarpet
