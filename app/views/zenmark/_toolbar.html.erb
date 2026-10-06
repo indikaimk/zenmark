@@ -1,16 +1,103 @@
-<div class="zenmark-toolbar">
+<div class="zenmark-toolbar flex flex-wrap items-center justify-between gap-1.5 px-3 py-2 bg-slate-50/90 border-b border-slate-200 text-slate-700 select-none">
+  <!-- Left Side: Formatting Tools -->
+  <div class="flex flex-wrap items-center gap-0.5">
+    <!-- Group 1: Text Styling -->
+    <div class="flex items-center gap-0.5 pr-1.5 mr-1.5 border-r border-slate-200">
+      <button type="button" data-action="click->zenmark-editor#bold" title="Bold (⌘B)" class="zenmark-tool-btn" aria-label="Bold">
+        <span class="material-symbols-outlined text-[19px]">format_bold</span>
+      </button>
+      <button type="button" data-action="click->zenmark-editor#italic" title="Italic (⌘I)" class="zenmark-tool-btn" aria-label="Italic">
+        <span class="material-symbols-outlined text-[19px]">format_italic</span>
+      </button>
+      <button type="button" data-action="click->zenmark-editor#strikethrough" title="Strikethrough (⌘⇧X)" class="zenmark-tool-btn" aria-label="Strikethrough">
+        <span class="material-symbols-outlined text-[19px]">strikethrough_s</span>
+      </button>
+      <button type="button" data-action="click->zenmark-editor#code" title="Code / Code block (⌘⇧C)" class="zenmark-tool-btn" aria-label="Code">
+        <span class="material-symbols-outlined text-[19px]">code</span>
+      </button>
+    </div>
 
-  <button data-action="zenmark-editor#bold" title="Bold"><span class="material-symbols-outlined">format_bold</span></button>
-  <button data-action="zenmark-editor#italic" title="Italic"><span class="material-symbols-outlined">format_italic</span></button>
-  <button data-action="zenmark-editor#strikethrough" title="Strikethrough"><span class="material-symbols-outlined">strikethrough_s</span></button>
+    <!-- Group 2: Headings & Quotes -->
+    <div class="flex items-center gap-0.5 pr-1.5 mr-1.5 border-r border-slate-200">
+      <button type="button" data-action="click->zenmark-editor#heading2" title="Heading 2 (##)" class="zenmark-tool-btn text-xs font-bold px-1.5" aria-label="Heading 2">
+        H2
+      </button>
+      <button type="button" data-action="click->zenmark-editor#heading3" title="Heading 3 (###)" class="zenmark-tool-btn text-xs font-bold px-1.5" aria-label="Heading 3">
+        H3
+      </button>
+      <button type="button" data-action="click->zenmark-editor#blockquote" title="Quote (>)" class="zenmark-tool-btn" aria-label="Blockquote">
+        <span class="material-symbols-outlined text-[19px]">format_quote</span>
+      </button>
+    </div>
 
-  <button data-action="zenmark-editor#heading" title="Heading"><span class="material-symbols-outlined">format_h1</span></button>
-  <button data-action="zenmark-editor#blockquote" title="Blockquote"><span class="material-symbols-outlined">format_quote</span></button>
-  <button data-action="zenmark-editor#code" title="Code"><span class="material-symbols-outlined">code</span></button>
-  <button data-action="zenmark-editor#link" title="Link"><span class="material-symbols-outlined">link</span></button>
-  <button data-action="zenmark-editor#image" title="Image"><span class="material-symbols-outlined">image</span></button>
-  <button data-action="zenmark-editor#unorderedList" title="Unordered List"><span class="material-symbols-outlined">format_list_bulleted</span></button>
-  <button data-action="zenmark-editor#orderedList" title="Ordered List"><span class="material-symbols-outlined">format_list_numbered</span></button>
-  <button data-action="zenmark-editor#horizontalRule" title="Horizontal Rule"><span class="material-symbols-outlined">horizontal_rule</span></button>
-  <button data-action="zenmark-editor#preview" title="Preview"><span class="material-symbols-outlined">visibility</span></button>
+    <!-- Group 3: Lists & Structure -->
+    <div class="flex items-center gap-0.5 pr-1.5 mr-1.5 border-r border-slate-200">
+      <button type="button" data-action="click->zenmark-editor#unorderedList" title="Bullet List (⌘⇧8)" class="zenmark-tool-btn" aria-label="Bullet List">
+        <span class="material-symbols-outlined text-[19px]">format_list_bulleted</span>
+      </button>
+      <button type="button" data-action="click->zenmark-editor#orderedList" title="Numbered List (⌘⇧7)" class="zenmark-tool-btn" aria-label="Numbered List">
+        <span class="material-symbols-outlined text-[19px]">format_list_numbered</span>
+      </button>
+      <button type="button" data-action="click->zenmark-editor#checklist" title="Task List (- [ ])" class="zenmark-tool-btn" aria-label="Task List">
+        <span class="material-symbols-outlined text-[19px]">checklist</span>
+      </button>
+      <button type="button" data-action="click->zenmark-editor#insertTable" title="Insert Markdown Table" class="zenmark-tool-btn" aria-label="Insert Table">
+        <span class="material-symbols-outlined text-[19px]">table_chart</span>
+      </button>
+      <button type="button" data-action="click->zenmark-editor#horizontalRule" title="Horizontal Divider (---)" class="zenmark-tool-btn" aria-label="Horizontal Rule">
+        <span class="material-symbols-outlined text-[19px]">horizontal_rule</span>
+      </button>
+    </div>
+
+    <!-- Group 4: Inserts (Link, Image) -->
+    <div class="flex items-center gap-0.5">
+      <button type="button" data-action="click->zenmark-editor#link" title="Insert Link (⌘K)" class="zenmark-tool-btn" aria-label="Link">
+        <span class="material-symbols-outlined text-[19px]">link</span>
+      </button>
+      <button type="button" data-action="click->zenmark-editor#image" title="Upload Image (or paste/drag)" class="zenmark-tool-btn" aria-label="Image">
+        <span class="material-symbols-outlined text-[19px]">image</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Right Side: View Modes & Zen Fullscreen -->
+  <div class="flex items-center gap-2">
+    <!-- View Switcher Pills -->
+    <div class="inline-flex items-center p-0.5 rounded-lg bg-slate-200/70 border border-slate-200/80 text-xs">
+      <button type="button" 
+              data-zenmark-editor-target="modeWriteBtn"
+              data-action="click->zenmark-editor#setWriteMode" 
+              class="zenmark-mode-btn active" 
+              title="Edit markdown directly">
+        <span class="material-symbols-outlined text-[15px]">edit</span>
+        <span>Write</span>
+      </button>
+      <button type="button" 
+              data-zenmark-editor-target="modeSplitBtn"
+              data-action="click->zenmark-editor#setSplitMode" 
+              class="zenmark-mode-btn" 
+              title="Side-by-side live editor & preview">
+        <span class="material-symbols-outlined text-[15px]">vertical_split</span>
+        <span>Split</span>
+      </button>
+      <button type="button" 
+              data-zenmark-editor-target="modePreviewBtn"
+              data-action="click->zenmark-editor#setPreviewMode" 
+              class="zenmark-mode-btn" 
+              title="Full rendered preview">
+        <span class="material-symbols-outlined text-[15px]">visibility</span>
+        <span>Preview</span>
+      </button>
+    </div>
+
+    <!-- Zen / Fullscreen Toggle -->
+    <button type="button" 
+            data-zenmark-editor-target="fullscreenBtn"
+            data-action="click->zenmark-editor#toggleFullscreen" 
+            title="Distraction-free Zen Mode (Esc to exit)" 
+            class="zenmark-tool-btn ml-1"
+            aria-label="Zen Mode">
+      <span class="material-symbols-outlined text-[19px]" data-zenmark-editor-target="fullscreenIcon">fullscreen</span>
+    </button>
+  </div>
 </div>

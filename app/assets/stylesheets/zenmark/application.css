@@ -1,107 +1,389 @@
-/*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
- * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the bottom of the
- * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
- * files in this directory. Styles in this file should be added after the last require_* statement.
- * It is generally better to create a new file per style scope.
- *
- *= require_tree .
- *= require_self
- */
+/* Zenmark Editor - Modern GitHub-Aligned Design System */
 
-.zenmark-dialog {
-  display: none;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.4);
+.zenmark-editor {
+  position: relative;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-.zenmark-dialog-content {
-  background-color: #fefefe;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
+.zenmark-editor:focus-within {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.08);
 }
 
-.zenmark-toolbar {
-  display: flex;
-  margin-left: 1rem;
-  margin-right: 1rem;
-  gap: 5px;
+.zenmark-editor.zenmark-dragover {
+  border: 2px dashed #C21057 !important;
+  background-color: rgba(194, 16, 87, 0.02) !important;
+}
+
+/* Toolbar Buttons */
+.zenmark-tool-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 5px;
-  border: 1px solid #ccc;
-  background-color: #f0f0f0;
-}
-
-.zenmark-toolbar button {
-  background: none;
-  border: 1px solid #ccc;
-  padding: 5px 10px;
+  min-width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
 }
 
-.zenmark-toolbar button:hover {
-  background-color: #e0e0e0;
+.zenmark-tool-btn:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
 }
 
-#zenmark-preview {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-top: 10px;
-  min-height: 100px;
-  background-color: #f9f9f9;
+.zenmark-tool-btn:active {
+  background-color: #e2e8f0;
+  transform: scale(0.97);
 }
 
-.material-symbols-outlined {
-  font-variation-settings:
-  'FILL' 0,
-  'wght' 400,
-  'GRAD' 0,
-  'opsz' 24
+/* Mode Switcher Buttons (Write / Split / Preview) */
+.zenmark-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.12s ease;
 }
 
+.zenmark-mode-btn:hover {
+  color: #0f172a;
+}
+
+.zenmark-mode-btn.active {
+  background-color: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Workspace Layouts */
+.zenmark-workspace {
+  position: relative;
+  width: 100%;
+  min-height: 550px;
+  display: flex;
+}
+
+/* Write Mode (Default) */
+.zenmark-workspace.zenmark-mode-write .zenmark-editor-pane {
+  flex: 1 1 100%;
+  width: 100%;
+  display: block;
+}
+
+.zenmark-workspace.zenmark-mode-write .zenmark-preview-pane {
+  display: none !important;
+}
+
+/* Split Mode (Side-by-Side) */
+.zenmark-workspace.zenmark-mode-split {
+  display: flex;
+  flex-direction: row;
+}
+
+.zenmark-workspace.zenmark-mode-split .zenmark-editor-pane {
+  flex: 1 1 50%;
+  width: 50%;
+  border-right: 1px solid #e2e8f0;
+  display: block;
+}
+
+.zenmark-workspace.zenmark-mode-split .zenmark-preview-pane {
+  flex: 1 1 50%;
+  width: 50%;
+  display: block;
+  overflow-y: auto;
+  max-height: 750px;
+  padding: 1.5rem;
+  background-color: #fbfcfd;
+}
+
+/* Preview Mode (Full Preview) */
+.zenmark-workspace.zenmark-mode-preview .zenmark-editor-pane {
+  display: none !important;
+}
+
+.zenmark-workspace.zenmark-mode-preview .zenmark-preview-pane {
+  flex: 1 1 100%;
+  width: 100%;
+  display: block;
+  overflow-y: auto;
+  min-height: 550px;
+  padding: 2rem;
+  background-color: #ffffff;
+}
+
+/* The Markdown Textarea */
 .zenmark-textarea {
   width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  resize: vertical;
-
-  font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  font-size: 1.1rem;
-  line-height: 1.4rem;
-  font-weight: 400;
-  height: 800px;
-  padding: 1rem;
+  min-height: 550px;
+  height: 650px;
+  padding: 1.25rem 1.5rem;
   border: none;
+  outline: none !important;
+  resize: vertical;
+  background-color: #ffffff;
+  color: #0f172a;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  letter-spacing: -0.01em;
+  tab-size: 2;
+  box-sizing: border-box;
 }
 
-.zenmark-textarea:focus {
-  outline: none; /* Removes the default browser outline, if desired */
+.zenmark-textarea::placeholder {
+  color: #94a3b8;
+  font-family: inherit;
 }
 
-.link-dialog-input {
+/* Rendered Markdown Typography in Preview */
+.zenmark-preview-content {
+  color: #1e293b;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.zenmark-preview-content h1,
+.zenmark-preview-content h2,
+.zenmark-preview-content h3,
+.zenmark-preview-content h4 {
+  color: #0f172a;
+  font-weight: 700;
+  margin-top: 1.75em;
+  margin-bottom: 0.6em;
+  line-height: 1.3;
+}
+
+.zenmark-preview-content h1 {
+  font-size: 1.75rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.35em;
+}
+
+.zenmark-preview-content h2 {
+  font-size: 1.35rem;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 0.25em;
+}
+
+.zenmark-preview-content h3 {
+  font-size: 1.15rem;
+}
+
+.zenmark-preview-content p {
+  margin-top: 0;
+  margin-bottom: 1.1em;
+}
+
+.zenmark-preview-content a {
+  color: #C21057;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 500;
+}
+
+.zenmark-preview-content blockquote {
+  border-left: 3px solid #C21057;
+  padding-left: 1rem;
+  margin: 1.2em 0;
+  color: #64748b;
+  font-style: italic;
+  background-color: #fff9fa;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-radius: 0 8px 8px 0;
+}
+
+.zenmark-preview-content ul {
+  list-style-type: disc;
+  padding-left: 1.4rem;
+  margin: 0.8em 0;
+}
+
+.zenmark-preview-content ol {
+  list-style-type: decimal;
+  padding-left: 1.4rem;
+  margin: 0.8em 0;
+}
+
+.zenmark-preview-content li {
+  margin-bottom: 0.35em;
+}
+
+.zenmark-preview-content code {
+  background-color: #f1f5f9;
+  color: #0f172a;
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.88em;
+  border: 1px solid #e2e8f0;
+}
+
+.zenmark-preview-content pre {
+  background-color: #0f172a;
+  color: #f8fafc;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  overflow-x: auto;
+  margin: 1.25em 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.zenmark-preview-content pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border: none;
+  font-size: inherit;
+}
+
+.zenmark-preview-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  margin: 1.25em 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.zenmark-preview-content hr {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 2em 0;
+}
+
+.zenmark-preview-content table {
   width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  font-size: 13.5px;
 }
 
-.image-text-box{
-  border: #888 1px solid;
-  padding: 4px;
-  margin: 4px;
+.zenmark-preview-content th,
+.zenmark-preview-content td {
+  border: 1px solid #e2e8f0;
+  padding: 8px 12px;
+  text-align: left;
 }
 
+.zenmark-preview-content th {
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #0f172a;
+}
 
+.zenmark-preview-content tr:nth-child(even) td {
+  background-color: #fbfcfd;
+}
+
+/* Zen Mode (Fullscreen) */
+.zenmark-editor.zenmark-fullscreen {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9999 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background-color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.zenmark-editor.zenmark-fullscreen .zenmark-toolbar {
+  padding-left: 2rem;
+  padding-right: 2rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.zenmark-editor.zenmark-fullscreen .zenmark-workspace {
+  flex: 1 1 auto;
+  height: calc(100vh - 86px);
+  max-height: calc(100vh - 86px);
+}
+
+.zenmark-editor.zenmark-fullscreen .zenmark-workspace.zenmark-mode-write .zenmark-textarea {
+  max-width: 920px;
+  margin: 0 auto;
+  height: 100%;
+  min-height: 100%;
+  padding: 2.5rem 2rem;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.zenmark-editor.zenmark-fullscreen .zenmark-workspace.zenmark-mode-split .zenmark-textarea,
+.zenmark-editor.zenmark-fullscreen .zenmark-workspace.zenmark-mode-split .zenmark-preview-pane {
+  height: 100%;
+  max-height: 100%;
+  padding: 2rem;
+}
+
+.zenmark-editor.zenmark-fullscreen .zenmark-workspace.zenmark-mode-preview .zenmark-preview-pane {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem;
+}
+
+.zenmark-editor.zenmark-fullscreen .zenmark-status-bar > div {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+/* Toast Notification */
+.zenmark-toast {
+  position: absolute;
+  bottom: 48px;
+  right: 18px;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #0f172a;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+  animation: zenmarkToastFadeIn 0.2s ease;
+}
+
+.zenmark-toast.zenmark-toast-error {
+  background-color: #e11d48;
+}
+
+@keyframes zenmarkToastFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

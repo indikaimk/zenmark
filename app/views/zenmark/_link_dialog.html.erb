@@ -1,12 +1,54 @@
-<div class="zenmark-dialog" data-zenmark-editor-target="linkDialog">
-  <div class="zenmark-dialog-content">
-    <label for="zenmark-link-text">Text</label>
-    <input type="text" id="zenmark-link-text" data-zenmark-editor-target="linkText" class="link-dialog-input">
-    <label for="zenmark-link-url">URL</label>
-    <input type="text" id="zenmark-link-url" data-zenmark-editor-target="linkUrl", class="link-dialog-input">
-    <div class="flex-right">
-      <button data-action="zenmark-editor#insertLink" class="grey-button">Insert</button>
-      <button data-action="zenmark-editor#closeLinkDialog" class="grey-button">Cancel</button>
+<div class="zenmark-dialog hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4" 
+     data-zenmark-editor-target="linkDialog"
+     data-action="click->zenmark-editor#closeLinkDialogOnBackdrop">
+  <div class="bg-white rounded-2xl border border-slate-200/90 shadow-xl max-w-md w-full p-6 text-slate-800"
+       data-action="click->zenmark-editor#stopEventPropagation">
+    <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-slate-600 text-[20px]">link</span>
+        <h3 class="text-sm font-bold text-slate-900">Insert Link</h3>
+      </div>
+      <button type="button" 
+              data-action="click->zenmark-editor#closeLinkDialog" 
+              class="text-slate-400 hover:text-slate-700 rounded-lg p-1 transition-colors cursor-pointer"
+              aria-label="Close dialog">
+        <span class="material-symbols-outlined text-[18px]">close</span>
+      </button>
+    </div>
+
+    <div class="space-y-3.5">
+      <div>
+        <label for="zenmark-link-text" class="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Anchor Text</label>
+        <input type="text" 
+               id="zenmark-link-text" 
+               data-zenmark-editor-target="linkText" 
+               placeholder="e.g. Documentation or link label"
+               class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 bg-white focus:outline-none focus:ring-2 focus:ring-[#C21057]/15 focus:border-[#C21057] transition-all shadow-2xs">
+      </div>
+
+      <div>
+        <label for="zenmark-link-url" class="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Destination URL</label>
+        <input type="url" 
+               id="zenmark-link-url" 
+               data-zenmark-editor-target="linkUrl" 
+               placeholder="https://example.com"
+               data-action="keydown.enter->zenmark-editor#insertLink"
+               class="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 bg-white focus:outline-none focus:ring-2 focus:ring-[#C21057]/15 focus:border-[#C21057] transition-all shadow-2xs">
+      </div>
+    </div>
+
+    <div class="flex items-center justify-end gap-2.5 mt-6 pt-3 border-t border-slate-100">
+      <button type="button" 
+              data-action="click->zenmark-editor#closeLinkDialog" 
+              class="inline-flex items-center px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-200 shadow-2xs transition-colors cursor-pointer">
+        Cancel
+      </button>
+      <button type="button" 
+              data-action="click->zenmark-editor#insertLink" 
+              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl font-semibold text-xs bg-[#C21057] hover:bg-[#a80e4b] text-white shadow-xs transition-colors cursor-pointer">
+        <span class="material-symbols-outlined text-[16px]">add_link</span>
+        <span>Insert Link</span>
+      </button>
     </div>
   </div>
 </div>
