@@ -1,1 +1,12165 @@
-var ec=/^class[ {]/;function nc(t){return ec.test(t.toString())}function ni(t){return Array.isArray(t)}function ei(t,e){return Object.prototype.hasOwnProperty.call(t,e)}function Dn(...t){t.length===1&&ni(t[0])&&(t=t[0]),t=[...t];let e=t.pop();return e.$inject=t,e}var rc=/constructor\s*[^(]*\(\s*([^)]*)\)/m,ic=/^(?:async\s+)?(?:function\s*[^(]*)?(?:\(\s*([^)]*)\)|(\w+))/m,oc=/\/\*([^*]*)\*\//m;function ac(t){if(typeof t!="function")throw new Error(`Cannot annotate "${t}". Expected a function!`);let e=t.toString().match(nc(t)?rc:ic);if(!e)return[];let n=e[1]||e[2];return n&&n.split(",").map(r=>{let i=r.match(oc);return(i&&i[1]||r).trim()})||[]}function ri(t,e){let n=e||{get:function(h,v){if(v===!1)return null;throw r.push(h),s(`No provider for "${h}"!`)}},r=[],i=this._providers=Object.create(n._providers||null),o=this._instances=Object.create(null),a=o.injector=this,s=function(h){let v=r.join(" -> ");return r.length=0,new Error(v?`${h} (Resolving: ${v})`:h)};function c(h,v){if(!i[h]&&h.includes(".")){let g=h.split("."),_=c(g.shift());for(;g.length;)_=_[g.shift()];return _}if(ei(o,h))return o[h];if(ei(i,h)){if(r.indexOf(h)!==-1)throw r.push(h),s("Cannot resolve circular dependency!");return r.push(h),o[h]=i[h][0](i[h][1]),r.pop(),o[h]}return n.get(h,v)}function u(h,v){if(typeof v>"u"&&(v={}),typeof h!="function")if(ni(h))h=Dn(h.slice());else throw s(`Cannot invoke "${h}". Expected a function!`);let _=(h.$inject||ac(h)).map(R=>ei(v,R)?v[R]:c(R));return{fn:h,dependencies:_}}function f(h){let{fn:v,dependencies:g}=u(h),_=Function.prototype.bind.call(v,null,...g);return new _}function l(h,v,g){let{fn:_,dependencies:R}=u(h,g);return _.apply(v,R)}function d(h){return Dn(v=>h.get(v))}function p(h,v){if(v&&v.length){let g=Object.create(null),_=Object.create(null),R=[],w=[],M=[],b,L,N,z;for(let W in i)b=i[W],v.indexOf(W)!==-1&&(b[2]==="private"?(L=R.indexOf(b[3]),L===-1?(N=b[3].createChild([],v),z=d(N),R.push(b[3]),w.push(N),M.push(z),g[W]=[z,W,"private",N]):g[W]=[M[L],W,"private",w[L]]):g[W]=[b[2],b[1]],_[W]=!0),(b[2]==="factory"||b[2]==="type")&&b[1].$scope&&v.forEach(jn=>{b[1].$scope.indexOf(jn)!==-1&&(g[W]=[b[2],b[1]],_[jn]=!0)});v.forEach(W=>{if(!_[W])throw new Error('No provider for "'+W+'". Cannot use provider from the parent!')}),h.unshift(g)}return new ri(h,a)}let m={factory:l,type:f,value:function(h){return h}};function x(h,v){let g=h.__init__||[];return function(){g.forEach(_=>{typeof _=="string"?v.get(_):v.invoke(_)})}}function y(h){let v=h.__exports__;if(v){let g=h.__modules__,_=Object.keys(h).reduce((L,N)=>(N!=="__exports__"&&N!=="__modules__"&&N!=="__init__"&&N!=="__depends__"&&(L[N]=h[N]),L),Object.create(null)),R=(g||[]).concat(_),w=p(R),M=Dn(function(L){return w.get(L)});v.forEach(function(L){i[L]=[M,L,"private",w]});let b=(h.__init__||[]).slice();return b.unshift(function(){w.init()}),h=Object.assign({},h,{__init__:b}),x(h,w)}return Object.keys(h).forEach(function(g){if(g==="__init__"||g==="__depends__")return;let _=h[g];if(_[2]==="private"){i[g]=_;return}let R=_[0],w=_[1];i[g]=[m[R],sc(R,w),R]}),x(h,a)}function C(h,v){return h.indexOf(v)!==-1||(h=(v.__depends__||[]).reduce(C,h),h.indexOf(v)!==-1)?h:h.concat(v)}function E(h){let v=h.reduce(C,[]).map(y),g=!1;return function(){g||(g=!0,v.forEach(_=>_()))}}this.get=c,this.invoke=l,this.instantiate=f,this.createChild=p,this.init=E(t)}function sc(t,e){return t!=="value"&&ni(e)&&(e=Dn(e.slice())),e}function ht(t,e){e&&(t.super_=e,t.prototype=Object.create(e.prototype,{constructor:{value:t,enumerable:!1,writable:!0,configurable:!0}}))}var cc=1e3;function Ct(t,e){var n=this;e=e||cc,t.on(["render.shape","render.connection"],e,function(r,i){var o=r.type,a=i.element,s=i.gfx,c=i.attrs;if(n.canRender(a))return o==="render.shape"?n.drawShape(s,a,c):n.drawConnection(s,a,c)}),t.on(["render.getShapePath","render.getConnectionPath"],e,function(r,i){if(n.canRender(i))return r.type==="render.getShapePath"?n.getShapePath(i):n.getConnectionPath(i)})}Ct.prototype.canRender=function(t){};Ct.prototype.drawShape=function(t,e){};Ct.prototype.drawConnection=function(t,e){};Ct.prototype.getShapePath=function(t){};Ct.prototype.getConnectionPath=function(t){};function Ki(t){return Array.prototype.concat.apply([],t)}var rn=Object.prototype.toString,uc=Object.prototype.hasOwnProperty;function Nn(t){return t===void 0}function gt(t){return t!==void 0}function Le(t){return t==null}function I(t){return rn.call(t)==="[object Array]"}function U(t){return rn.call(t)==="[object Object]"}function H(t){return rn.call(t)==="[object Number]"}function X(t){let e=rn.call(t);return e==="[object Function]"||e==="[object AsyncFunction]"||e==="[object GeneratorFunction]"||e==="[object AsyncGeneratorFunction]"||e==="[object Proxy]"}function je(t){return rn.call(t)==="[object String]"}function fc(t){if(!I(t))throw new Error("must supply array")}function Hn(t,e){return!Le(t)&&uc.call(t,e)}function mt(t,e){let n=ai(e),r;return S(t,function(i,o){if(n(i,o))return r=i,!1}),r}function Q(t,e){let n=ai(e),r=[];return S(t,function(i,o){n(i,o)&&r.push(i)}),r}function S(t,e){let n,r;if(Nn(t))return;let i=I(t)?pc:dc;for(let o in t)if(Hn(t,o)&&(n=t[o],r=e(n,i(o)),r===!1))return n}function Yi(t,e){if(Nn(t))return[];fc(t);let n=ai(e);return t.filter(function(r,i){return!n(r,i)})}function le(t,e,n){return S(t,function(r,i){n=e(n,r,i)}),n}function Zt(t,e){return!!le(t,function(n,r,i){return n&&e(r,i)},!0)}function qi(t,e){return!!mt(t,e)}function xt(t,e){let n=[];return S(t,function(r,i){n.push(e(r,i))}),n}function lc(t){return t&&Object.keys(t)||[]}function Ui(t){return lc(t).length}function Zi(t){return xt(t,e=>e)}function de(t,e,n={}){return e=oi(e),S(t,function(r){let i=e(r)||"_",o=n[i];o||(o=n[i]=[]),o.push(r)}),n}function Xi(t,...e){t=oi(t);let n={};return S(e,i=>de(i,t,n)),xt(n,function(i,o){return i[0]})}function Bn(t,e){e=oi(e);let n=[];return S(t,function(r,i){let o=e(r,i),a={d:o,v:r};for(var s=0;s<n.length;s++){let{d:c}=n[s];if(o<c){n.splice(s,0,a);return}}n.push(a)}),xt(n,r=>r.v)}function ii(t){return function(e){return Zt(t,function(n,r){return e[r]===n})}}function oi(t){return X(t)?t:e=>e[t]}function ai(t){return X(t)?t:e=>e===t}function dc(t){return t}function pc(t){return Number(t)}function on(t,e){let n,r,i,o;function a(l){let d=Date.now(),p=l?0:o+e-d;if(p>0)return s(p);t.apply(i,r),c()}function s(l){n=setTimeout(a,l)}function c(){n&&clearTimeout(n),n=o=r=i=void 0}function u(){n&&a(!0),c()}function f(...l){o=Date.now(),r=l,i=this,n||s(e)}return f.flush=u,f.cancel=c,f}function Xt(t,e){return t.bind(e)}function P(t,...e){return Object.assign(t,...e)}function pe(t,e){let n={},r=Object(t);return S(e,function(i){i in r&&(n[i]=t[i])}),n}function Qi(t,e){let n={},r=Object(t);return S(r,function(i,o){e.indexOf(o)===-1&&(n[o]=i)}),n}function hc(t,e){if(t.ownerDocument!==e.ownerDocument)try{return e.ownerDocument.importNode(t,!0)}catch{}return t}function gc(t,e){return e.appendChild(hc(t,e))}function T(t,e){return gc(e,t),t}var ci=2,eo={"alignment-baseline":1,"baseline-shift":1,clip:1,"clip-path":1,"clip-rule":1,color:1,"color-interpolation":1,"color-interpolation-filters":1,"color-profile":1,"color-rendering":1,cursor:1,direction:1,display:1,"dominant-baseline":1,"enable-background":1,fill:1,"fill-opacity":1,"fill-rule":1,filter:1,"flood-color":1,"flood-opacity":1,font:1,"font-family":1,"font-size":ci,"font-size-adjust":1,"font-stretch":1,"font-style":1,"font-variant":1,"font-weight":1,"glyph-orientation-horizontal":1,"glyph-orientation-vertical":1,"image-rendering":1,kerning:1,"letter-spacing":1,"lighting-color":1,marker:1,"marker-end":1,"marker-mid":1,"marker-start":1,mask:1,opacity:1,overflow:1,"pointer-events":1,"shape-rendering":1,"stop-color":1,"stop-opacity":1,stroke:1,"stroke-dasharray":1,"stroke-dashoffset":1,"stroke-linecap":1,"stroke-linejoin":1,"stroke-miterlimit":1,"stroke-opacity":1,"stroke-width":ci,"text-anchor":1,"text-decoration":1,"text-rendering":1,"unicode-bidi":1,visibility:1,"word-spacing":1,"writing-mode":1};function mc(t,e){return eo[e]?t.style[e]:t.getAttributeNS(null,e)}function no(t,e,n){var r=e.replace(/([a-z])([A-Z])/g,"$1-$2").toLowerCase(),i=eo[r];i?(i===ci&&typeof n=="number"&&(n=String(n)+"px"),t.style[r]=n):t.setAttributeNS(null,e,n)}function vc(t,e){var n=Object.keys(e),r,i;for(r=0,i;i=n[r];r++)no(t,i,e[i])}function O(t,e,n){if(typeof e=="string")if(n!==void 0)no(t,e,n);else return mc(t,e);else vc(t,e);return t}var yc=Object.prototype.toString;function j(t){return new Qt(t)}function Qt(t){if(!t||!t.nodeType)throw new Error("A DOM element reference is required");this.el=t,this.list=t.classList}Qt.prototype.add=function(t){return this.list.add(t),this};Qt.prototype.remove=function(t){return yc.call(t)=="[object RegExp]"?this.removeMatching(t):(this.list.remove(t),this)};Qt.prototype.removeMatching=function(t){let e=this.array();for(let n=0;n<e.length;n++)t.test(e[n])&&this.remove(e[n]);return this};Qt.prototype.toggle=function(t,e){return typeof e<"u"?e!==this.list.toggle(t,e)&&this.list.toggle(t):this.list.toggle(t),this};Qt.prototype.array=function(){return Array.from(this.list)};Qt.prototype.has=Qt.prototype.contains=function(t){return this.list.contains(t)};function zn(t){for(var e;e=t.firstChild;)t.removeChild(e);return t}function fi(t){return t.cloneNode(!0)}var li={svg:"http://www.w3.org/2000/svg"},Ji='<svg xmlns="'+li.svg+'"';function xc(t){var e=!1;t.substring(0,4)==="<svg"?t.indexOf(li.svg)===-1&&(t=Ji+t.substring(4)):(t=Ji+">"+t+"</svg>",e=!0);var n=_c(t);if(!e)return n;for(var r=document.createDocumentFragment(),i=n.firstChild;i.firstChild;)r.appendChild(i.firstChild);return r}function _c(t){var e;return e=new DOMParser,e.async=!1,e.parseFromString(t,"text/xml")}function A(t,e){var n;return t=t.trim(),t.charAt(0)==="<"?(n=xc(t).firstChild,n=document.importNode(n,!0)):n=document.createElementNS(li.svg,t),e&&O(n,e),n}var si=null;function ui(){return si===null&&(si=A("svg")),si}function to(t,e){var n,r,i=Object.keys(e);for(n=0;r=i[n];n++)t[r]=e[r];return t}function ro(t,e,n,r,i,o){var a=ui().createSVGMatrix();switch(arguments.length){case 0:return a;case 1:return to(a,t);case 6:return to(a,{a:t,b:e,c:n,d:r,e:i,f:o})}}function De(t){return t?ui().createSVGTransformFromMatrix(t):ui().createSVGTransform()}function V(t){var e=t.parentNode;return e&&e.removeChild(t),t}function wc(t,e){return e instanceof SVGMatrix?t.createSVGTransformFromMatrix(e):e}function Ec(t,e){var n,r;for(t.clear(),n=0;r=e[n];n++)t.appendItem(wc(t,r))}function he(t,e){var n=t.transform.baseVal;return e&&(Array.isArray(e)||(e=[e]),Ec(n,e)),n.consolidate()}function $n(t){return t.flat().join(",").replace(/,?([A-Za-z]),?/g,"$1")}function Sc(t){return["M",t.x,t.y]}function di(t){return["L",t.x,t.y]}function Cc(t,e,n){return["C",t.x,t.y,e.x,e.y,n.x,n.y]}function bc(t,e){let n=t.length,r=[Sc(t[0])];for(let i=1;i<n;i++){let o=t[i-1],a=t[i],s=t[i+1];if(!s||!e){r.push(di(a));continue}let c=Math.min(e,pi(a.x-o.x,a.y-o.y),pi(s.x-a.x,s.y-a.y));if(!c){r.push(di(a));continue}let u=Fn(a,o,c),f=Fn(a,o,c*.5),l=Fn(a,s,c),d=Fn(a,s,c*.5);r.push(di(u)),r.push(Cc(f,d,l))}return r}function Fn(t,e,n){let r=e.x-t.x,i=e.y-t.y,o=pi(r,i),a=n/o;return{x:t.x+r*a,y:t.y+i*a}}function pi(t,e){return Math.sqrt(Math.pow(t,2)+Math.pow(e,2))}function Gn(t,e,n){H(e)&&(n=e,e=null),e||(e={});let r=A("path",e);return H(n)&&(r.dataset.cornerRadius=String(n)),hi(r,t)}function hi(t,e){let n=parseInt(t.dataset.cornerRadius,10)||0;return O(t,{d:$n(bc(e,n))}),t}function io(t){var e=new Set(t);return Q(t,function(n){for(var r=n.parent;r;){if(e.has(r))return!1;r=r.parent}return!0})}function gi(t,e,n){n=n||0,I(t)||(t=[t]),S(t,function(r,i){var o=e(r,i,n);I(o)&&o.length&&gi(o,e,n+1)})}function Rc(t,e,n){var r=new Set,i=new Set;return gi(t,function(o,a,s){r.add(o);var c=o.children;if((n===-1||s<n)&&c&&!i.has(c))return i.add(c),c}),Array.from(r)}function oo(t,e){return Rc(t,!0,-1)}function ao(t,e,n){Nn(e)&&(e=!0),U(e)&&(n=e,e=!0),n=n||{};var r=an(n.allShapes),i=an(n.allConnections),o=an(n.enclosedElements),a=an(n.enclosedConnections),s=an(n.topLevel,e&&de(t,function(f){return f.id}));function c(f){s[f.source.id]&&s[f.target.id]&&(s[f.id]=[f]),r[f.source.id]&&r[f.target.id]&&(a[f.id]=o[f.id]=f),i[f.id]=f}function u(f){if(o[f.id]=f,f.waypoints)a[f.id]=i[f.id]=f;else return r[f.id]=f,S(f.incoming,c),S(f.outgoing,c),f.children}return gi(t,u),{allShapes:r,allConnections:i,topLevel:s,enclosedConnections:a,enclosedElements:o}}function nt(t,e){e=!!e,I(t)||(t=[t]);var n,r,i,o;return S(t,function(a){var s=a;a.waypoints&&!e&&(s=nt(a.waypoints,!0));var c=s.x,u=s.y,f=s.height||0,l=s.width||0;(c<n||n===void 0)&&(n=c),(u<r||r===void 0)&&(r=u),(c+l>i||i===void 0)&&(i=c+l),(u+f>o||o===void 0)&&(o=u+f)}),{x:n,y:r,height:o-r,width:i-n}}function Vn(t){return"waypoints"in t?"connection":"x"in t?"shape":"root"}function Wn(t){return!!(t&&t.isFrame)}function an(t,e){return P({},t||{},e||{})}var Mc=1;function Ot(t,e){Ct.call(this,t,Mc),this.CONNECTION_STYLE=e.style(["no-fill"],{strokeWidth:5,stroke:"fuchsia"}),this.SHAPE_STYLE=e.style({fill:"white",stroke:"fuchsia",strokeWidth:2}),this.FRAME_STYLE=e.style(["no-fill"],{stroke:"fuchsia",strokeDasharray:4,strokeWidth:2})}ht(Ot,Ct);Ot.prototype.canRender=function(){return!0};Ot.prototype.drawShape=function(e,n,r){var i=A("rect");return O(i,{x:0,y:0,width:n.width||0,height:n.height||0}),Wn(n)?O(i,P({},this.FRAME_STYLE,r||{})):O(i,P({},this.SHAPE_STYLE,r||{})),T(e,i),i};Ot.prototype.drawConnection=function(e,n,r){var i=Gn(n.waypoints,P({},this.CONNECTION_STYLE,r||{}));return T(e,i),i};Ot.prototype.getShapePath=function(e){var n=e.x,r=e.y,i=e.width,o=e.height,a=[["M",n,r],["l",i,0],["l",0,o],["l",-i,0],["z"]];return $n(a)};Ot.prototype.getConnectionPath=function(e){var n=e.waypoints,r,i,o=[];for(r=0;i=n[r];r++)i=i.original||i,o.push([r===0?"M":"L",i.x,i.y]);return $n(o)};Ot.$inject=["eventBus","styles"];function mi(){var t={"no-fill":{fill:"none"},"no-border":{strokeOpacity:0},"no-events":{pointerEvents:"none"}},e=this;this.cls=function(n,r,i){var o=this.style(r,i);return P(o,{class:n})},this.style=function(n,r){!I(n)&&!r&&(r=n,n=[]);var i=le(n,function(o,a){return P(o,t[a]||{})},{});return r?P(i,r):i},this.computeStyle=function(n,r,i){return I(r)||(i=r,r=[]),e.style(r||[],P({},i,n||{}))}}var so={__init__:["defaultRenderer"],defaultRenderer:["type",Ot],styles:["type",mi]};var K={legend:[1,"<fieldset>","</fieldset>"],tr:[2,"<table><tbody>","</tbody></table>"],col:[2,"<table><tbody></tbody><colgroup>","</colgroup></table>"],_default:[0,"",""]};K.td=K.th=[3,"<table><tbody><tr>","</tr></tbody></table>"];K.option=K.optgroup=[1,'<select multiple="multiple">',"</select>"];K.thead=K.tbody=K.colgroup=K.caption=K.tfoot=[1,"<table>","</table>"];K.polyline=K.ellipse=K.polygon=K.circle=K.text=K.line=K.path=K.rect=K.g=[1,'<svg xmlns="http://www.w3.org/2000/svg" version="1.1">',"</svg>"];function vt(t,e=globalThis.document){if(typeof t!="string")throw new TypeError("String expected");let n=/^<!--(.*?)-->$/s.exec(t);if(n)return e.createComment(n[1]);let r=/<([\w:]+)/.exec(t)?.[1];if(!r)return e.createTextNode(t);if(t=t.trim(),r==="body"){let u=e.createElement("html");u.innerHTML=t;let{lastChild:f}=u;return f.remove(),f}let[i,o,a]=Object.hasOwn(K,r)?K[r]:K._default,s=e.createElement("div");for(s.innerHTML=o+t+a;i--;)s=s.lastChild;if(s.firstChild===s.lastChild){let{firstChild:u}=s;return u.remove(),u}let c=e.createDocumentFragment();return c.append(...s.childNodes),c}function Pc(t,e){return e.forEach(function(n){n&&typeof n!="string"&&!Array.isArray(n)&&Object.keys(n).forEach(function(r){if(r!=="default"&&!(r in t)){var i=Object.getOwnPropertyDescriptor(n,r);Object.defineProperty(t,r,i.get?i:{enumerable:!0,get:function(){return n[r]}})}})}),Object.freeze(t)}function ge(t,...e){let n=t.style;return S(e,function(r){r&&S(r,function(i,o){n[o]=i})}),t}function At(t,e,n){return arguments.length==2?t.getAttribute(e):n===null?t.removeAttribute(e):(t.setAttribute(e,n),t)}var Oc=Object.prototype.toString;function bt(t){return new Jt(t)}function Jt(t){if(!t||!t.nodeType)throw new Error("A DOM element reference is required");this.el=t,this.list=t.classList}Jt.prototype.add=function(t){return this.list.add(t),this};Jt.prototype.remove=function(t){return Oc.call(t)=="[object RegExp]"?this.removeMatching(t):(this.list.remove(t),this)};Jt.prototype.removeMatching=function(t){let e=this.array();for(let n=0;n<e.length;n++)t.test(e[n])&&this.remove(e[n]);return this};Jt.prototype.toggle=function(t,e){return typeof e<"u"?e!==this.list.toggle(t,e)&&this.list.toggle(t):this.list.toggle(t),this};Jt.prototype.array=function(){return Array.from(this.list)};Jt.prototype.has=Jt.prototype.contains=function(t){return this.list.contains(t)};function Yn(t){for(var e;e=t.firstChild;)t.removeChild(e);return t}function sn(t,e,n){var r=n?t:t.parentNode;return r&&typeof r.closest=="function"&&r.closest(e)||null}function Ac(t){return t&&t.__esModule&&Object.prototype.hasOwnProperty.call(t,"default")?t.default:t}var Kn={},co;function Tc(){if(co)return Kn;co=1;var t,e,n;function r(){t=window.addEventListener?"addEventListener":"attachEvent",e=window.removeEventListener?"removeEventListener":"detachEvent",n=t!=="addEventListener"?"on":""}return Kn.bind=function(i,o,a,s){return t||r(),i[t](n+o,a,s||!1),a},Kn.unbind=function(i,o,a,s){return e||r(),i[e](n+o,a,s||!1),a},Kn}var uo=Tc(),kc=Ac(uo),D=Pc({__proto__:null,default:kc},[uo]),fo=["focus","blur"];function Ic(t,e,n,r,i){return fo.indexOf(n)!==-1&&(i=!0),D.bind(t,n,function(o){var a=o.target||o.srcElement;o.delegateTarget=sn(a,e,!0),o.delegateTarget&&r.call(t,o)},i)}function Lc(t,e,n,r){return fo.indexOf(e)!==-1&&(r=!0),D.unbind(t,e,n,r)}var te={bind:Ic,unbind:Lc};function rt(t,e){return e=e||document,e.querySelector(t)}function cn(t,e){return e=e||document,e.querySelectorAll(t)}function qn(t){t.parentNode&&t.parentNode.removeChild(t)}function Gt(t,e){if(!t||!e)return-1;var n=t.indexOf(e);return n!==-1&&t.splice(n,1),n}function lt(t,e,n){if(!(!t||!e)){typeof n!="number"&&(n=-1);var r=t.indexOf(e);if(r!==-1){if(r===n)return;if(n!==-1)t.splice(r,1);else return}n!==-1?t.splice(n,0,e):t.push(e)}}function Un(t,e){return!t||!e?-1:t.indexOf(e)}function ee(t,e){return!t||!e?-1:Math.sqrt(Math.pow(t.x-e.x,2)+Math.pow(t.y-e.y,2))}function Ne(t,e,n,r){if(typeof r>"u"&&(r=5),!t||!e||!n)return!1;var i=(e.x-t.x)*(n.y-t.y)-(e.y-t.y)*(n.x-t.x),o=ee(t,e);return Math.abs(i/o)<=r}var jc=2;function _t(t,e){var n=Array.from(arguments).flat();let r={x:"v",y:"h"};for(let[i,o]of Object.entries(r))if(Dc(i,n))return o;return!1}function Dc(t,e){let n=e[0];return Zt(e,function(r){return Math.abs(n[t]-r[t])<=jc})}function vi(t,e,n){return n=n||0,t.x>e.x-n&&t.y>e.y-n&&t.x<e.x+e.width+n&&t.y<e.y+e.height+n}function un(t,e){return{x:Math.round(t.x+(e.x-t.x)/2),y:Math.round(t.y+(e.y-t.y)/2)}}var Nc=/,?([a-z]),?/gi,lo=parseFloat,q=Math,ne=q.PI,Tt=q.min,kt=q.max,po=q.pow,ie=q.abs,Hc=/([a-z])[\s,]*((-?\d*\.?\d*(?:e[-+]?\d+)?[\s]*,?[\s]*)+)/ig,Bc=/(-?\d*\.?\d*(?:e[-+]?\d+)?)[\s]*,?[\s]*/ig,fn="-?(?:\\d+\\.?\\d*|\\.\\d+)(?:[eE][-+]?\\d+)?",me="[\\s]*,?[\\s]*",zc=new RegExp("(?=("+fn+"))\\1"+me+"(?=("+fn+"))\\2"+me+"(?=("+fn+"))\\3"+me+"([01])"+me+"([01])"+me+"(?=("+fn+"))\\6"+me+"(?=("+fn+"))\\7"+me,"g"),ho=Array.isArray||function(t){return t instanceof Array};function Fc(t){if(!t)return null;var e={a:7,c:6,h:1,l:2,m:2,q:4,s:4,t:2,v:1,z:0},n=[];return String(t).replace(Hc,function(r,i,o){var a=[],s=i.toLowerCase();for(o.replace(s=="a"?zc:Bc,function(){for(var c=1;c<arguments.length-2;c++)arguments[c]&&a.push(+arguments[c])}),s=="m"&&a.length>2&&(n.push([i,...a.splice(0,2)]),s="l",i=i=="m"?"l":"L");a.length>=e[s]&&(n.push([i,...a.splice(0,e[s])]),!!e[s]););}),n.toString=xi,n}function $c(t){for(var e=0,n=t.length;e<n;e++){var r=t[e][0];if(typeof r=="string"&&r!==r.toUpperCase())return!1}return!0}function Gc(t){for(var e=0,n=t.length;e<n;e++){var r=t[e][0];if(r!=="M"&&r!=="C")return!1}return!0}function Vc(t,e,n,r){return arguments.length===1&&(e=t.y,n=t.width,r=t.height,t=t.x),{x:t,y:e,width:n,height:r,x2:t+n,y2:e+r}}function xi(){return this.join(",").replace(Nc,"$1")}function Wc(t){for(var e=new Array(t.length),n=0,r=t.length;n<r;n++)for(var i=t[n],o=e[n]=new Array(i.length),a=0,s=i.length;a<s;a++)o[a]=i[a];return e.toString=xi,e}function go(t,e,n,r,i,o,a,s,c){var u=1-c,f=po(u,3),l=po(u,2),d=c*c,p=d*c,m=f*t+l*3*c*n+u*3*c*c*i+p*a,x=f*e+l*3*c*r+u*3*c*c*o+p*s;return{x:Xn(m),y:Xn(x)}}function yi(t){var e=Zc(...t);return Vc(e.x0,e.y0,e.x1-e.x0,e.y1-e.y0)}function re(t,e,n){return e>=t.x&&e<=t.x+t.width&&n>=t.y&&n<=t.y+t.height}function Eo(t,e){return re(e,t.x,t.y)||re(e,t.x2,t.y)||re(e,t.x,t.y2)||re(e,t.x2,t.y2)||re(t,e.x,e.y)||re(t,e.x2,e.y)||re(t,e.x,e.y2)||re(t,e.x2,e.y2)||(t.x<e.x2&&t.x>e.x||e.x<t.x2&&e.x>t.x)&&(t.y<e.y2&&t.y>e.y||e.y<t.y2&&e.y>t.y)}function mo(t,e,n,r,i){var o=-3*e+9*n-9*r+3*i,a=t*o+6*e-12*n+6*r;return t*a-3*e+3*n}function vo(t,e,n,r,i,o,a,s,c){c==null&&(c=1),c=c>1?1:c<0?0:c;for(var u=c/2,f=12,l=[-.1252,.1252,-.3678,.3678,-.5873,.5873,-.7699,.7699,-.9041,.9041,-.9816,.9816],d=[.2491,.2491,.2335,.2335,.2032,.2032,.1601,.1601,.1069,.1069,.0472,.0472],p=0,m=0;m<f;m++){var x=u*l[m]+u,y=mo(x,t,n,i,a),C=mo(x,e,r,o,s),E=y*y+C*C;p+=d[m]*q.sqrt(E)}return u*p}function Kc(t,e,n,r,i,o,a,s){if(!(kt(t,n)<Tt(i,a)||Tt(t,n)>kt(i,a)||kt(e,r)<Tt(o,s)||Tt(e,r)>kt(o,s))){var c=(t*r-e*n)*(i-a)-(t-n)*(i*s-o*a),u=(t*r-e*n)*(o-s)-(e-r)*(i*s-o*a),f=(t-n)*(o-s)-(e-r)*(i-a);if(f){var l=Xn(c/f),d=Xn(u/f),p=+l.toFixed(2),m=+d.toFixed(2);if(!(p<+Tt(t,n).toFixed(2)||p>+kt(t,n).toFixed(2)||p<+Tt(i,a).toFixed(2)||p>+kt(i,a).toFixed(2)||m<+Tt(e,r).toFixed(2)||m>+kt(e,r).toFixed(2)||m<+Tt(o,s).toFixed(2)||m>+kt(o,s).toFixed(2)))return{x:l,y:d}}}}function Xn(t){return Math.round(t*1e11)/1e11}function Yc(t,e,n,r,i){if(r=r||yi(t),i=i||yi(e),!Eo(r,i))return n?0:[];var o=vo(...t),a=vo(...e),s=xo(t)?1:~~(o/5)||1,c=xo(e)?1:~~(a/5)||1,u=new Array(s+1),f=new Array(c+1),l={},d=n?0:[],p,m;for(p=0;p<s+1;p++){var x=p/s,y=go(...t,x);u[p]={x:y.x,y:y.y,t:x}}for(p=0;p<c+1;p++)x=p/c,y=go(...e,x),f[p]={x:y.x,y:y.y,t:x};for(p=0;p<s;p++)for(m=0;m<c;m++){var C=u[p],E=u[p+1],h=f[m],v=f[m+1],g=ie(E.x-C.x)<.01?"y":"x",_=ie(v.x-h.x)<.01?"y":"x",R=Kc(C.x,C.y,E.x,E.y,h.x,h.y,v.x,v.y),w;if(R){if(w=R.x.toFixed(9)+"#"+R.y.toFixed(9),l[w])continue;l[w]=!0;var M=C.t+ie((R[g]-C[g])/(E[g]-C[g]))*(E.t-C.t),b=h.t+ie((R[_]-h[_])/(v[_]-h[_]))*(v.t-h.t);M>=0&&M<=1&&b>=0&&b<=1&&(n?d++:d.push({x:R.x,y:R.y,t1:M,t2:b}))}}return d}function ln(t,e,n){for(var r=yo(wo(t)),i=yo(wo(e)),o=n?0:[],a=0,s=r.length;a<s;a++)for(var c=r[a],u=0,f=i.length;u<f;u++){var l=i[u];if(Eo(c.bbox,l.bbox)){var d=Yc(c.bez,l.bez,n,c.bbox,l.bbox);if(n)o+=d;else for(var p=0,m=d.length;p<m;p++)d[p].segment1=c.segment,d[p].segment2=l.segment,d[p].bez1=c.bez,d[p].bez2=l.bez,o.push(d[p])}}return o}function yo(t){for(var e=[],n=0,r=0,i=0,o=0,a=0,s=t.length;a<s;a++){var c=t[a],u;if(c[0]=="M"){n=i=c[1],r=o=c[2];continue}c[0]=="C"?(u=[n,r,c[1],c[2],c[3],c[4],c[5],c[6]],n=c[5],r=c[6]):(u=[n,r,n,r,i,o,i,o],n=i,r=o),e.push({bez:u,bbox:yi(u),segment:a})}return e}function qc(t){return ho(t)&&ho(t[0])}function Uc(t){if($c(t))return t;var e=new Array(t.length),n=0,r=0,i=0,o=0,a=0,s;t[0][0]=="M"&&(n=+t[0][1],r=+t[0][2],i=n,o=r,a++,e[0]=["M",n,r]);for(var c,u,f=a,l=t.length;f<l;f++){if(u=t[f],s=u[0],e[f]=c=new Array(u.length),s!=s.toUpperCase())switch(c[0]=s.toUpperCase(),c[0]){case"A":c[1]=u[1],c[2]=u[2],c[3]=u[3],c[4]=u[4],c[5]=u[5],c[6]=+u[6]+n,c[7]=+u[7]+r;break;case"V":c[1]=+u[1]+r;break;case"H":c[1]=+u[1]+n;break;case"M":i=+u[1]+n,o=+u[2]+r;default:for(var d=1,p=u.length;d<p;d++)c[d]=+u[d]+(d%2?n:r)}else for(var m=0,x=u.length;m<x;m++)c[m]=u[m];switch(s=s.toUpperCase(),c[0]){case"Z":n=+i,r=+o;break;case"H":n=c[1];break;case"V":r=c[1];break;case"M":i=c[c.length-2],o=c[c.length-1];default:n=c[c.length-2],r=c[c.length-1]}}return e.toString=xi,e}function xo(t){return t[0]===t[2]&&t[1]===t[3]&&t[4]===t[6]&&t[5]===t[7]}function Zn(t,e,n,r){return[t,e,n,r,n,r]}function _o(t,e,n,r,i,o){var a=.3333333333333333,s=2/3;return[a*t+s*n,a*e+s*r,a*i+s*n,a*o+s*r,i,o]}function So(t,e,n,r,i,o,a,s,c,u){var f=ne*120/180,l=ne/180*(+i||0),d=[],p,m=q.cos(l),x=q.sin(l),y=function(Vi,Wi){return{x:Vi*m-Wi*x,y:Vi*x+Wi*m}};if(u)M=u[0],b=u[1],R=u[2],w=u[3];else{p=y(t,-e),t=p.x,e=-p.y,p=y(s,-c),s=p.x,c=-p.y;var C=(t-s)/2,E=(e-c)/2,h=C*C/(n*n)+E*E/(r*r);h>1&&(h=q.sqrt(h),n=h*n,r=h*r);var v=n*n,g=r*r,_=(o==a?-1:1)*q.sqrt(ie((v*g-v*E*E-g*C*C)/(v*E*E+g*C*C))),R=_*n*E/r+(t+s)/2,w=_*-r*C/n+(e+c)/2,M=q.asin(((e-w)/r).toFixed(9)),b=q.asin(((c-w)/r).toFixed(9));M=t<R?ne-M:M,b=s<R?ne-b:b,M<0&&(M=ne*2+M),b<0&&(b=ne*2+b),a&&M>b&&(M=M-ne*2),!a&&b>M&&(b=b-ne*2)}var L=b-M;if(ie(L)>f){var N=b,z=s,W=c;b=M+f*(a&&b>M?1:-1),s=R+n*q.cos(b),c=w+r*q.sin(b),d=So(s,c,n,r,i,0,a,z,W,[b,N,R,w])}L=b-M;var jn=q.cos(M),Xs=q.sin(M),Qs=q.cos(b),Js=q.sin(b),Ni=q.tan(L/4),Hi=4/3*n*Ni,Bi=4/3*r*Ni,zi=[t,e],Ie=[t+Hi*Xs,e-Bi*jn],Fi=[s+Hi*Js,c-Bi*Qs],$i=[s,c];if(Ie[0]=2*zi[0]-Ie[0],Ie[1]=2*zi[1]-Ie[1],u)return[Ie,Fi,$i].concat(d);d=[Ie,Fi,$i].concat(d).join().split(",");for(var Gi=[],Ut=0,tc=d.length;Ut<tc;Ut++)Gi[Ut]=Ut%2?y(d[Ut-1],d[Ut]).y:y(d[Ut],d[Ut+1]).x;return Gi}function Zc(t,e,n,r,i,o,a,s){for(var c=[],u=[[],[]],f,l,d,p,m,x,y,C,E=0;E<2;++E){if(E==0?(l=6*t-12*n+6*i,f=-3*t+9*n-9*i+3*a,d=3*n-3*t):(l=6*e-12*r+6*o,f=-3*e+9*r-9*o+3*s,d=3*r-3*e),ie(f)<1e-12){if(ie(l)<1e-12)continue;p=-d/l,0<p&&p<1&&c.push(p);continue}y=l*l-4*d*f,C=q.sqrt(y),!(y<0)&&(m=(-l+C)/(2*f),0<m&&m<1&&c.push(m),x=(-l-C)/(2*f),0<x&&x<1&&c.push(x))}for(var h=c.length,v=h,g;h--;)p=c[h],g=1-p,u[0][h]=g*g*g*t+3*g*g*p*n+3*g*p*p*i+p*p*p*a,u[1][h]=g*g*g*e+3*g*g*p*r+3*g*p*p*o+p*p*p*s;return u[0][v]=t,u[1][v]=e,u[0][v+1]=a,u[1][v+1]=s,u[0].length=u[1].length=v+2,{x0:Tt(...u[0]),y0:Tt(...u[1]),x1:kt(...u[0]),y1:kt(...u[1])}}function wo(t){if(qc(t)||(t=Fc(t)),Gc(t))return t;for(var e=Wc(Uc(t)),n={x:0,y:0,bx:0,by:0,X:0,Y:0,qx:null,qy:null},r=function(d,p,m){var x,y;if(!d)return["C",p.x,p.y,p.x,p.y,p.x,p.y];switch(!(d[0]in{T:1,Q:1})&&(p.qx=p.qy=null),d[0]){case"M":p.X=d[1],p.Y=d[2];break;case"A":d=["C",...So(p.x,p.y,...d.slice(1))];break;case"S":m=="C"||m=="S"?(x=p.x*2-p.bx,y=p.y*2-p.by):(x=p.x,y=p.y),d=["C",x,y,...d.slice(1)];break;case"T":m=="Q"||m=="T"?(p.qx=p.x*2-p.qx,p.qy=p.y*2-p.qy):(p.qx=p.x,p.qy=p.y),d=["C",..._o(p.x,p.y,p.qx,p.qy,d[1],d[2])];break;case"Q":p.qx=d[1],p.qy=d[2],d=["C",..._o(p.x,p.y,d[1],d[2],d[3],d[4])];break;case"L":d=["C",...Zn(p.x,p.y,d[1],d[2])];break;case"H":d=["C",...Zn(p.x,p.y,d[1],p.y)];break;case"V":d=["C",...Zn(p.x,p.y,p.x,d[1])];break;case"Z":d=["C",...Zn(p.x,p.y,p.X,p.Y)];break}return d},i=function(d,p){if(d[p].length>7){d[p].shift();for(var m=d[p];m.length;)o[p]="A",d.splice(p++,0,["C",...m.splice(0,6)]);d.splice(p,1),u=e.length}},o=[],a="",s="",c=0,u=e.length;c<u;c++){e[c]&&(a=e[c][0]),a!="C"&&(o[c]=a,c&&(s=o[c-1])),e[c]=r(e[c],n,s),o[c]!="A"&&a=="C"&&(o[c]="C"),i(e,c);var f=e[c],l=f.length;n.x=f[l-2],n.y=f[l-1],n.bx=lo(f[l-4])||n.x,n.by=lo(f[l-3])||n.y}return e}function $(t){return U(t)&&Hn(t,"waypoints")}function It(t){return U(t)&&Hn(t,"labelTarget")}function Co(t){return U(t)&&Le(t.parent)}function bo(t){return{x:Math.round(t.x),y:Math.round(t.y),width:Math.round(t.width),height:Math.round(t.height)}}function He(t){return{x:Math.round(t.x),y:Math.round(t.y)}}function ct(t){return{top:t.y,right:t.x+(t.width||0),bottom:t.y+(t.height||0),left:t.x}}function _i(t){return{x:t.left,y:t.top,width:t.right-t.left,height:t.bottom-t.top}}function Xc(t){return He({x:t.x+(t.width||0)/2,y:t.y+(t.height||0)/2})}function Qc(t){for(var e=t.waypoints,n=e.reduce(function(u,f,l){var d=e[l-1];if(d){var p=u[u.length-1],m=p&&p.endLength||0,x=tu(d,f);u.push({start:d,end:f,startLength:m,endLength:m+x,length:x})}return u},[]),r=n.reduce(function(u,f){return u+f.length},0),i=r/2,o=0,a=n[o];a.endLength<i;)a=n[++o];var s=(i-a.startLength)/a.length,c={x:a.start.x+(a.end.x-a.start.x)*s,y:a.start.y+(a.end.y-a.start.y)*s};return c}function Z(t){return $(t)?Qc(t):Xc(t)}function Lt(t,e,n){n=n||0,U(n)||(n={x:n,y:n});var r=ct(t),i=ct(e),o=r.bottom+n.y<=i.top,a=r.left-n.x>=i.right,s=r.top-n.y>=i.bottom,c=r.right+n.x<=i.left,u=o?"top":s?"bottom":null,f=c?"left":a?"right":null;return f&&u?u+"-"+f:f||u||"intersect"}function Ro(t,e,n){var r=Jc(t,e);return r.length===1||r.length===2&&ee(r[0],r[1])<1?He(r[0]):r.length>1?(r=Bn(r,function(i){var o=Math.floor(i.t2*100)||1;return o=100-o,o=(o<10?"0":"")+o,i.segment2+"#"+o}),He(r[n?0:r.length-1])):null}function Jc(t,e){return ln(t,e)}function Mo(t){t=t.slice();for(var e=0,n,r,i;t[e];)n=t[e],r=t[e-1],i=t[e+1],ee(n,i)===0||Ne(r,i,n)?t.splice(e,1):e++;return t}function tu(t,e){return Math.sqrt(Math.pow(t.x-e.x,2)+Math.pow(t.y-e.y,2))}function Qn(t,e){return Math.round(t*e)/e}function Po(t){return H(t)?t+"px":t}function eu(t){for(;t.parent;)t=t.parent;return t}function nu(t){t=P({},{width:"100%",height:"100%"},t);let e=t.container||document.body,n=document.createElement("div");return n.setAttribute("class","djs-container djs-parent bio-theme-parent"),ge(n,{position:"relative",overflow:"hidden",width:Po(t.width),height:Po(t.height)}),e.appendChild(n),n}function Oo(t,e,n){let r=A("g");j(r).add(e);let i=n!==void 0?n:t.childNodes.length-1;return t.insertBefore(r,t.childNodes[i]||null),r}var ru="base",Ao=0,iu=1,ou={shape:["x","y","width","height"],connection:["waypoints"]};function k(t,e,n,r){this._eventBus=e,this._elementRegistry=r,this._graphicsFactory=n,this._rootsIdx=0,this._layers={},this._planes=[],this._rootElement=null,this._focused=!1,this._init(t||{})}k.$inject=["config.canvas","eventBus","graphicsFactory","elementRegistry"];k.prototype._init=function(t){let e=this._eventBus,n=this._container=nu(t),r=this._svg=A("svg");O(r,{width:"100%",height:"100%"}),At(r,"tabindex",0),t.autoFocus&&e.on("element.hover",()=>{this.restoreFocus()}),e.on("element.mousedown",500,o=>{this.focus()}),r.addEventListener("focusin",()=>{this._setFocused(!0)}),r.addEventListener("focusout",()=>{this._setFocused(!1)}),r.addEventListener("mouseover",()=>{this._eventBus.fire("canvas.mouseover")}),r.addEventListener("mouseout",()=>{this._eventBus.fire("canvas.mouseout")}),T(n,r);let i=this._viewport=Oo(r,"viewport");t.deferUpdate&&(this._viewboxChanged=on(this._viewboxChanged,300)),this._restoreFocus=on(this._restoreFocus,0),e.on("diagram.init",()=>{e.fire("canvas.init",{svg:r,viewport:i})}),e.on(["shape.added","connection.added","shape.removed","connection.removed","elements.changed","root.set"],()=>{delete this._cachedViewbox}),e.on("diagram.destroy",500,this._destroy,this),e.on("diagram.clear",500,this._clear,this)};k.prototype._destroy=function(){this._restoreFocus.cancel(),this._eventBus.fire("canvas.destroy",{svg:this._svg,viewport:this._viewport});let t=this._container.parentNode;t&&t.removeChild(this._container),delete this._svg,delete this._container,delete this._layers,delete this._planes,delete this._rootElement,delete this._viewport};k.prototype._setFocused=function(t){t!=this._focused&&(this._focused=t,this._eventBus.fire("canvas.focus.changed",{focused:t}))};k.prototype._clear=function(){this._elementRegistry.getAll().forEach(e=>{let n=Vn(e);n==="root"?this.removeRootElement(e):this._removeElement(e,n)}),this._planes=[],this._rootElement=null,delete this._cachedViewbox};k.prototype.focus=function(){this._svg.focus({preventScroll:!0}),this._setFocused(!0)};k.prototype.restoreFocus=function(){this._restoreFocus()};k.prototype._restoreFocus=function(){document.activeElement===document.body&&this.focus()};k.prototype.isFocused=function(){return this._focused};k.prototype.getDefaultLayer=function(){return this.getLayer(ru,Ao)};k.prototype.getLayer=function(t,e){if(!t)throw new Error("must specify a name");let n=this._layers[t];if(n||(n=this._layers[t]=this._createLayer(t,e)),typeof e<"u"&&n.index!==e)throw new Error("layer <"+t+"> already created at index <"+e+">");return n.group};k.prototype._getChildIndex=function(t){return le(this._layers,function(e,n){return n.visible&&t>=n.index&&e++,e},0)};k.prototype._createLayer=function(t,e){typeof e>"u"&&(e=iu);let n=this._getChildIndex(e);return{group:Oo(this._viewport,"layer-"+t,n),index:e,visible:!0}};k.prototype.showLayer=function(t){if(!t)throw new Error("must specify a name");let e=this._layers[t];if(!e)throw new Error("layer <"+t+"> does not exist");let n=this._viewport,r=e.group,i=e.index;if(e.visible)return r;let o=this._getChildIndex(i);return n.insertBefore(r,n.childNodes[o]||null),e.visible=!0,r};k.prototype.hideLayer=function(t){if(!t)throw new Error("must specify a name");let e=this._layers[t];if(!e)throw new Error("layer <"+t+"> does not exist");let n=e.group;return e.visible&&(V(n),e.visible=!1),n};k.prototype._removeLayer=function(t){let e=this._layers[t];e&&(delete this._layers[t],V(e.group))};k.prototype.getActiveLayer=function(){let t=this._findPlaneForRoot(this.getRootElement());return t?t.layer:null};k.prototype.findRoot=function(t){let e=this._resolveElements(t),n;for(let r of e){let i=this._findPlaneForRoot(eu(r));if(!i||n&&i.rootElement!==n)return;n=i.rootElement}return n};k.prototype.getRootElements=function(){return this._planes.map(function(t){return t.rootElement})};k.prototype._findPlaneForRoot=function(t){return mt(this._planes,function(e){return e.rootElement===t})};k.prototype._resolveElement=function(t){return typeof t=="string"?this._elementRegistry.get(t):t};k.prototype._resolveElements=function(t){return I(t)||(t=[t]),t.map(e=>this._resolveElement(e)).filter(Boolean)};k.prototype.getContainer=function(){return this._container};k.prototype._updateMarker=function(t,e,n){let r;t=this._resolveElement(t),t.markers=t.markers||new Set,r=this._elementRegistry._elements[t.id],r&&(S([r.gfx,r.secondaryGfx],function(i){i&&(n?(t.markers.add(e),j(i).add(e)):(t.markers.delete(e),j(i).remove(e)))}),this._eventBus.fire("element.marker.update",{element:t,gfx:r.gfx,marker:e,add:!!n}))};k.prototype.addMarker=function(t,e){this._updateMarker(t,e,!0)};k.prototype.removeMarker=function(t,e){this._updateMarker(t,e,!1)};k.prototype.hasMarker=function(t,e){return t=this._resolveElement(t),t.markers?t.markers.has(e):!1};k.prototype.toggleMarker=function(t,e){this.hasMarker(t,e)?this.removeMarker(t,e):this.addMarker(t,e)};k.prototype.getRootElement=function(){let t=this._rootElement;return t||this._planes.length?t:this.setRootElement(this.addRootElement(null))};k.prototype.addRootElement=function(t){let e=this._rootsIdx++;t||(t={id:"__implicitroot_"+e,children:[],isImplicit:!0});let n=t.layer="root-"+e;this._ensureValid("root",t);let r=this.getLayer(n,Ao);return this.hideLayer(n),this._addRoot(t,r),this._planes.push({rootElement:t,layer:r}),t};k.prototype.removeRootElement=function(t){if(t=this._resolveElement(t),!!this._findPlaneForRoot(t))return this._removeRoot(t),this._removeLayer(t.layer),this._planes=this._planes.filter(function(n){return n.rootElement!==t}),this._rootElement===t&&(this._rootElement=null),t};k.prototype.setRootElement=function(t){if(t===this._rootElement)return t;let e;if(!t)throw new Error("rootElement required");return e=this._findPlaneForRoot(t),e||(t=this.addRootElement(t)),this._setRoot(t),t};k.prototype._removeRoot=function(t){let e=this._elementRegistry,n=this._eventBus;n.fire("root.remove",{element:t}),n.fire("root.removed",{element:t}),e.remove(t)};k.prototype._addRoot=function(t,e){let n=this._elementRegistry,r=this._eventBus;r.fire("root.add",{element:t}),n.add(t,e),r.fire("root.added",{element:t,gfx:e})};k.prototype._setRoot=function(t,e){let n=this._rootElement;n&&(this._elementRegistry.updateGraphics(n,null,!0),this.hideLayer(n.layer)),t&&(e||(e=this._findPlaneForRoot(t).layer),this._elementRegistry.updateGraphics(t,this._svg,!0),this.showLayer(t.layer)),this._rootElement=t,this._eventBus.fire("root.set",{element:t})};k.prototype._ensureValid=function(t,e){if(!e.id)throw new Error("element must have an id");if(this._elementRegistry.get(e.id))throw new Error("element <"+e.id+"> already exists");let n=ou[t];if(!Zt(n,function(i){return typeof e[i]<"u"}))throw new Error("must supply { "+n.join(", ")+" } with "+t)};k.prototype._setParent=function(t,e,n){lt(e.children,t,n),t.parent=e};k.prototype._addElement=function(t,e,n,r){n=n||this.getRootElement();let i=this._eventBus,o=this._graphicsFactory;this._ensureValid(t,e),i.fire(t+".add",{element:e,parent:n}),this._setParent(e,n,r);let a=o.create(t,e,r);return this._elementRegistry.add(e,a),o.update(t,e,a),i.fire(t+".added",{element:e,gfx:a}),e};k.prototype.addShape=function(t,e,n){return this._addElement("shape",t,e,n)};k.prototype.addConnection=function(t,e,n){return this._addElement("connection",t,e,n)};k.prototype._removeElement=function(t,e){let n=this._elementRegistry,r=this._graphicsFactory,i=this._eventBus;if(t=n.get(t.id||t),!!t)return i.fire(e+".remove",{element:t}),r.remove(t),Gt(t.parent&&t.parent.children,t),t.parent=null,i.fire(e+".removed",{element:t}),n.remove(t),t};k.prototype.removeShape=function(t){return this._removeElement(t,"shape")};k.prototype.removeConnection=function(t){return this._removeElement(t,"connection")};k.prototype.getGraphics=function(t,e){return this._elementRegistry.getGraphics(t,e)};k.prototype._changeViewbox=function(t){this._eventBus.fire("canvas.viewbox.changing"),t.apply(this),this._cachedViewbox=null,this._viewboxChanged()};k.prototype._viewboxChanged=function(){this._eventBus.fire("canvas.viewbox.changed",{viewbox:this.viewbox()})};k.prototype.viewbox=function(t){if(t===void 0&&this._cachedViewbox)return structuredClone(this._cachedViewbox);let e=this._viewport,n=this.getSize(),r,i,o,a,s,c,u;if(t)this._changeViewbox(function(){s=Math.min(n.width/t.width,n.height/t.height);let f=this._svg.createSVGMatrix().scale(s).translate(-t.x,-t.y);he(e,f)});else return o=this._rootElement?this.getActiveLayer():null,r=o&&o.getBBox()||{},a=he(e),i=a?a.matrix:ro(),s=Qn(i.a,1e3),c=Qn(-i.e||0,1e3),u=Qn(-i.f||0,1e3),t=this._cachedViewbox={x:c?c/s:0,y:u?u/s:0,width:n.width/s,height:n.height/s,scale:s,inner:{width:r.width||0,height:r.height||0,x:r.x||0,y:r.y||0},outer:n},t;return t};k.prototype.scroll=function(t){let e=this._viewport,n=e.getCTM();return t&&this._changeViewbox(function(){t=P({dx:0,dy:0},t||{}),n=this._svg.createSVGMatrix().translate(t.dx,t.dy).multiply(n),To(e,n)}),{x:n.e,y:n.f}};k.prototype.scrollToElement=function(t,e){let n=100,r=this._resolveElements(t);if(!r.length)return;let i=this.findRoot(r);if(!i)return;i!==this.getRootElement()&&this.setRootElement(i);let o=r.filter(m=>m!=i);if(!o.length)return;e||(e={}),typeof e=="number"&&(n=e),e={top:e.top||n,right:e.right||n,bottom:e.bottom||n,left:e.left||n};let a=nt(o),s=ct(a),c=this.viewbox(),u=this.zoom(),f,l;c.y+=e.top/u,c.x+=e.left/u,c.width-=(e.right+e.left)/u,c.height-=(e.bottom+e.top)/u;let d=ct(c);if(!(a.width<c.width&&a.height<c.height))f=a.x-c.x,l=a.y-c.y;else{let m=Math.max(0,s.right-d.right),x=Math.min(0,s.left-d.left),y=Math.max(0,s.bottom-d.bottom),C=Math.min(0,s.top-d.top);f=m||x,l=y||C}this.scroll({dx:-f*u,dy:-l*u})};k.prototype.zoom=function(t,e){if(!t)return this.viewbox(t).scale;if(t==="fit-viewport")return this._fitViewport(e);let n,r;return this._changeViewbox(function(){typeof e!="object"&&(n=this.viewbox().outer,e={x:n.width/2,y:n.height/2}),r=this._setZoom(t,e)}),Qn(r.a,1e3)};function To(t,e){let n="matrix("+e.a+","+e.b+","+e.c+","+e.d+","+e.e+","+e.f+")";t.setAttribute("transform",n)}k.prototype._fitViewport=function(t){let e=this.viewbox(),n=e.outer,r=e.inner,i,o;return r.x>=0&&r.y>=0&&r.x+r.width<=n.width&&r.y+r.height<=n.height&&!t?o={x:0,y:0,width:Math.max(r.width+r.x,n.width),height:Math.max(r.height+r.y,n.height)}:(i=Math.min(1,n.width/r.width,n.height/r.height),o={x:r.x+(t?r.width/2-n.width/i/2:0),y:r.y+(t?r.height/2-n.height/i/2:0),width:n.width/i,height:n.height/i}),this.viewbox(o),this.viewbox(!1).scale};k.prototype._setZoom=function(t,e){let n=this._svg,r=this._viewport,i=n.createSVGMatrix(),o=n.createSVGPoint(),a,s,c,u,f;c=r.getCTM();let l=c.a;return e?(a=P(o,e),s=a.matrixTransform(c.inverse()),u=i.translate(s.x,s.y).scale(1/l*t).translate(-s.x,-s.y),f=c.multiply(u)):f=i.scale(t),To(this._viewport,f),f};k.prototype.getSize=function(){return{width:this._container.clientWidth,height:this._container.clientHeight}};k.prototype.getAbsoluteBBox=function(t){let e=this.viewbox(),n;t.waypoints?n=this.getGraphics(t).getBBox():n=t;let r=n.x*e.scale-e.x*e.scale,i=n.y*e.scale-e.y*e.scale,o=n.width*e.scale,a=n.height*e.scale;return{x:r,y:i,width:o,height:a}};k.prototype.resized=function(){delete this._cachedViewbox,this._eventBus.fire("canvas.resized")};var Be="data-element-id";function ut(t){this._elements={},this._eventBus=t}ut.$inject=["eventBus"];ut.prototype.add=function(t,e,n){var r=t.id;this._validateId(r),O(e,Be,r),n&&O(n,Be,r),this._elements[r]={element:t,gfx:e,secondaryGfx:n}};ut.prototype.remove=function(t){var e=this._elements,n=t.id||t,r=n&&e[n];r&&(O(r.gfx,Be,""),r.secondaryGfx&&O(r.secondaryGfx,Be,""),delete e[n])};ut.prototype.updateId=function(t,e){this._validateId(e),typeof t=="string"&&(t=this.get(t)),this._eventBus.fire("element.updateId",{element:t,newId:e});var n=this.getGraphics(t),r=this.getGraphics(t,!0);this.remove(t),t.id=e,this.add(t,n,r)};ut.prototype.updateGraphics=function(t,e,n){var r=t.id||t,i=this._elements[r];return n?i.secondaryGfx=e:i.gfx=e,e&&O(e,Be,r),e};ut.prototype.get=function(t){var e;typeof t=="string"?e=t:e=t&&O(t,Be);var n=this._elements[e];return n&&n.element};ut.prototype.filter=function(t){var e=[];return this.forEach(function(n,r){t(n,r)&&e.push(n)}),e};ut.prototype.find=function(t){for(var e=this._elements,n=Object.keys(e),r=0;r<n.length;r++){var i=n[r],o=e[i],a=o.element,s=o.gfx;if(t(a,s))return a}};ut.prototype.getAll=function(){return this.filter(function(t){return t})};ut.prototype.forEach=function(t){var e=this._elements;Object.keys(e).forEach(function(n){var r=e[n],i=r.element,o=r.gfx;return t(i,o)})};ut.prototype.getGraphics=function(t,e){var n=t.id||t,r=this._elements[n];return r&&(e?r.secondaryGfx:r.gfx)};ut.prototype._validateId=function(t){if(!t)throw new Error("element must have an id");if(this._elements[t])throw new Error("element with id "+t+" already added")};function au(t,e,n,r){var i=n.inverse;return Object.defineProperty(t,"remove",{value:function(o){var a=this.indexOf(o);return a!==-1&&(this.splice(a,1),e.unset(o,i,r)),o}}),Object.defineProperty(t,"contains",{value:function(o){return this.indexOf(o)!==-1}}),Object.defineProperty(t,"add",{value:function(o,a){var s=this.indexOf(o);if(typeof a>"u"){if(s!==-1)return;a=this.length}s!==-1&&this.splice(s,1),this.splice(a,0,o),s===-1&&e.set(o,i,r)}}),Object.defineProperty(t,"__refs_collection",{value:!0}),t}function su(t){return t.__refs_collection===!0}function cu(t,e){return Object.prototype.hasOwnProperty.call(t,e.name||e)}function ko(t,e,n){var r=au(n[e.name]||[],t,e,n);Object.defineProperty(n,e.name,{enumerable:e.enumerable,value:r}),r.length&&r.forEach(function(i){t.set(i,e.inverse,n)})}function uu(t,e,n){var r=e.inverse,i=n[e.name];Object.defineProperty(n,e.name,{configurable:e.configurable,enumerable:e.enumerable,get:function(){return i},set:function(o){if(o!==i){var a=i;i=null,a&&t.unset(a,r,n),i=o,t.set(i,r,n)}}})}function yt(t,e){if(!(this instanceof yt))return new yt(t,e);t.inverse=e,e.inverse=t,this.props={},this.props[t.name]=t,this.props[e.name]=e}yt.prototype.bind=function(t,e){if(typeof e=="string"){if(!this.props[e])throw new Error("no property <"+e+"> in ref");e=this.props[e]}e.collection?ko(this,e,t):uu(this,e,t)};yt.prototype.ensureRefsCollection=function(t,e){var n=t[e.name];return su(n)||ko(this,e,t),n};yt.prototype.ensureBound=function(t,e){cu(t,e)||this.bind(t,e)};yt.prototype.unset=function(t,e,n){t&&(this.ensureBound(t,e),e.collection?this.ensureRefsCollection(t,e).remove(n):t[e.name]=void 0)};yt.prototype.set=function(t,e,n){t&&(this.ensureBound(t,e),e.collection?this.ensureRefsCollection(t,e).add(n):t[e.name]=n)};var wi=new yt({name:"children",enumerable:!0,collection:!0},{name:"parent"}),Lo=new yt({name:"labels",enumerable:!0,collection:!0},{name:"labelTarget"}),Io=new yt({name:"attachers",collection:!0},{name:"host"}),jo=new yt({name:"outgoing",collection:!0},{name:"source"}),Do=new yt({name:"incoming",collection:!0},{name:"target"});function ze(){Object.defineProperty(this,"businessObject",{writable:!0}),Object.defineProperty(this,"label",{get:function(){return this.labels[0]},set:function(t){var e=this.label,n=this.labels;!t&&e?n.remove(e):n.add(t,0)}}),wi.bind(this,"parent"),Lo.bind(this,"labels"),jo.bind(this,"outgoing"),Do.bind(this,"incoming")}function dn(){ze.call(this),wi.bind(this,"children"),Io.bind(this,"host"),Io.bind(this,"attachers")}ht(dn,ze);function No(){ze.call(this),wi.bind(this,"children")}ht(No,dn);function Ho(){dn.call(this),Lo.bind(this,"labelTarget")}ht(Ho,dn);function Bo(){ze.call(this),jo.bind(this,"source"),Do.bind(this,"target")}ht(Bo,ze);var fu={connection:Bo,shape:dn,label:Ho,root:No};function zo(t,e){var n=fu[t];if(!n)throw new Error("unknown type: <"+t+">");return P(new n,e)}function Fo(t){return t instanceof ze}function oe(){this._uid=12}oe.prototype.createRoot=function(t){return this.create("root",t)};oe.prototype.createLabel=function(t){return this.create("label",t)};oe.prototype.createShape=function(t){return this.create("shape",t)};oe.prototype.createConnection=function(t){return this.create("connection",t)};oe.prototype.create=function(t,e){return e=P({},e||{}),e.id||(e.id=t+"_"+this._uid++),zo(t,e)};var Jn="__fn",$o=1e3,lu=Array.prototype.slice;function ot(){this._listeners={},this.on("diagram.destroy",1,this._destroy,this)}ot.prototype.on=function(t,e,n,r){if(t=I(t)?t:[t],X(e)&&(r=n,n=e,e=$o),!H(e))throw new Error("priority must be a number");var i=n;r&&(i=Xt(n,r),i[Jn]=n[Jn]||n);var o=this;t.forEach(function(a){o._addListener(a,{priority:e,callback:i,next:null})})};ot.prototype.once=function(t,e,n,r){var i=this;if(X(e)&&(r=n,n=e,e=$o),!H(e))throw new Error("priority must be a number");function o(){o.__isTomb=!0;var a=n.apply(r,arguments);return i.off(t,o),a}o[Jn]=n,this.on(t,e,o)};ot.prototype.off=function(t,e){t=I(t)?t:[t];var n=this;t.forEach(function(r){n._removeListener(r,e)})};ot.prototype.createEvent=function(t){var e=new pn;return e.init(t),e};ot.prototype.fire=function(t,e){var n,r,i,o;if(o=lu.call(arguments),typeof t=="object"&&(e=t,t=e.type),!t)throw new Error("no event type specified");if(r=this._listeners[t],!!r){e instanceof pn?n=e:n=this.createEvent(e),o[0]=n;var a=n.type;t!==a&&(n.type=t);try{i=this._invokeListeners(n,o,r)}finally{t!==a&&(n.type=a)}return i===void 0&&n.defaultPrevented&&(i=!1),i}};ot.prototype.handleError=function(t){return this.fire("error",{error:t})===!1};ot.prototype._destroy=function(){this._listeners={}};ot.prototype._invokeListeners=function(t,e,n){for(var r;n&&!t.cancelBubble;)r=this._invokeListener(t,e,n),n=n.next;return r};ot.prototype._invokeListener=function(t,e,n){var r;if(n.callback.__isTomb)return r;try{r=du(n.callback,e),r!==void 0&&(t.returnValue=r,t.stopPropagation()),r===!1&&t.preventDefault()}catch(i){if(!this.handleError(i))throw console.error("unhandled error in event listener",i),i}return r};ot.prototype._addListener=function(t,e){var n=this._getListeners(t),r;if(!n){this._setListeners(t,e);return}for(;n;){if(n.priority<e.priority){e.next=n,r?r.next=e:this._setListeners(t,e);return}r=n,n=n.next}r.next=e};ot.prototype._getListeners=function(t){return this._listeners[t]};ot.prototype._setListeners=function(t,e){this._listeners[t]=e};ot.prototype._removeListener=function(t,e){var n=this._getListeners(t),r,i,o;if(!e){this._setListeners(t,null);return}for(;n;)r=n.next,o=n.callback,(o===e||o[Jn]===e)&&(i?i.next=r:this._setListeners(t,r)),i=n,n=r};function pn(){}pn.prototype.stopPropagation=function(){this.cancelBubble=!0};pn.prototype.preventDefault=function(){this.defaultPrevented=!0};pn.prototype.init=function(t){P(this,t||{})};function du(t,e){return t.apply(null,e)}function ve(t){return t.childNodes[0]}function Go(t){return t.parentNode.childNodes[1]}function Vo(t,e,n,r,i){var o=De();o.setTranslate(e,n);var a=De();a.setRotate(r||0,0,0);var s=De();s.setScale(i||1,i||1),he(t,[o,a,s])}function it(t,e,n){var r=De();r.setTranslate(e,n),he(t,r)}function Wo(t,e){var n=De();n.setRotate(e,0,0),he(t,n)}function ft(t,e){this._eventBus=t,this._elementRegistry=e}ft.$inject=["eventBus","elementRegistry"];ft.prototype._getChildrenContainer=function(t){var e=this._elementRegistry.getGraphics(t),n;return t.parent?(n=Go(e),n||(n=A("g"),j(n).add("djs-children"),T(e.parentNode,n))):n=e,n};ft.prototype._clear=function(t){var e=ve(t);return Yn(e),e};ft.prototype._createContainer=function(t,e,n,r){var i=A("g");j(i).add("djs-group"),typeof n<"u"?pu(i,e,e.childNodes[n]):T(e,i);var o=A("g");j(o).add("djs-element"),j(o).add("djs-"+t),r&&j(o).add("djs-frame"),T(i,o);var a=A("g");return j(a).add("djs-visual"),T(o,a),o};ft.prototype.create=function(t,e,n){var r=this._getChildrenContainer(e.parent);return this._createContainer(t,r,n,Wn(e))};ft.prototype.updateContainments=function(t){var e=this,n=this._elementRegistry,r;r=le(t,function(i,o){return o.parent&&(i[o.parent.id]=o.parent),i},{}),S(r,function(i){var o=i.children;if(o){var a=e._getChildrenContainer(i),s=a.firstChild;S(o,function(c){var u=n.getGraphics(c).parentNode;u===s?s=s.nextSibling:a.insertBefore(u,s)})}})};ft.prototype.drawShape=function(t,e,n={}){var r=this._eventBus;return r.fire("render.shape",{gfx:t,element:e,attrs:n})};ft.prototype.getShapePath=function(t){var e=this._eventBus;return e.fire("render.getShapePath",t)};ft.prototype.drawConnection=function(t,e,n={}){var r=this._eventBus;return r.fire("render.connection",{gfx:t,element:e,attrs:n})};ft.prototype.getConnectionPath=function(t){var e=this._eventBus;return e.fire("render.getConnectionPath",t)};ft.prototype.update=function(t,e,n){if(e.parent){var r=this._clear(n);if(t==="shape")this.drawShape(r,e),it(n,e.x,e.y);else if(t==="connection")this.drawConnection(r,e);else throw new Error("unknown type: "+t);e.hidden?O(n,"display","none"):O(n,"display","block")}};ft.prototype.remove=function(t){var e=this._elementRegistry.getGraphics(t);V(e.parentNode)};function pu(t,e,n){var r=n||e.firstChild;t!==r&&e.insertBefore(t,r)}var Ko={__depends__:[so],__init__:["canvas"],canvas:["type",k],elementRegistry:["type",ut],elementFactory:["type",oe],eventBus:["type",ot],graphicsFactory:["type",ft]};function hu(t){var e=new ri(t);return e.init(),e}function gu(t){t=t||{};var e={config:["value",t]},n=[e,Ko].concat(t.modules||[]);return hu(n)}function ye(t,e){this._injector=e||gu(t),this.get("eventBus").fire("diagram.init")}ye.prototype.get=function(t,e){return this._injector.get(t,e)};ye.prototype.invoke=function(t,e,n){return this._injector.invoke(t,e,n)};ye.prototype.destroy=function(){this.get("eventBus").fire("diagram.destroy")};ye.prototype.clear=function(){this.get("eventBus").fire("diagram.clear")};function F(t,e){this._handlerMap={},this._stack=[],this._stackIdx=-1,this._currentExecution={actions:[],dirty:[],trigger:null},this._injector=e,this._eventBus=t,this._uid=1,t.on(["diagram.destroy","diagram.clear"],function(){this.clear(!1)},this)}F.$inject=["eventBus","injector"];F.prototype.execute=function(t,e){if(!t)throw new Error("command required");this._currentExecution.trigger="execute";let n={command:t,context:e};this._pushAction(n),this._internalExecute(n),this._popAction()};F.prototype.canExecute=function(t,e){let n={command:t,context:e},r=this._getHandler(t),i=this._fire(t,"canExecute",n);if(i===void 0){if(!r)return!1;r.canExecute&&(i=r.canExecute(e))}return i};F.prototype.clear=function(t){this._stack.length=0,this._stackIdx=-1,t!==!1&&this._fire("changed",{trigger:"clear"})};F.prototype.undo=function(){let t=this._getUndoAction(),e;if(t){for(this._currentExecution.trigger="undo",this._pushAction(t);t&&(this._internalUndo(t),e=this._getUndoAction(),!(!e||e.id!==t.id));)t=e;this._popAction()}};F.prototype.redo=function(){let t=this._getRedoAction(),e;if(t){for(this._currentExecution.trigger="redo",this._pushAction(t);t&&(this._internalExecute(t,!0),e=this._getRedoAction(),!(!e||e.id!==t.id));)t=e;this._popAction()}};F.prototype.register=function(t,e){this._setHandler(t,e)};F.prototype.registerHandler=function(t,e){if(!t||!e)throw new Error("command and handlerCls must be defined");let n=this._injector.instantiate(e);this.register(t,n)};F.prototype.canUndo=function(){return!!this._getUndoAction()};F.prototype.canRedo=function(){return!!this._getRedoAction()};F.prototype._getRedoAction=function(){return this._stack[this._stackIdx+1]};F.prototype._getUndoAction=function(){return this._stack[this._stackIdx]};F.prototype._internalUndo=function(t){let e=t.command,n=t.context,r=this._getHandler(e);this._atomicDo(()=>{this._fire(e,"revert",t),r.revert&&this._markDirty(r.revert(n)),this._revertedAction(t),this._fire(e,"reverted",t)})};F.prototype._fire=function(t,e,n){arguments.length<3&&(n=e,e=null);let r=e?[t+"."+e,e]:[t],i;n=this._eventBus.createEvent(n);for(let o of r)if(i=this._eventBus.fire("commandStack."+o,n),n.cancelBubble)break;return i};F.prototype._createId=function(){return this._uid++};F.prototype._atomicDo=function(t){let e=this._currentExecution;e.atomic=!0;try{t()}finally{e.atomic=!1}};F.prototype._internalExecute=function(t,e){let n=t.command,r=t.context,i=this._getHandler(n);if(!i)throw new Error("no command handler registered for <"+n+">");this._pushAction(t),e||(this._fire(n,"preExecute",t),i.preExecute&&i.preExecute(r),this._fire(n,"preExecuted",t)),this._atomicDo(()=>{this._fire(n,"execute",t),i.execute&&this._markDirty(i.execute(r)),this._executedAction(t,e),this._fire(n,"executed",t)}),e||(this._fire(n,"postExecute",t),i.postExecute&&i.postExecute(r),this._fire(n,"postExecuted",t)),this._popAction()};F.prototype._pushAction=function(t){let e=this._currentExecution,n=e.actions,r=n[0];if(e.atomic)throw new Error("illegal invocation in <execute> or <revert> phase (action: "+t.command+")");t.id||(t.id=r&&r.id||this._createId()),n.push(t)};F.prototype._popAction=function(){let t=this._currentExecution,e=t.trigger,n=t.actions,r=t.dirty;n.pop(),n.length||(this._eventBus.fire("elements.changed",{elements:Xi("id",r.reverse())}),r.length=0,this._fire("changed",{trigger:e}),t.trigger=null)};F.prototype._markDirty=function(t){let e=this._currentExecution;t&&(t=I(t)?t:[t],e.dirty=e.dirty.concat(t))};F.prototype._executedAction=function(t,e){let n=++this._stackIdx;e||this._stack.splice(n,this._stack.length,t)};F.prototype._revertedAction=function(t){this._stackIdx--};F.prototype._getHandler=function(t){return this._handlerMap[t]};F.prototype._setHandler=function(t,e){if(!t||!e)throw new Error("command and handler required");if(this._handlerMap[t])throw new Error("overriding handler for command <"+t+">");this._handlerMap[t]=e};var Yo={commandStack:["type",F]};function tr(t,e,n,r){t.on("element.changed",function(i){var o=i.element;(o.parent||o===e.getRootElement())&&(i.gfx=n.getGraphics(o)),i.gfx&&t.fire(Vn(o)+".changed",i)}),t.on("elements.changed",function(i){var o=i.elements;o.forEach(function(a){t.fire("element.changed",{element:a})}),r.updateContainments(o)}),t.on("shape.changed",function(i){r.update("shape",i.element,i.gfx)}),t.on("connection.changed",function(i){r.update("connection",i.element,i.gfx)})}tr.$inject=["eventBus","canvas","elementRegistry","graphicsFactory"];var qo={__init__:["changeSupport"],changeSupport:["type",tr]};function Uo(t){!t||typeof t.stopPropagation!="function"||t.stopPropagation()}function ae(t){return t.originalEvent||t.srcEvent}function er(t){Uo(t),Uo(ae(t))}function jt(t){return t.pointers&&t.pointers.length&&(t=t.pointers[0]),t.touches&&t.touches.length&&(t=t.touches[0]),t?{x:t.clientX,y:t.clientY}:null}function Zo(){return/mac/i.test(navigator.platform)}function Xo(t,e){return(ae(t)||t).button===e}function wt(t){return Xo(t,0)}function Qo(t){return Xo(t,1)}function Jo(t){var e=ae(t)||t;return wt(t)&&e.shiftKey}function mu(t){return!0}function nr(t){return wt(t)||Qo(t)}var ta=500;function rr(t,e,n){var r=this;function i(w,M,b){if(!s(w,M)){var L,N,z;b?N=e.getGraphics(b):(L=M.delegateTarget||M.target,L&&(N=L,b=e.get(N))),!(!N||!b)&&(z=t.fire(w,{element:b,gfx:N,originalEvent:M}),z===!1&&(M.stopPropagation(),M.preventDefault()))}}var o={};function a(w){return o[w]}function s(w,M){var b=u[w]||wt;return!b(M)}var c={click:"element.click",contextmenu:"element.contextmenu",dblclick:"element.dblclick",mousedown:"element.mousedown",mousemove:"element.mousemove",mouseover:"element.hover",mouseout:"element.out",mouseup:"element.mouseup"},u={"element.contextmenu":mu,"element.mousedown":nr,"element.mouseup":nr,"element.click":nr,"element.dblclick":nr};function f(w,M,b){var L=c[w];if(!L)throw new Error("unmapped DOM event name <"+w+">");return i(L,M,b)}var l="svg, .djs-element";function d(w,M,b,L){var N=o[b]=function(z){i(b,z)};L&&(u[b]=L),N.$delegate=te.bind(w,l,M,N)}function p(w,M,b){var L=a(b);L&&te.unbind(w,M,L.$delegate)}function m(w){S(c,function(M,b){d(w,b,M)})}function x(w){S(c,function(M,b){p(w,b,M)})}t.on("canvas.destroy",function(w){x(w.svg)}),t.on("canvas.init",function(w){m(w.svg)}),t.on(["shape.added","connection.added"],function(w){var M=w.element,b=w.gfx;t.fire("interactionEvents.createHit",{element:M,gfx:b})}),t.on(["shape.changed","connection.changed"],ta,function(w){var M=w.element,b=w.gfx;t.fire("interactionEvents.updateHit",{element:M,gfx:b})}),t.on("interactionEvents.createHit",ta,function(w){var M=w.element,b=w.gfx;r.createDefaultHit(M,b)}),t.on("interactionEvents.updateHit",function(w){var M=w.element,b=w.gfx;r.updateDefaultHit(M,b)});var y=g("djs-hit djs-hit-stroke"),C=g("djs-hit djs-hit-click-stroke"),E=g("djs-hit djs-hit-all"),h=g("djs-hit djs-hit-no-move"),v={all:E,"click-stroke":C,stroke:y,"no-move":h};function g(w,M){return M=P({stroke:"white",strokeWidth:15},M||{}),n.cls(w,["no-fill","no-border"],M)}function _(w,M){var b=v[M];if(!b)throw new Error("invalid hit type <"+M+">");return O(w,b),w}function R(w,M){T(w,M)}this.removeHits=function(w){var M=cn(".djs-hit",w);S(M,V)},this.createDefaultHit=function(w,M){var b=w.waypoints,L=w.isFrame,N;return b?this.createWaypointsHit(M,b):(N=L?"stroke":"all",this.createBoxHit(M,N,{width:w.width,height:w.height}))},this.createWaypointsHit=function(w,M){var b=Gn(M);return _(b,"stroke"),R(w,b),b},this.createBoxHit=function(w,M,b){b=P({x:0,y:0},b);var L=A("rect");return _(L,M),O(L,b),R(w,L),L},this.updateDefaultHit=function(w,M){var b=rt(".djs-hit",M);if(b)return w.waypoints?hi(b,w.waypoints):O(b,{width:w.width,height:w.height}),b},this.fire=i,this.triggerMouseEvent=f,this.mouseHandler=a,this.registerEvent=d,this.unregisterEvent=p}rr.$inject=["eventBus","elementRegistry","styles"];var Fe={__init__:["interactionEvents"],interactionEvents:["type",rr]};function se(t,e){this._eventBus=t,this._canvas=e,this._selectedElements=new Set;var n=this;t.on(["shape.remove","connection.remove"],function(r){var i=r.element;n.deselect(i)}),t.on(["diagram.clear","root.set"],function(r){n.select(null)})}se.$inject=["eventBus","canvas"];se.prototype.deselect=function(t){if(this._selectedElements.has(t)){var e=this.get();this._selectedElements.delete(t),this._eventBus.fire("selection.changed",{oldSelection:e,newSelection:this.get()})}};se.prototype.get=function(){return Array.from(this._selectedElements)};se.prototype.isSelected=function(t){return this._selectedElements.has(t)};se.prototype.select=function(t,e){var n=this.get();I(t)||(t=t?[t]:[]);var r=this._canvas,i=r.getRootElement();t=t.filter(function(o){var a=r.findRoot(o);return i===a}),e?S(t,o=>{this._selectedElements.add(o)}):this._selectedElements=new Set(t),this._eventBus.fire("selection.changed",{oldSelection:n,newSelection:this.get()})};var ea="hover",na="selected";function ir(t,e){this._canvas=t;function n(i,o){t.addMarker(i,o)}function r(i,o){t.removeMarker(i,o)}e.on("element.hover",function(i){n(i.element,ea)}),e.on("element.out",function(i){r(i.element,ea)}),e.on("selection.changed",function(i){function o(u){r(u,na)}function a(u){n(u,na)}var s=new Set(i.oldSelection),c=new Set(i.newSelection);for(let u of s)c.has(u)||o(u);for(let u of c)s.has(u)||a(u)})}ir.$inject=["canvas","eventBus"];function or(t,e,n,r){t.on("create.end",500,function(i){var o=i.context,a=o.canExecute,s=o.elements,c=o.hints||{},u=c.autoSelect;if(a){if(u===!1)return;I(u)?e.select(u):e.select(s.filter(vu))}}),t.on("connect.end",500,function(i){var o=i.context,a=o.connection;a&&e.select(a)}),t.on("shape.move.end",500,function(i){var o=i.previousSelection||[],a=r.get(i.context.shape.id),s=mt(o,function(c){return a.id===c.id});s||e.select(a)}),t.on("element.click",function(i){if(wt(i)){var o=i.element;o===n.getRootElement()&&(o=null);var a=e.isSelected(o),s=e.get().length>1,c=Jo(i);if(a&&s)return c?e.deselect(o):e.select(o);a?e.deselect(o):e.select(o,c)}})}or.$inject=["eventBus","selection","canvas","elementRegistry"];function vu(t){return!t.hidden}var at={__init__:["selectionVisuals","selectionBehavior"],__depends__:[Fe],selection:["type",se],selectionVisuals:["type",ir],selectionBehavior:["type",or]};function hn(t){this._commandStack=t.get("commandStack",!1)}hn.$inject=["injector"];hn.prototype.allowed=function(t,e){var n=!0,r=this._commandStack;return r&&(n=r.canExecute(t,e)),n===void 0?!0:n};var dt={__init__:["rules"],rules:["type",hn]};function $e(t,e){this._modeling=t,this._canvas=e}$e.$inject=["modeling","canvas"];$e.prototype.preExecute=function(t){var e=this._modeling,n=t.elements,r=t.alignment;S(n,function(i){var o={x:0,y:0};gt(r.left)?o.x=r.left-i.x:gt(r.right)?o.x=r.right-i.width-i.x:gt(r.center)?o.x=r.center-Math.round(i.width/2)-i.x:gt(r.top)?o.y=r.top-i.y:gt(r.bottom)?o.y=r.bottom-i.height-i.y:gt(r.middle)&&(o.y=r.middle-Math.round(i.height/2)-i.y),e.moveElements([i],o,i.parent)})};$e.prototype.postExecute=function(t){};function Ge(t){this._modeling=t}Ge.$inject=["modeling"];Ge.prototype.preExecute=function(t){var e=t.source;if(!e)throw new Error("source required");var n=t.target||e.parent,r=t.shape,i=t.hints||{};r=t.shape=this._modeling.createShape(r,t.position,n,{attach:i.attach}),t.shape=r};Ge.prototype.postExecute=function(t){var e=t.hints||{};yu(t.source,t.shape)||(e.connectionTarget===t.source?this._modeling.connect(t.shape,t.source,t.connection):this._modeling.connect(t.source,t.shape,t.connection))};function yu(t,e){return qi(t.outgoing,function(n){return n.target===e})}function Ve(t,e){this._canvas=t,this._layouter=e}Ve.$inject=["canvas","layouter"];Ve.prototype.execute=function(t){var e=t.connection,n=t.source,r=t.target,i=t.parent,o=t.parentIndex,a=t.hints;if(!n||!r)throw new Error("source and target required");if(!i)throw new Error("parent required");return e.source=n,e.target=r,e.waypoints||(e.waypoints=this._layouter.layoutConnection(e,a)),this._canvas.addConnection(e,i,o),e};Ve.prototype.revert=function(t){var e=t.connection;return this._canvas.removeConnection(e),e.source=null,e.target=null,e};var ar=Math.round;function gn(t){this._modeling=t}gn.$inject=["modeling"];gn.prototype.preExecute=function(t){var e=t.elements,n=t.parent,r=t.parentIndex,i=t.position,o=t.hints,a=this._modeling;S(e,function(l){H(l.x)||(l.x=0),H(l.y)||(l.y=0)});var s=Q(e,function(l){return!l.hidden}),c=nt(s);S(e,function(l){$(l)&&(l.waypoints=xt(l.waypoints,function(d){return{x:ar(d.x-c.x-c.width/2+i.x),y:ar(d.y-c.y-c.height/2+i.y)}})),P(l,{x:ar(l.x-c.x-c.width/2+i.x),y:ar(l.y-c.y-c.height/2+i.y)})});var u=new Set(io(e)),f={};S(e,function(l){if($(l)){f[l.id]=H(r)?a.createConnection(f[l.source.id],f[l.target.id],r,l,l.parent||n,o):a.createConnection(f[l.source.id],f[l.target.id],l,l.parent||n,o);return}var d=P({},o);u.has(l)||(d.autoResize=!1),It(l)&&(d=Qi(d,["attach"])),f[l.id]=H(r)?a.createShape(l,pe(l,["x","y","width","height"]),l.parent||n,r,d):a.createShape(l,pe(l,["x","y","width","height"]),l.parent||n,d)}),t.elements=Zi(f)};var ra=Math.round;function Rt(t){this._canvas=t}Rt.$inject=["canvas"];Rt.prototype.execute=function(t){var e=t.shape,n=t.position,r=t.parent,i=t.parentIndex;if(!r)throw new Error("parent required");if(!n)throw new Error("position required");return n.width!==void 0?P(e,n):P(e,{x:n.x-ra(e.width/2),y:n.y-ra(e.height/2)}),this._canvas.addShape(e,r,i),e};Rt.prototype.revert=function(t){var e=t.shape;return this._canvas.removeShape(e),e};function xe(t){Rt.call(this,t)}ht(xe,Rt);xe.$inject=["canvas"];var xu=Rt.prototype.execute;xe.prototype.execute=function(t){var e=t.shape;return wu(e),e.labelTarget=t.labelTarget,xu.call(this,t)};var _u=Rt.prototype.revert;xe.prototype.revert=function(t){return t.shape.labelTarget=null,_u.call(this,t)};function wu(t){["width","height"].forEach(function(e){typeof t[e]>"u"&&(t[e]=0)})}function _e(t,e){if(typeof e!="function")throw new Error("removeFn iterator must be a function");if(!t)return[];for(var n;n=t[0];)e(n);return t}function we(t,e){this._canvas=t,this._modeling=e}we.$inject=["canvas","modeling"];we.prototype.preExecute=function(t){var e=this._modeling,n=t.connection;_e(n.incoming,function(r){e.removeConnection(r,{nested:!0})}),_e(n.outgoing,function(r){e.removeConnection(r,{nested:!0})})};we.prototype.execute=function(t){var e=t.connection,n=e.parent;return t.parent=n,t.parentIndex=Un(n.children,e),t.source=e.source,t.target=e.target,this._canvas.removeConnection(e),e.source=null,e.target=null,e};we.prototype.revert=function(t){var e=t.connection,n=t.parent,r=t.parentIndex;return e.source=t.source,e.target=t.target,lt(n.children,e,r),this._canvas.addConnection(e,n),e};function mn(t,e){this._modeling=t,this._elementRegistry=e}mn.$inject=["modeling","elementRegistry"];mn.prototype.postExecute=function(t){var e=this._modeling,n=this._elementRegistry,r=t.elements;S(r,function(i){n.get(i.id)&&(i.waypoints?e.removeConnection(i):e.removeShape(i))})};function Ee(t,e){this._canvas=t,this._modeling=e}Ee.$inject=["canvas","modeling"];Ee.prototype.preExecute=function(t){var e=this._modeling,n=t.shape;_e(n.incoming,function(r){e.removeConnection(r,{nested:!0})}),_e(n.outgoing,function(r){e.removeConnection(r,{nested:!0})}),_e(n.children,function(r){$(r)?e.removeConnection(r,{nested:!0}):e.removeShape(r,{nested:!0})})};Ee.prototype.execute=function(t){var e=this._canvas,n=t.shape,r=n.parent;return t.oldParent=r,t.oldParentIndex=Un(r.children,n),e.removeShape(n),n};Ee.prototype.revert=function(t){var e=this._canvas,n=t.shape,r=t.oldParent,i=t.oldParentIndex;return lt(r.children,n,i),e.addShape(n,r),n};function We(t){this._modeling=t}We.$inject=["modeling"];var ia={x:"y",y:"x"};We.prototype.preExecute=function(t){var e=this._modeling,n=t.groups,r=t.axis,i=t.dimension;function o(y,C){y.range.min=Math.min(C[r],y.range.min),y.range.max=Math.max(C[r]+C[i],y.range.max)}function a(y){return y[r]+y[i]/2}function s(y){return y.length-1}function c(y){return y.max-y.min}function u(y,C){var E={y:0};E[r]=y-a(C),E[r]&&(E[ia[r]]=0,e.moveElements([C],E,C.parent))}var f=n[0],l=s(n),d=n[l],p,m,x=0;S(n,function(y,C){var E,h,v;if(y.elements.length<2){C&&C!==n.length-1&&(o(y,y.elements[0]),x+=c(y.range));return}E=Bn(y.elements,r),h=E[0],C===l&&(h=E[s(E)]),v=a(h),y.range=null,S(E,function(g){if(u(v,g),y.range===null){y.range={min:g[r],max:g[r]+g[i]};return}o(y,g)}),C&&C!==n.length-1&&(x+=c(y.range))}),m=Math.abs(d.range.min-f.range.max),p=Math.round((m-x)/(n.length-1)),!(p<n.length-1)&&S(n,function(y,C){var E={},h;y===f||y===d||(h=n[C-1],y.range.max=0,S(y.elements,function(v,g){E[ia[r]]=0,E[r]=h.range.max-v[r]+p,y.range.min!==v[r]&&(E[r]+=v[r]-y.range.min),E[r]&&e.moveElements([v],E,v.parent),y.range.max=Math.max(v[r]+v[i],g?y.range.max:0)}))})};We.prototype.postExecute=function(t){};function Ke(t,e){this._layouter=t,this._canvas=e}Ke.$inject=["layouter","canvas"];Ke.prototype.execute=function(t){var e=t.connection,n=e.waypoints;return P(t,{oldWaypoints:n}),e.waypoints=this._layouter.layoutConnection(e,t.hints),e};Ke.prototype.revert=function(t){var e=t.connection;return e.waypoints=t.oldWaypoints,e};function vn(){}vn.prototype.execute=function(t){var e=t.connection,n=t.delta,r=t.newParent||e.parent,i=t.newParentIndex,o=e.parent;return t.oldParent=o,t.oldParentIndex=Gt(o.children,e),lt(r.children,e,i),e.parent=r,S(e.waypoints,function(a){a.x+=n.x,a.y+=n.y,a.original&&(a.original.x+=n.x,a.original.y+=n.y)}),e};vn.prototype.revert=function(t){var e=t.connection,n=e.parent,r=t.oldParent,i=t.oldParentIndex,o=t.delta;return Gt(n.children,e),lt(r.children,e,i),e.parent=r,S(e.waypoints,function(a){a.x-=o.x,a.y-=o.y,a.original&&(a.original.x-=o.x,a.original.y-=o.y)}),e};function Ei(t){return{x:t.x+t.width/2,y:t.y+t.height/2}}function Vt(t,e){return{x:t.x-e.x,y:t.y-e.y}}function yn(t,e,n){var r=Ei(e),i=Ei(n),o=Vt(t,r),a={x:o.x*(n.width/e.width),y:o.y*(n.height/e.height)};return He({x:i.x+a.x,y:i.y+a.y})}function Ye(t,e,n){var r=sr(t),i=aa(r,e),o=r[0];return i.length?i[i.length-1]:yn(o.original||o,n,e)}function qe(t,e,n){var r=sr(t),i=aa(r,e),o=r[r.length-1];return i.length?i[0]:yn(o.original||o,n,e)}function Ue(t,e,n){var r=sr(t),i=oa(e,n),o=r[0];return yn(o.original||o,i,e)}function Ze(t,e,n){var r=sr(t),i=oa(e,n),o=r[r.length-1];return yn(o.original||o,i,e)}function oa(t,e){return{x:t.x-e.x,y:t.y-e.y,width:t.width,height:t.height}}function sr(t){var e=t.waypoints;if(!e.length)throw new Error("connection#"+t.id+": no waypoints");return e}function aa(t,e){var n=xt(t,Su);return Q(n,function(r){return Eu(r,e)})}function Eu(t,e){return Lt(e,t,1)==="intersect"}function Su(t){return t.original||t}function xn(){this.allShapes={},this.allConnections={},this.enclosedElements={},this.enclosedConnections={},this.topLevel={}}xn.prototype.add=function(t,e){return this.addAll([t],e)};xn.prototype.addAll=function(t,e){var n=ao(t,!!e,this);return P(this,n),this};function ce(t){this._modeling=t}ce.prototype.moveRecursive=function(t,e,n){return t?this.moveClosure(this.getClosure(t),e,n):[]};ce.prototype.moveClosure=function(t,e,n,r,i){var o=this._modeling,a=t.allShapes,s=t.allConnections,c=t.enclosedConnections,u=t.topLevel,f=!1;i&&i.parent===n&&(f=!0),S(a,function(l){o.moveShape(l,e,u[l.id]&&!f&&n,{recurse:!1,layout:!1})}),S(s,function(l){var d=!!a[l.source.id],p=!!a[l.target.id];c[l.id]&&d&&p?o.moveConnection(l,e,u[l.id]&&!f&&n):o.layoutConnection(l,{connectionStart:d&&Ue(l,l.source,e),connectionEnd:p&&Ze(l,l.target,e)})})};ce.prototype.getClosure=function(t){return new xn().addAll(t,!0)};function Xe(t){this._helper=new ce(t)}Xe.$inject=["modeling"];Xe.prototype.preExecute=function(t){t.closure=this._helper.getClosure(t.shapes)};Xe.prototype.postExecute=function(t){var e=t.hints,n;e&&e.primaryShape&&(n=e.primaryShape,e.oldParent=n.parent),this._helper.moveClosure(t.closure,t.delta,t.newParent,t.newHost,n)};function Wt(t){this._modeling=t,this._helper=new ce(t)}Wt.$inject=["modeling"];Wt.prototype.execute=function(t){var e=t.shape,n=t.delta,r=t.newParent||e.parent,i=t.newParentIndex,o=e.parent;return t.oldBounds=pe(e,["x","y","width","height"]),t.oldParent=o,t.oldParentIndex=Gt(o.children,e),lt(r.children,e,i),P(e,{parent:r,x:e.x+n.x,y:e.y+n.y}),e};Wt.prototype.postExecute=function(t){var e=t.shape,n=t.delta,r=t.hints,i=this._modeling;r.layout!==!1&&(S(e.incoming,function(o){i.layoutConnection(o,{connectionEnd:Ze(o,e,n)})}),S(e.outgoing,function(o){i.layoutConnection(o,{connectionStart:Ue(o,e,n)})})),r.recurse!==!1&&this.moveChildren(t)};Wt.prototype.revert=function(t){var e=t.shape,n=t.oldParent,r=t.oldParentIndex,i=t.delta;return lt(n.children,e,r),P(e,{parent:n,x:e.x-i.x,y:e.y-i.y}),e};Wt.prototype.moveChildren=function(t){var e=t.delta,n=t.shape;this._helper.moveRecursive(n.children,e,null)};Wt.prototype.getNewParent=function(t){return t.newParent||t.shape.parent};function Se(t){this._modeling=t}Se.$inject=["modeling"];Se.prototype.execute=function(t){var e=t.newSource,n=t.newTarget,r=t.connection,i=t.dockingOrPoints;if(!e&&!n)throw new Error("newSource or newTarget required");return I(i)&&(t.oldWaypoints=r.waypoints,r.waypoints=i),e&&(t.oldSource=r.source,r.source=e),n&&(t.oldTarget=r.target,r.target=n),r};Se.prototype.postExecute=function(t){var e=t.connection,n=t.newSource,r=t.newTarget,i=t.dockingOrPoints,o=t.hints||{},a={};o.connectionStart&&(a.connectionStart=o.connectionStart),o.connectionEnd&&(a.connectionEnd=o.connectionEnd),o.layoutConnection!==!1&&(n&&(!r||o.docking==="source")&&(a.connectionStart=a.connectionStart||sa(I(i)?i[0]:i)),r&&(!n||o.docking==="target")&&(a.connectionEnd=a.connectionEnd||sa(I(i)?i[i.length-1]:i)),o.newWaypoints&&(a.waypoints=o.newWaypoints),this._modeling.layoutConnection(e,a))};Se.prototype.revert=function(t){var e=t.oldSource,n=t.oldTarget,r=t.oldWaypoints,i=t.connection;return e&&(i.source=e),n&&(i.target=n),r&&(i.waypoints=r),i};function sa(t){return t.original||t}function Mt(t,e){this._modeling=t,this._rules=e}Mt.$inject=["modeling","rules"];Mt.prototype.preExecute=function(t){var e=this,n=this._modeling,r=this._rules,i=t.oldShape,o=t.newData,a=t.hints||{},s;function c(m,x,y){return r.allowed("connection.reconnect",{connection:y,source:m,target:x})}var u={x:o.x,y:o.y},f={x:i.x,y:i.y,width:i.width,height:i.height};s=t.newShape=t.newShape||e.createShape(o,u,i.parent,a),i.host&&n.updateAttachment(s,i.host);var l;a.moveChildren!==!1&&(l=i.children.slice(),n.moveElements(l,{x:0,y:0},s,a));var d=i.incoming.slice(),p=i.outgoing.slice();S(d,function(m){var x=m.source,y=c(x,s,m);y&&e.reconnectEnd(m,s,qe(m,s,f),a)}),S(p,function(m){var x=m.target,y=c(s,x,m);y&&e.reconnectStart(m,s,Ye(m,s,f),a)})};Mt.prototype.postExecute=function(t){var e=t.oldShape;this._modeling.removeShape(e)};Mt.prototype.execute=function(t){};Mt.prototype.revert=function(t){};Mt.prototype.createShape=function(t,e,n,r){return this._modeling.createShape(t,e,n,r)};Mt.prototype.reconnectStart=function(t,e,n,r){this._modeling.reconnectStart(t,e,n,r)};Mt.prototype.reconnectEnd=function(t,e,n,r){this._modeling.reconnectEnd(t,e,n,r)};function Ce(t){this._modeling=t}Ce.$inject=["modeling"];Ce.prototype.execute=function(t){var e=t.shape,n=t.newBounds,r=t.minBounds;if(n.x===void 0||n.y===void 0||n.width===void 0||n.height===void 0)throw new Error("newBounds must have {x, y, width, height} properties");if(r&&(n.width<r.width||n.height<r.height))throw new Error("width and height cannot be less than minimum height and width");if(!r&&n.width<10||n.height<10)throw new Error("width and height cannot be less than 10px");return t.oldBounds={width:e.width,height:e.height,x:e.x,y:e.y},P(e,{width:n.width,height:n.height,x:n.x,y:n.y}),e};Ce.prototype.postExecute=function(t){var e=this._modeling,n=t.shape,r=t.oldBounds,i=t.hints||{};i.layout!==!1&&(S(n.incoming,function(o){e.layoutConnection(o,{connectionEnd:qe(o,n,r)})}),S(n.outgoing,function(o){e.layoutConnection(o,{connectionStart:Ye(o,n,r)})}))};Ce.prototype.revert=function(t){var e=t.shape,n=t.oldBounds;return P(e,{width:n.width,height:n.height,x:n.x,y:n.y}),e};function ca(t,e){var n=[],r=new Set(t);S(e,function(o){r.add(o)});var i=new Set;return r.forEach(function(o){var a=o.incoming,s=o.outgoing;S(a.concat(s),function(c){var u=c.source,f=c.target;(r.has(u)||r.has(f))&&(i.has(c)||(i.add(c),n.push(c)))})}),n}function ua(t,e,n){var r=t.x,i=t.y,o=t.width,a=t.height,s=n.x,c=n.y;switch(e){case"n":return{x:r,y:i+c,width:o,height:a-c};case"s":return{x:r,y:i,width:o,height:a+c};case"w":return{x:r+s,y:i,width:o-s,height:a};case"e":return{x:r,y:i,width:o+s,height:a};default:throw new Error("unknown direction: "+e)}}function Dt(t){this._modeling=t}Dt.$inject=["modeling"];Dt.prototype.preExecute=function(t){var e=t.delta,n=t.direction,r=t.movingShapes,i=t.resizingShapes,o=t.start,a={};this.moveShapes(r,e),S(i,function(s){a[s.id]=bu(s)}),this.resizeShapes(i,e,n),this.updateConnectionWaypoints(ca(r,i),e,n,o,r,i,a)};Dt.prototype.execute=function(){};Dt.prototype.revert=function(){};Dt.prototype.moveShapes=function(t,e){var n=this;S(t,function(r){n._modeling.moveShape(r,e,null,{autoResize:!1,layout:!1,recurse:!1})})};Dt.prototype.resizeShapes=function(t,e,n){var r=this;S(t,function(i){var o=ua(i,n,e);r._modeling.resizeShape(i,o,null,{attachSupport:!1,autoResize:!1,layout:!1})})};Dt.prototype.updateConnectionWaypoints=function(t,e,n,r,i,o,a){var s=this,c=new Set(i),u=new Set(o);S(t,function(f){var l=f.source,d=f.target,p=Cu(f),m=da(n),x={},y=c.has(l)||u.has(l),C=c.has(d)||u.has(d);y&&C?(p=xt(p,function(E){return la(E,r,n)&&(E[m]=E[m]+e[m]),E.original&&la(E.original,r,n)&&(E.original[m]=E.original[m]+e[m]),E}),s._modeling.updateWaypoints(f,p,{labelBehavior:!1})):(y||C)&&(c.has(l)?x.connectionStart=Ue(f,l,e):c.has(d)?x.connectionEnd=Ze(f,d,e):u.has(l)?x.connectionStart=Ye(f,l,a[l.id]):u.has(d)&&(x.connectionEnd=qe(f,d,a[d.id])),s._modeling.layoutConnection(f,x))})};function fa(t){return P({},t)}function Cu(t){return xt(t.waypoints,function(e){return e=fa(e),e.original&&(e.original=fa(e.original)),e})}function da(t){switch(t){case"n":return"y";case"w":return"x";case"s":return"y";case"e":return"x"}}function la(t,e,n){var r=da(n);if(/e|s/.test(n))return t[r]>e;if(/n|w/.test(n))return t[r]<e}function bu(t){return{x:t.x,y:t.y,height:t.height,width:t.width}}function Qe(t){this._modeling=t}Qe.$inject=["modeling"];Qe.prototype.execute=function(t){var e=t.shape,n=e.children;t.oldChildrenVisibility=pa(n),e.collapsed=!e.collapsed;var r=ha(n,e.collapsed);return[e].concat(r)};Qe.prototype.revert=function(t){var e=t.shape,n=t.oldChildrenVisibility,r=e.children,i=ga(r,n);return e.collapsed=!e.collapsed,[e].concat(i)};function pa(t){var e={};return S(t,function(n){e[n.id]=n.hidden,n.children&&(e=P({},e,pa(n.children)))}),e}function ha(t,e){var n=[];return S(t,function(r){r.hidden=e,n=n.concat(r),r.children&&(n=n.concat(ha(r.children,r.collapsed||e)))}),n}function ga(t,e){var n=[];return S(t,function(r){r.hidden=e[r.id],n=n.concat(r),r.children&&(n=n.concat(ga(r.children,e)))}),n}function Je(t){this._modeling=t}Je.$inject=["modeling"];Je.prototype.execute=function(t){var e=t.shape,n=t.newHost,r=e.host;return t.oldHost=r,t.attacherIdx=ma(r,e),va(n,e),e.host=n,e};Je.prototype.revert=function(t){var e=t.shape,n=t.newHost,r=t.oldHost,i=t.attacherIdx;return e.host=r,ma(n,e),va(r,e,i),e};function ma(t,e){return Gt(t&&t.attachers,e)}function va(t,e,n){if(t){var r=t.attachers;r||(t.attachers=r=[]),lt(r,e,n)}}function _n(){}_n.prototype.execute=function(t){var e=t.connection,n=t.newWaypoints;return t.oldWaypoints=e.waypoints,e.waypoints=n,e};_n.prototype.revert=function(t){var e=t.connection,n=t.oldWaypoints;return e.waypoints=n,e};function B(t,e,n){this._eventBus=t,this._elementFactory=e,this._commandStack=n;var r=this;t.on("diagram.init",function(){r.registerHandlers(n)})}B.$inject=["eventBus","elementFactory","commandStack"];B.prototype.getHandlers=function(){return{"shape.append":Ge,"shape.create":Rt,"shape.delete":Ee,"shape.move":Wt,"shape.resize":Ce,"shape.replace":Mt,"shape.toggleCollapse":Qe,spaceTool:Dt,"label.create":xe,"connection.create":Ve,"connection.delete":we,"connection.move":vn,"connection.layout":Ke,"connection.updateWaypoints":_n,"connection.reconnect":Se,"elements.create":gn,"elements.move":Xe,"elements.delete":mn,"elements.distribute":We,"elements.align":$e,"element.updateAttachment":Je}};B.prototype.registerHandlers=function(t){S(this.getHandlers(),function(e,n){t.registerHandler(n,e)})};B.prototype.moveShape=function(t,e,n,r,i){typeof r=="object"&&(i=r,r=null);var o={shape:t,delta:e,newParent:n,newParentIndex:r,hints:i||{}};this._commandStack.execute("shape.move",o)};B.prototype.updateAttachment=function(t,e){var n={shape:t,newHost:e};this._commandStack.execute("element.updateAttachment",n)};B.prototype.moveElements=function(t,e,n,r){r=r||{};var i=r.attach,o=n,a;i===!0?(a=n,o=n.parent):i===!1&&(a=null);var s={shapes:t,delta:e,newParent:o,newHost:a,hints:r};this._commandStack.execute("elements.move",s)};B.prototype.moveConnection=function(t,e,n,r,i){typeof r=="object"&&(i=r,r=void 0);var o={connection:t,delta:e,newParent:n,newParentIndex:r,hints:i||{}};this._commandStack.execute("connection.move",o)};B.prototype.layoutConnection=function(t,e){var n={connection:t,hints:e||{}};this._commandStack.execute("connection.layout",n)};B.prototype.createConnection=function(t,e,n,r,i,o){typeof n=="object"&&(o=i,i=r,r=n,n=void 0),r=this._create("connection",r);var a={source:t,target:e,parent:i,parentIndex:n,connection:r,hints:o};return this._commandStack.execute("connection.create",a),a.connection};B.prototype.createShape=function(t,e,n,r,i){typeof r!="number"&&(i=r,r=void 0),i=i||{};var o=i.attach,a,s;t=this._create("shape",t),o?(a=n.parent,s=n):a=n;var c={position:e,shape:t,parent:a,parentIndex:r,host:s,hints:i};return this._commandStack.execute("shape.create",c),c.shape};B.prototype.createElements=function(t,e,n,r,i){I(t)||(t=[t]),typeof r!="number"&&(i=r,r=void 0),i=i||{};var o={position:e,elements:t,parent:n,parentIndex:r,hints:i};return this._commandStack.execute("elements.create",o),o.elements};B.prototype.createLabel=function(t,e,n,r){n=this._create("label",n);var i={labelTarget:t,position:e,parent:r||t.parent,shape:n};return this._commandStack.execute("label.create",i),i.shape};B.prototype.appendShape=function(t,e,n,r,i){i=i||{},e=this._create("shape",e);var o={source:t,position:n,target:r,shape:e,connection:i.connection,connectionParent:i.connectionParent,hints:i};return this._commandStack.execute("shape.append",o),o.shape};B.prototype.removeElements=function(t){var e={elements:t};this._commandStack.execute("elements.delete",e)};B.prototype.distributeElements=function(t,e,n){var r={groups:t,axis:e,dimension:n};this._commandStack.execute("elements.distribute",r)};B.prototype.removeShape=function(t,e){var n={shape:t,hints:e||{}};this._commandStack.execute("shape.delete",n)};B.prototype.removeConnection=function(t,e){var n={connection:t,hints:e||{}};this._commandStack.execute("connection.delete",n)};B.prototype.replaceShape=function(t,e,n){var r={oldShape:t,newData:e,hints:n||{}};return this._commandStack.execute("shape.replace",r),r.newShape};B.prototype.alignElements=function(t,e){var n={elements:t,alignment:e};this._commandStack.execute("elements.align",n)};B.prototype.resizeShape=function(t,e,n,r){var i={shape:t,newBounds:e,minBounds:n,hints:r};this._commandStack.execute("shape.resize",i)};B.prototype.createSpace=function(t,e,n,r,i){var o={delta:n,direction:r,movingShapes:t,resizingShapes:e,start:i};this._commandStack.execute("spaceTool",o)};B.prototype.updateWaypoints=function(t,e,n){var r={connection:t,newWaypoints:e,hints:n||{}};this._commandStack.execute("connection.updateWaypoints",r)};B.prototype.reconnect=function(t,e,n,r,i){var o={connection:t,newSource:e,newTarget:n,dockingOrPoints:r,hints:i||{}};this._commandStack.execute("connection.reconnect",o)};B.prototype.reconnectStart=function(t,e,n,r){r||(r={}),this.reconnect(t,e,t.target,n,P(r,{docking:"source"}))};B.prototype.reconnectEnd=function(t,e,n,r){r||(r={}),this.reconnect(t,t.source,e,n,P(r,{docking:"target"}))};B.prototype.connect=function(t,e,n,r){return this.createConnection(t,e,n||{},t.parent,r)};B.prototype._create=function(t,e){return Fo(e)?e:this._elementFactory.create(t,e)};B.prototype.toggleCollapse=function(t,e){var n={shape:t,hints:e||{}};this._commandStack.execute("shape.toggleCollapse",n)};function tn(){}tn.prototype.layoutConnection=function(t,e){return e=e||{},[e.connectionStart||Z(e.source||t.source),e.connectionEnd||Z(e.target||t.target)]};var ya={__depends__:[Yo,qo,at,dt],__init__:["modeling"],modeling:["type",B],layouter:["type",tn]};var Ru=500,Mu=1e3;function Et(t,e,n){this._eventBus=t,this._elementRegistry=n,this._outlineOffset=5,this._outlineStyle=e.cls("djs-outline",["no-fill"]);var r=this;function i(o){Co(o)||r.createOutline(o)}t.on("element.hover",function(o){i(o.element)}),t.on("selection.changed",function(o){S(o.newSelection,i)}),t.on(["shape.changed","connection.changed"],Ru,function(o){var a=o.element,s=o.gfx,c=rt(".djs-outline",s);c&&r.updateOutline(a,c)})}Et.prototype.createOutline=function(t){var e=this._elementRegistry.getGraphics(t);if(!e)throw new Error("cannot create outline for non-rendered element");var n=rt(".djs-outline",e);return n||(n=this.getOutline(t)||this._createOutlineGfx(),T(e,n),this.updateOutline(t,n)),n};Et.prototype._createOutlineGfx=function(){var t=A("rect");return O(t,P({x:0,y:0,rx:4,width:100,height:100},this._outlineStyle)),t};Et.prototype.updateOutline=function(t,e){t.waypoints?this.updateConnectionOutline(e,t):this.updateShapeOutline(e,t)};Et.prototype.updateShapeOutline=function(t,e){var n=!1,r=this._getProviders();r.length&&S(r,function(i){n=n||i.updateOutline(e,t)}),n||O(t,{x:-this._outlineOffset,y:-this._outlineOffset,width:e.width+this._outlineOffset*2,height:e.height+this._outlineOffset*2})};Et.prototype.updateConnectionOutline=function(t,e){var n=nt(e);O(t,{x:n.x-this._outlineOffset,y:n.y-this._outlineOffset,width:n.width+this._outlineOffset*2,height:n.height+this._outlineOffset*2})};Et.prototype.registerProvider=function(t,e){e||(e=t,t=Mu),this._eventBus.on("outline.getProviders",t,function(n){n.providers.push(e)})};Et.prototype._getProviders=function(){var t=this._eventBus.createEvent({type:"outline.getProviders",providers:[]});return this._eventBus.fire(t),t.providers};Et.prototype.getOutline=function(t){var e,n=this._getProviders();return S(n,function(r){X(r.getOutline)&&(e=e||r.getOutline(t))}),e};Et.$inject=["eventBus","styles","elementRegistry"];var cr=6;function wn(t,e,n){this._canvas=e;var r=this;t.on("element.changed",function(i){n.isSelected(i.element)&&r._updateMultiSelectionOutline(n.get())}),t.on("selection.changed",function(i){var o=i.newSelection;r._updateMultiSelectionOutline(o)})}wn.prototype._updateMultiSelectionOutline=function(t){var e=this._canvas.getLayer("selectionOutline");zn(e);var n=t.length>1,r=this._canvas.getContainer();if(j(r)[n?"add":"remove"]("djs-multi-select"),!!n){var i=Pu(nt(t)),o=A("rect");O(o,P({rx:3},i)),j(o).add("djs-selection-outline"),T(e,o)}};wn.$inject=["eventBus","canvas","selection"];function Pu(t){return{x:t.x-cr,y:t.y-cr,width:t.width+cr*2,height:t.height+cr*2}}var ur={__depends__:[at],__init__:["outline","multiSelectionOutline"],outline:["type",Et],multiSelectionOutline:["type",wn]};var xa=1500;function fr(t,e,n){var r=this,i=n.get("dragging",!1);function o(a){if(!a.hover){var s=a.originalEvent,c=r._findTargetGfx(s),u=c&&t.get(c);c&&u&&(a.stopPropagation(),i.hover({element:u,gfx:c}),i.move(s))}}i&&e.on("drag.start",function(a){e.once("drag.move",xa,function(s){o(s)})}),(function(){var a,s;e.on("element.hover",function(c){a=c.gfx,s=c.element}),e.on("element.hover",xa,function(c){s&&e.fire("element.out",{element:s,gfx:a})}),e.on("element.out",function(){a=null,s=null})})(),this._findTargetGfx=function(a){var s,c;if(a instanceof MouseEvent)return s=jt(a),c=document.elementFromPoint(s.x,s.y),Ou(c)}}fr.$inject=["elementRegistry","eventBus","injector"];function Ou(t){return sn(t,"svg, .djs-element",!0)}var _a={__init__:["hoverFix"],hoverFix:["type",fr]};var Au=/^djs-cursor-.*$/;function En(t){var e=bt(document.body);e.removeMatching(Au),t&&e.add("djs-cursor-"+t)}function lr(){En(null)}var Tu=5e3;function dr(t,e){e=e||"element.click";function n(){return!1}return t.once(e,Tu,n),function(){t.off(e,n)}}var wa=["c","C"],Ea=["v","V"],ku=["d","D"],Iu=["x","X"],Sa=["y","Y"],Si=["z","Z"];function Ca(t){return t.ctrlKey||t.metaKey||t.shiftKey||t.altKey}function J(t){return t.altKey?!1:t.ctrlKey||t.metaKey}function st(t,e){return t=I(t)?t:[t],t.indexOf(e.key)!==-1||t.indexOf(e.code)!==-1||t.indexOf(Du(e))!==-1}var Lu=/^(?!\p{Script_Extensions=Latin}|\p{Script=Common})\p{Letter}$/u,ju=/^\P{Letter}$/u;function Du(t){var e=t.key,n=/^Key([A-Z])$/.exec(t.code||"");if(!n||typeof e!="string")return null;var r=n[1];return Lu.test(e)?t.shiftKey?r:r.toLowerCase():t.shiftKey&&ju.test(e)&&t.keyCode===r.charCodeAt(0)?r:null}function pr(t){return t.shiftKey}function ba(t){return J(t)&&st(wa,t)}function Ra(t){return J(t)&&st(Ea,t)}function Ma(t){return J(t)&&st(ku,t)}function Pa(t){return J(t)&&st(Iu,t)}function Oa(t){return J(t)&&!pr(t)&&st(Si,t)}function Aa(t){return J(t)&&(st(Sa,t)||st(Si,t)&&pr(t))}var en=Math.round,Ta="djs-drag-active",Nu=500;function be(t){t.preventDefault()}function Hu(t){return typeof TouchEvent<"u"&&t instanceof TouchEvent}function Bu(t){return Math.sqrt(Math.pow(t.x,2)+Math.pow(t.y,2))}function hr(t,e,n,r){var i={threshold:5,trapClick:!0},o;function a(g){var _=e.viewbox(),R=e._container.getBoundingClientRect();return{x:_.x+(g.x-R.left)/_.scale,y:_.y+(g.y-R.top)/_.scale}}function s(g,_){_=_||o;var R=t.createEvent(P({},_.payload,_.data,{isTouch:_.isTouch}));return t.fire("drag."+g,R)===!1?!1:t.fire(_.prefix+"."+g,R)}function c(g){var _=g.filter(function(R){return r.get(R.id)});_.length&&n.select(_)}function u(g,_){var R=o.payload,w=o.displacement,M=o.globalStart,b=jt(g),L=Vt(b,M),N=o.localStart,z=a(b),W=Vt(z,N);if(!o.active&&(_||Bu(L)>o.threshold)){if(P(R,{x:en(N.x+w.x),y:en(N.y+w.y),dx:0,dy:0},{originalEvent:g}),s("start")===!1)return C();o.active=!0,o.keepSelection||(R.previousSelection=n.get(),n.select(null)),o.cursor&&En(o.cursor),e.addMarker(e.getRootElement(),Ta)}er(g),o.active&&(P(R,{x:en(z.x+w.x),y:en(z.y+w.y),dx:en(W.x),dy:en(W.y)},{originalEvent:g}),s("move"))}function f(g){var _,R=!0;o.active&&(g&&(o.payload.originalEvent=g,er(g)),R=s("end")),R===!1&&s("rejected"),_=E(R!==!0),s("ended",_)}function l(){C()}function d(g){st("Escape",g)&&(be(g),C())}function p(g){var _;o.active&&(_=dr(t),setTimeout(_,400),be(g)),f(g)}function m(g){u(g)}function x(g){var _=o.payload;_.hoverGfx=g.gfx,_.hover=g.element,s("hover")}function y(g){s("out");var _=o.payload;_.hoverGfx=null,_.hover=null}function C(g){var _;if(o){var R=o.active;t.off("error",l);try{R&&s("cancel")}finally{_=E(g)}R&&s("canceled",_)}}function E(g){var _;t.off("error",l);try{s("cleanup")}finally{_=h(g)}return _}function h(g){var _,R;lr(),o.trapClick?R=p:R=f,D.unbind(document,"mousemove",u),D.unbind(document,"dragstart",be),D.unbind(document,"selectstart",be),D.unbind(document,"mousedown",R,!0),D.unbind(document,"mouseup",R,!0),D.unbind(document,"keyup",d),D.unbind(document,"touchstart",m,!0),D.unbind(document,"touchcancel",C,!0),D.unbind(document,"touchmove",u,!0),D.unbind(document,"touchend",f,!0),t.off("element.hover",x),t.off("element.out",y),e.removeMarker(e.getRootElement(),Ta);var w=o.payload.previousSelection;return _=o,o=null,g!==!1&&w&&!n.get().length&&c(w),_}function v(g,_,R,w){o&&C(!1),typeof _=="string"&&(w=R,R=_,_=null),w=P({},i,w||{});var M=w.data||{},b,L,N,z,W;if(w.trapClick?z=p:z=f,g?(b=ae(g)||g,L=jt(g),er(g),b.type==="dragstart"&&be(b)):(b=null,L={x:0,y:0}),N=a(L),_||(_=N),W=Hu(b),o=P({prefix:R,data:M,payload:{},globalStart:L,displacement:Vt(_,N),localStart:N,isTouch:W},w),t.once("error",Nu,l),w.manual||(W?(D.bind(document,"touchstart",m,!0),D.bind(document,"touchcancel",C,!0),D.bind(document,"touchmove",u,!0),D.bind(document,"touchend",f,!0)):(D.bind(document,"mousemove",u),D.bind(document,"dragstart",be),D.bind(document,"selectstart",be),D.bind(document,"mousedown",z,!0),D.bind(document,"mouseup",z,!0)),D.bind(document,"keyup",d),t.on("element.hover",x),t.on("element.out",y)),s("init")===!1)return C(),!1;w.autoActivate&&u(g,!0)}t.on("diagram.destroy",C),this.init=v,this.move=u,this.hover=x,this.out=y,this.end=f,this.cancel=C,this.context=function(){return o},this.setOptions=function(g){P(i,g)}}hr.$inject=["eventBus","canvas","selection","elementRegistry"];var Nt={__depends__:[_a,at],dragging:["type",hr]};function ue(t){this._counter=0,this._prefix=(t?t+"-":"")+Math.floor(Math.random()*1e9)+"-"}ue.prototype.next=function(){return this._prefix+ ++this._counter};var zu=new ue("ps"),Fu=["marker-start","marker-mid","marker-end"],$u=["circle","ellipse","line","path","polygon","polyline","path","rect"];function Ht(t,e,n,r){this._elementRegistry=t,this._canvas=n,this._styles=r}Ht.$inject=["elementRegistry","eventBus","canvas","styles"];Ht.prototype.cleanUp=function(){console.warn("PreviewSupport#cleanUp is deprecated and will be removed in future versions. You do not need to manually clean up previews anymore. cf. https://github.com/bpmn-io/diagram-js/pull/906")};Ht.prototype.getGfx=function(t){return this._elementRegistry.getGraphics(t)};Ht.prototype.addDragger=function(t,e,n,r="djs-dragger"){n=n||this.getGfx(t);var i=fi(n);return this._cloneMarkers(ve(i),r),O(i,this._styles.cls(r,[])),T(e,i),O(i,"data-preview-support-element-id",t.id),i};Ht.prototype.addFrame=function(t,e){var n=A("rect",{class:"djs-resize-overlay",width:t.width,height:t.height,x:t.x,y:t.y});return T(e,n),O(n,"data-preview-support-element-id",t.id),n};Ht.prototype._cloneMarkers=function(t,e="djs-dragger",n=t){var r=this;t.childNodes&&t.childNodes.forEach(i=>{r._cloneMarkers(i,e,n)}),Ku(t)&&Fu.forEach(function(i){if(O(t,i)){var o=Gu(t,i,r._canvas.getContainer());o&&r._cloneMarker(n,t,o,i,e)}})};Ht.prototype._cloneMarker=function(t,e,n,r,i="djs-dragger"){var o=[n.id,i,zu.next()].join("-"),a=rt("marker#"+n.id,t);t=t||this._canvas._svg;var s=a||fi(n);s.id=o,j(s).add(i);var c=rt(":scope > defs",t);c||(c=A("defs"),T(t,c)),T(c,s);var u=Wu(s.id);O(e,r,u)};function Gu(t,e,n){var r=Vu(O(t,e));return rt("marker#"+r,n||document)}function Vu(t){return t.match(/url\(['"]?#([^'"]*)['"]?\)/)[1]}function Wu(t){return"url(#"+t+")"}function Ku(t){return $u.indexOf(t.nodeName)!==-1}var nn={__init__:["previewSupport"],previewSupport:["type",Ht]};var Yu=500,qu=1250,Uu=1500,gr=Math.round;function Zu(t){return{x:t.x+gr(t.width/2),y:t.y+gr(t.height/2)}}function mr(t,e,n,r,i){function o(s,c,u,f){return i.allowed("elements.move",{shapes:s,delta:c,position:u,target:f})}t.on("shape.move.start",Uu,function(s){var c=s.context,u=s.shape,f=r.get().slice();f.indexOf(u)===-1&&(f=[u]),f=Xu(f),P(c,{shapes:f,validatedShapes:f,shape:u})}),t.on("shape.move.start",qu,function(s){var c=s.context,u=c.validatedShapes,f;if(f=c.canExecute=o(u),!f)return!1}),t.on("shape.move.move",Yu,function(s){var c=s.context,u=c.validatedShapes,f=s.hover,l={x:s.dx,y:s.dy},d={x:s.x,y:s.y},p;if(p=o(u,l,d,f),c.delta=l,c.canExecute=p,p===null){c.target=null;return}c.target=f}),t.on("shape.move.end",function(s){var c=s.context,u=c.delta,f=c.canExecute,l=f==="attach",d=c.shapes;if(f===!1)return!1;u.x=gr(u.x),u.y=gr(u.y),!(u.x===0&&u.y===0)&&n.moveElements(d,u,c.target,{primaryShape:c.shape,attach:l})}),t.on("element.mousedown",function(s){if(wt(s)){var c=ae(s);if(!c)throw new Error("must supply DOM mousedown event");return a(c,s.element)}});function a(s,c,u,f){if(U(u)&&(f=u,u=!1),!(c.waypoints||!c.parent)&&!j(s.target).has("djs-hit-no-move")){var l=Zu(c),d=e.init(s,l,"shape.move",{cursor:"grabbing",autoActivate:u,data:{shape:c,context:f||{}}});if(d!==!1)return!0}}this.start=a}mr.$inject=["eventBus","dragging","modeling","selection","rules"];function Xu(t){var e=de(t,"id");return Q(t,function(n){for(;n=n.parent;)if(e[n.id])return!1;return!0})}var ka=499,Ci="djs-dragging",Ia="drop-ok",La="drop-not-ok",ja="new-parent",Da="attach-ok";function vr(t,e,n,r){function i(c){var u=o(c),f=Qu(u);return f}function o(c){var u=oo(c),f=u.flatMap(p=>(p.incoming||[]).concat(p.outgoing||[])),l=u.concat(f),d=[...new Set(l)];return d}function a(c,u){[Da,Ia,La,ja].forEach(function(f){f===u?e.addMarker(c,f):e.removeMarker(c,f)})}function s(c,u,f){r.addDragger(u,c.dragGroup),f&&e.addMarker(u,Ci),c.allDraggedElements?c.allDraggedElements.push(u):c.allDraggedElements=[u]}t.on("shape.move.start",ka,function(c){var u=c.context,f=u.shapes,l=u.allDraggedElements,d=i(f);if(!u.dragGroup){var p=A("g");O(p,n.cls("djs-drag-group",["no-events"]));var m=e.getActiveLayer();T(m,p),u.dragGroup=p}d.forEach(function(x){r.addDragger(x,u.dragGroup)}),l?l=Ki([l,o(f)]):l=o(f),S(l,function(x){e.addMarker(x,Ci)}),u.allDraggedElements=l,u.differentParents=Ju(f)}),t.on("shape.move.move",ka,function(c){var u=c.context,f=u.dragGroup,l=u.target,d=u.shape.parent,p=u.canExecute;l&&(p==="attach"?a(l,Da):u.canExecute&&d&&l.id!==d.id?a(l,ja):a(l,u.canExecute?Ia:La)),it(f,c.dx,c.dy)}),t.on(["shape.move.out","shape.move.cleanup"],function(c){var u=c.context,f=u.target;f&&a(f,null)}),t.on("shape.move.cleanup",function(c){var u=c.context,f=u.allDraggedElements,l=u.dragGroup;S(f,function(d){e.removeMarker(d,Ci)}),l&&V(l)}),this.makeDraggable=s}vr.$inject=["eventBus","canvas","styles","previewSupport"];function Qu(t){var e=new Set;t.forEach(function(r){e.add(r.id)});var n=Q(t,function(r){return $(r)?e.has(r.source.id)&&e.has(r.target.id):!0});return n}function Ju(t){return Ui(de(t,function(e){return e.parent&&e.parent.id}))!==1}var Na={__depends__:[Fe,at,ur,dt,Nt,nn],__init__:["move","movePreview"],move:["type",mr],movePreview:["type",vr]};function xr(t,e,n,r){function i(a,s){return r.allowed("connection.create",{source:a,target:s})}function o(a,s){return i(s,a)}t.on("connect.hover",function(a){var s=a.context,c=s.start,u=a.hover,f;if(s.hover=u,f=s.canExecute=i(c,u),!Le(f)){if(f!==!1){s.source=c,s.target=u;return}f=s.canExecute=o(c,u),!Le(f)&&f!==!1&&(s.source=u,s.target=c)}}),t.on(["connect.out","connect.cleanup"],function(a){var s=a.context;s.hover=null,s.source=null,s.target=null,s.canExecute=!1}),t.on("connect.end",function(a){var s=a.context,c=s.canExecute,u=s.connectionStart,f={x:a.x,y:a.y},l=s.source,d=s.target;if(!c)return!1;var p=null,m={connectionStart:yr(s)?f:u,connectionEnd:yr(s)?u:f};U(c)&&(p=c),s.connection=n.connect(l,d,p,m)}),this.start=function(a,s,c,u){U(c)||(u=c,c=Z(s)),e.init(a,"connect",{autoActivate:u,data:{shape:s,context:{start:s,connectionStart:c}}})}}xr.$inject=["eventBus","dragging","modeling","rules"];function yr(t){var e=t.hover,n=t.source,r=t.target;return e&&n&&e===n&&n!==r}var tf=1100,ef=900,Ha="connect-ok",Ba="connect-not-ok";function _r(t,e,n){var r=t.get("connectionPreview",!1);r&&e.on("connect.move",function(i){var o=i.context,a=o.canExecute,s=o.hover,c=o.source,u=o.start,f=o.startPosition,l=o.target,d=o.connectionStart||f,p=o.connectionEnd||{x:i.x,y:i.y},m=d,x=p;yr(o)&&(m=p,x=d),r.drawPreview(o,a,{source:c||u,target:l||s,connectionStart:m,connectionEnd:x})}),e.on("connect.hover",ef,function(i){var o=i.context,a=i.hover,s=o.canExecute;s!==null&&n.addMarker(a,s?Ha:Ba)}),e.on(["connect.out","connect.cleanup"],tf,function(i){var o=i.hover;o&&(n.removeMarker(o,Ha),n.removeMarker(o,Ba))}),r&&e.on("connect.cleanup",function(i){r.cleanUp(i.context)})}_r.$inject=["injector","eventBus","canvas"];var za={__depends__:[at,dt,Nt],__init__:["connectPreview"],connect:["type",xr],connectPreview:["type",_r]};var nf="drop-ok",Fa="drop-not-ok",$a="attach-ok",Ga="new-parent",Va="create",rf=2e3;function wr(t,e,n,r,i){function o(c,u,f,l,d){if(!u)return!1;c=Q(c,function(E){var h=E.labelTarget;return!E.parent&&!(It(E)&&c.indexOf(h)!==-1)});var p=mt(c,function(E){return!$(E)}),m=!1,x=!1,y=!1;Ka(c)&&(m=i.allowed("shape.attach",{position:f,shape:p,target:u})),m||(Ka(c)?y=i.allowed("shape.create",{position:f,shape:p,source:l,target:u}):y=i.allowed("elements.create",{elements:c,position:f,target:u}));var C=d.connectionTarget;return y||m?(p&&l&&(x=i.allowed("connection.create",{source:C===l?p:l,target:C===l?l:p,hints:{targetParent:u,targetAttach:m}})),{attach:m,connect:x}):y===null||m===null?null:!1}function a(c,u){[$a,nf,Fa,Ga].forEach(function(f){f===u?t.addMarker(c,f):t.removeMarker(c,f)})}n.on(["create.move","create.hover"],function(c){var u=c.context,f=u.elements,l=c.hover,d=u.source,p=u.hints||{};if(!l){u.canExecute=!1,u.target=null;return}Wa(c);var m={x:c.x,y:c.y},x=u.canExecute=l&&o(f,l,m,d,p);l&&x!==null&&(u.target=l,x&&x.attach?a(l,$a):a(l,x?Ga:Fa))}),n.on(["create.end","create.out","create.cleanup"],function(c){var u=c.hover;u&&a(u,null)}),n.on("create.end",function(c){var u=c.context,f=u.source,l=u.shape,d=u.elements,p=u.target,m=u.canExecute,x=m&&m.attach,y=m&&m.connect,C=u.hints||{};if(m===!1||!p)return!1;Wa(c);var E={x:c.x,y:c.y};y?l=r.appendShape(f,l,E,p,{attach:x,connection:y===!0?{}:y,connectionTarget:C.connectionTarget}):(d=r.createElements(d,E,p,P({},C,{attach:x})),l=mt(d,function(h){return!$(h)})),P(u,{elements:d,shape:l}),P(c,{elements:d,shape:l})});function s(){var c=e.context();c&&c.prefix===Va&&e.cancel()}n.on("create.init",function(){n.on("elements.changed",s),n.once(["create.cancel","create.end"],rf,function(){n.off("elements.changed",s)})}),this.start=function(c,u,f){I(u)||(u=[u]);var l=mt(u,function(m){return!$(m)});if(l){f=P({elements:u,hints:{},shape:l},f||{}),S(u,function(m){H(m.x)||(m.x=0),H(m.y)||(m.y=0)});var d=Q(u,function(m){return!m.hidden}),p=nt(d);S(u,function(m){$(m)&&(m.waypoints=xt(m.waypoints,function(x){return{x:x.x-p.x-p.width/2,y:x.y-p.y-p.height/2}})),P(m,{x:m.x-p.x-p.width/2,y:m.y-p.y-p.height/2})}),e.init(c,Va,{cursor:"grabbing",autoActivate:!0,data:{shape:l,elements:u,context:f}})}}}wr.$inject=["canvas","dragging","eventBus","modeling","rules"];function Wa(t){var e=t.context,n=e.createConstraints;n&&(n.left&&(t.x=Math.max(t.x,n.left)),n.right&&(t.x=Math.min(t.x,n.right)),n.top&&(t.y=Math.max(t.y,n.top)),n.bottom&&(t.y=Math.min(t.y,n.bottom)))}function Ka(t){return t&&t.length===1&&!$(t[0])}var of=750;function Er(t,e,n,r,i){function o(a){var s=A("g");O(s,i.cls("djs-drag-group",["no-events"]));var c=A("g");return a.forEach(function(u){var f;u.hidden||(u.waypoints?(f=n._createContainer("connection",c),n.drawConnection(ve(f),u)):(f=n._createContainer("shape",c),n.drawShape(ve(f),u),it(f,u.x,u.y)),r.addDragger(u,s,f))}),s}e.on("create.move",of,function(a){var s=a.hover,c=a.context,u=c.elements,f=c.dragGroup;f||(f=c.dragGroup=o(u));var l;s?(f.parentNode||(l=t.getActiveLayer(),T(l,f)),it(f,a.x,a.y)):V(f)}),e.on("create.cleanup",function(a){var s=a.context,c=s.dragGroup;c&&V(c)})}Er.$inject=["canvas","eventBus","graphicsFactory","previewSupport","styles"];var Ya={__depends__:[Nt,nn,dt,at],__init__:["create","createPreview"],create:["type",wr],createPreview:["type",Er]};var Sr=Math.round,af=Math.max;function sf(t,e){var n=t.x,r=t.y;return[["M",n,r],["m",0,-e],["a",e,e,0,1,1,0,2*e],["a",e,e,0,1,1,0,-2*e],["z"]]}function cf(t){var e=[];return t.forEach(function(n,r){e.push([r===0?"M":"L",n.x,n.y])}),e}var qa=10;function uf(t,e){var n,r;for(n=0;r=t[n];n++)if(ee(r,e)<=qa)return{point:t[n],bendpoint:!0,index:n};return null}function ff(t,e){var n=ln(sf(e,qa),cf(t)),r=n[0],i=n[n.length-1],o;return r?r!==i?r.segment2!==i.segment2?(o=af(r.segment2,i.segment2)-1,{point:t[o],bendpoint:!0,index:o}):{point:{x:Sr(r.x+i.x)/2,y:Sr(r.y+i.y)/2},index:r.segment2}:{point:{x:Sr(r.x),y:Sr(r.y)},index:r.segment2}:null}function Ua(t,e){return uf(t,e)||ff(t,e)}function lf(t){return Math.sqrt(Math.pow(t.x,2)+Math.pow(t.y,2))}function df(t,e,n){var r=[{n:t[0]-n[0],lambda:e[0]},{n:t[1]-n[1],lambda:e[1]}],i=r[0].n*e[0]+r[1].n*e[1],o=r[0].lambda*e[0]+r[1].lambda*e[1];return-i/o}function bi(t,e){var n=e[0],r=e[1],i={x:r.x-n.x,y:r.y-n.y},o=df([n.x,n.y],[i.x,i.y],[t.x,t.y]);return{x:n.x+o*i.x,y:n.y+o*i.y}}function Za(t,e){var n=bi(t,e),r={x:n.x-t.x,y:n.y-t.y};return lf(r)}var Ri="djs-bendpoint",Mi="djs-segment-dragger";function pf(t,e){var n=jt(e),r=t._container.getBoundingClientRect(),i;i={x:r.left,y:r.top};var o=t.viewbox();return{x:o.x+(n.x-i.x)/o.scale,y:o.y+(n.y-i.y)/o.scale}}function Sn(t,e,n){var r=pf(t,n),i=Ua(e,r);return i}function Cn(t,e){var n=A("g");j(n).add(Ri),T(t,n);var r=A("circle");O(r,{cx:0,cy:0,r:4}),j(r).add("djs-visual"),T(n,r);var i=A("circle");return O(i,{cx:0,cy:0,r:10}),j(i).add("djs-hit"),T(n,i),e&&j(n).add(e),n}function hf(t,e,n,r){var i=A("g");T(t,i);var o=18,a=6,s=11,c=gf(e,n,r),u=a+s,f=A("rect");O(f,{x:-o/2,y:-a/2,rx:3,width:o,height:a}),j(f).add("djs-visual"),T(i,f);var l=A("rect");return O(l,{x:-c/2,y:-u/2,width:c,height:u}),j(l).add("djs-hit"),T(i,l),Wo(i,r==="v"?90:0,0,0),i}function br(t,e,n){var r=A("g"),i=un(e,n),o=_t(e,n);return T(t,r),hf(r,e,n,o),j(r).add(Mi),j(r).add(o==="h"?"horizontal":"vertical"),it(r,i.x,i.y),r}function Cr(t){return Math.abs(Math.round(t*2/3))}function Xa(t,e){var n=mf(t,e);return bi(t,n)}function gf(t,e,n){var r=e.x-t.x,i=e.y-t.y;return Cr(n==="h"?r:i)}function mf(t,e){for(var n=e.waypoints,r=1/0,i,o=0;o<n.length-1;o++){var a=n[o],s=n[o+1],c=Za(t,[a,s]);c<r&&(r=c,i=o)}return[n[i],n[i+1]]}function Rr(t){return CSS.escape(t)}function Mr(t,e,n,r,i){function o(h,v,g){var _=h.index,R=h.point,w,M,b,L,N,z;return _<=0||h.bendpoint?!1:(w=v[_-1],M=v[_],b=un(w,M),L=_t(w,M),N=Math.abs(R.x-b.x),z=Math.abs(R.y-b.y),L&&N<=g&&z<=g)}function a(h,v){var g=h.waypoints,_,R,w,M;return v.index<=0||v.bendpoint||(_={start:g[v.index-1],end:g[v.index]},R=_t(_.start,_.end),!R)?null:(R==="h"?w=_.end.x-_.start.x:w=_.end.y-_.start.y,M=Cr(w)/2,M)}function s(h,v){var g=v.waypoints,_=Sn(e,g,h),R;if(_){R=a(v,_);var w;if(o(_,g,R)?w=i.start(h,v,_.index):w=r.start(h,v,_.index,!_.bendpoint),w!==!1)return!0}}function c(h,v,g){D.bind(h,v,function(_){n.triggerMouseEvent(v,_,g),_.stopPropagation()})}function u(h,v){var g=e.getLayer("overlays"),_=rt('.djs-bendpoints[data-element-id="'+Rr(h.id)+'"]',g);return!_&&v&&(_=A("g"),O(_,{"data-element-id":h.id}),j(_).add("djs-bendpoints"),T(g,_),c(_,"mousedown",h),c(_,"click",h),c(_,"dblclick",h)),_}function f(h,v){return rt('.djs-segment-dragger[data-segment-idx="'+h+'"]',v)}function l(h,v){v.waypoints.forEach(function(g,_){var R=Cn(h);T(h,R),it(R,g.x,g.y)}),Cn(h,"floating")}function d(h,v){for(var g=v.waypoints,_,R,w,M=1;M<g.length;M++)_=g[M-1],R=g[M],_t(_,R)&&(w=br(h,_,R),O(w,{"data-segment-idx":M}),c(w,"mousemove",v))}function p(h){S(cn("."+Ri,h),function(v){V(v)})}function m(h){S(cn("."+Mi,h),function(v){V(v)})}function x(h){var v=u(h);return v||(v=u(h,!0),l(v,h),d(v,h)),v}function y(h){var v=u(h);v&&(m(v),p(v),d(v,h),l(v,h))}function C(h,v){var g=rt(".floating",h),_=v.point;g&&(it(g,_.x,_.y),j(g).add("positioned"))}function E(h,v,g){var _=f(v.index,h),R=g[v.index-1],w=g[v.index],M=v.point,b=un(R,w),L=_t(R,w),N,z;_&&(N=vf(_),z={x:M.x-b.x,y:M.y-b.y},L==="v"&&(z={x:z.y,y:z.x}),it(N,z.x,z.y))}t.on("connection.changed",function(h){y(h.element)}),t.on("connection.remove",function(h){var v=u(h.element);v&&V(v)}),t.on("element.marker.update",function(h){var v=h.element,g;v.waypoints&&(g=x(v),h.add?j(g).add(h.marker):j(g).remove(h.marker))}),t.on("element.mousemove",function(h){var v=h.element,g=v.waypoints,_,R;if(g){if(_=u(v,!0),R=Sn(e,g,h.originalEvent),!R)return;C(_,R),R.bendpoint||E(_,R,g)}}),t.on("element.mousedown",function(h){if(wt(h)){var v=h.originalEvent,g=h.element;if(g.waypoints)return s(v,g)}}),t.on("selection.changed",function(h){var v=h.newSelection,g=v[0];g&&g.waypoints&&x(g)}),t.on("element.hover",function(h){var v=h.element;v.waypoints&&x(v)}),t.on("element.out",function(h){var v=h.element;if(v.waypoints){var g=u(v);if(g){var _=rt(".floating",g);_&&j(_).remove("positioned")}}}),t.on("element.updateId",function(h){var v=h.element,g=h.newId;if(v.waypoints){var _=u(v);_&&O(_,{"data-element-id":g})}}),this.addHandles=x,this.updateHandles=y,this.getBendpointsContainer=u,this.getSegmentDragger=f}Mr.$inject=["eventBus","canvas","interactionEvents","bendpointMove","connectionSegmentMove"];function vf(t){return rt(".djs-visual",t)}var Qa=Math.round,Re="reconnectStart",Me="reconnectEnd",bn="updateWaypoints";function Mn(t,e,n,r,i,o){this._injector=t,this.start=function(a,s,c,u){var f=n.getGraphics(s),l=s.source,d=s.target,p=s.waypoints,m;!u&&c===0?m=Re:!u&&c===p.length-1?m=Me:m=bn;var x=m===bn?"connection.updateWaypoints":"connection.reconnect",y=i.allowed(x,{connection:s,source:l,target:d});if(y===!1&&(y=i.allowed(x,{connection:s,source:d,target:l})),y!==!1)return r.init(a,"bendpoint.move",{data:{connection:s,connectionGfx:f,context:{allowed:y,bendpointIndex:c,connection:s,source:l,target:d,insert:u,type:m}}})},e.on("bendpoint.move.hover",function(a){var s=a.context,c=s.connection,u=c.source,f=c.target,l=a.hover,d=s.type;s.hover=l;var p;if(l){var m=d===bn?"connection.updateWaypoints":"connection.reconnect";if(p=s.allowed=i.allowed(m,{connection:c,source:d===Re?l:u,target:d===Me?l:f}),p){s.source=d===Re?l:u,s.target=d===Me?l:f;return}p===!1&&(p=s.allowed=i.allowed(m,{connection:c,source:d===Me?l:f,target:d===Re?l:u})),p&&(s.source=d===Me?l:f,s.target=d===Re?l:u)}}),e.on(["bendpoint.move.out","bendpoint.move.cleanup"],function(a){var s=a.context,c=s.type;s.hover=null,s.source=null,s.target=null,c!==bn&&(s.allowed=!1)}),e.on("bendpoint.move.end",function(a){var s=a.context,c=s.allowed,u=s.bendpointIndex,f=s.connection,l=s.insert,d=f.waypoints.slice(),p=s.source,m=s.target,x=s.type,y=s.hints||{},C={x:Qa(a.x),y:Qa(a.y)};if(!c)return!1;x===bn?(l?d.splice(u,0,C):d[u]=C,y.bendpointMove={insert:l,bendpointIndex:u},d=this.cropWaypoints(f,d),o.updateWaypoints(f,Mo(d),y)):(x===Re?(y.docking="source",Rn(s)&&(y.docking="target",y.newWaypoints=d.reverse())):x===Me&&(y.docking="target",Rn(s)&&(y.docking="source",y.newWaypoints=d.reverse())),o.reconnect(f,p,m,C,y))},this)}Mn.$inject=["injector","eventBus","canvas","dragging","rules","modeling"];Mn.prototype.cropWaypoints=function(t,e){var n=this._injector.get("connectionDocking",!1);if(!n)return e;var r=t.waypoints;return t.waypoints=e,t.waypoints=n.getCroppedWaypoints(t),e=t.waypoints,t.waypoints=r,e};function Rn(t){var e=t.hover,n=t.source,r=t.target,i=t.type;if(i===Re)return e&&r&&e===r&&n!==r;if(i===Me)return e&&n&&e===n&&n!==r}var yf="reconnectStart",xf="reconnectEnd",Ja="updateWaypoints",Pn="connect-ok",Pr="connect-not-ok",ts="connect-hover",es="djs-updating",ns="djs-dragging",rs=1100;function Or(t,e,n,r){this._injector=e;var i=e.get("connectionPreview",!1);n.on("bendpoint.move.start",function(o){var a=o.context,s=a.bendpointIndex,c=a.connection,u=a.insert,f=c.waypoints,l=f.slice();a.waypoints=f,u&&l.splice(s,0,{x:o.x,y:o.y}),c.waypoints=l;var d=a.draggerGfx=Cn(r.getLayer("overlays"));j(d).add("djs-dragging"),r.addMarker(c,ns),r.addMarker(c,es)}),n.on("bendpoint.move.hover",function(o){var a=o.context,s=a.allowed,c=a.hover,u=a.type;if(c){if(r.addMarker(c,ts),u===Ja)return;s?(r.removeMarker(c,Pr),r.addMarker(c,Pn)):s===!1&&(r.removeMarker(c,Pn),r.addMarker(c,Pr))}}),n.on(["bendpoint.move.out","bendpoint.move.cleanup"],rs,function(o){var a=o.context,s=a.hover,c=a.target;s&&(r.removeMarker(s,ts),r.removeMarker(s,c?Pn:Pr))}),n.on("bendpoint.move.move",function(o){var a=o.context,s=a.allowed,c=a.bendpointIndex,u=a.draggerGfx,f=a.hover,l=a.type,d=a.connection,p=d.source,m=d.target,x=d.waypoints.slice(),y={x:o.x,y:o.y},C=a.hints||{},E={};i&&(C.connectionStart&&(E.connectionStart=C.connectionStart),C.connectionEnd&&(E.connectionEnd=C.connectionEnd),l===yf?Rn(a)?(E.connectionEnd=E.connectionEnd||y,E.source=m,E.target=f||p,x=x.reverse()):(E.connectionStart=E.connectionStart||y,E.source=f||p,E.target=m):l===xf?Rn(a)?(E.connectionStart=E.connectionStart||y,E.source=f||m,E.target=p,x=x.reverse()):(E.connectionEnd=E.connectionEnd||y,E.source=p,E.target=f||m):(E.noCropping=!0,E.noLayout=!0,x[c]=y),l===Ja&&(x=t.cropWaypoints(d,x)),E.waypoints=x,i.drawPreview(a,s,E)),it(u,o.x,o.y)},this),n.on(["bendpoint.move.end","bendpoint.move.cancel"],rs,function(o){var a=o.context,s=a.connection,c=a.draggerGfx,u=a.hover,f=a.target,l=a.waypoints;s.waypoints=l,V(c),r.removeMarker(s,es),r.removeMarker(s,ns),u&&(r.removeMarker(u,Pn),r.removeMarker(u,f?Pn:Pr)),i&&i.cleanUp(a)})}Or.$inject=["bendpointMove","injector","eventBus","canvas"];var is="connect-hover",os="djs-updating";function as(t,e,n){return Pi(t,e,t[e]+n)}function Pi(t,e,n){return{x:e==="x"?n:t.x,y:e==="y"?n:t.y}}function _f(t,e,n,r){var i=Math.max(e[r],n[r]),o=Math.min(e[r],n[r]),a=20,s=Math.min(Math.max(o+a,t[r]),i-a);return Pi(e,r,s)}function cs(t){return t==="x"?"y":"x"}function ss(t,e,n){var r,i;return t.original?t.original:(r=Z(e),i=cs(n),Pi(t,i,r[i]))}function Ar(t,e,n,r,i,o){var a=t.get("connectionDocking",!1);this.start=function(l,d,p){var m,x=n.getGraphics(d),y=p-1,C=p,E=d.waypoints,h=E[y],v=E[C],g=Sn(n,E,l),_,R,w;if(_=_t(h,v),!!_)return R=_==="v"?"x":"y",y===0&&(h=ss(h,d.source,R)),C===E.length-1&&(v=ss(v,d.target,R)),g?w=g.point:w={x:(h.x+v.x)/2,y:(h.y+v.y)/2},m={connection:d,segmentStartIndex:y,segmentEndIndex:C,segmentStart:h,segmentEnd:v,axis:R,dragPosition:w},r.init(l,w,"connectionSegment.move",{cursor:R==="x"?"resize-ew":"resize-ns",data:{connection:d,connectionGfx:x,context:m}})};function s(l,d){if(!a)return d;var p=l.waypoints,m;return l.waypoints=d,m=a.getCroppedWaypoints(l),l.waypoints=p,m}function c(l){i.update("connection",l.connection,l.connectionGfx)}function u(l,d,p){var m=l.newWaypoints,x=l.segmentStartIndex+d,y=m[x],C=l.segmentEndIndex+d,E=m[C],h=cs(l.axis),v=_f(p,y,E,h);it(l.draggerGfx,v.x,v.y)}function f(l,d){var p=0,m=l.filter(function(x,y){return Ne(l[y-1],l[y+1],x)?(p=y<=d?p-1:p,!1):!0});return{waypoints:m,segmentOffset:p}}e.on("connectionSegment.move.start",function(l){var d=l.context,p=l.connection,m=n.getLayer("overlays");d.originalWaypoints=p.waypoints.slice(),d.draggerGfx=br(m,d.segmentStart,d.segmentEnd),j(d.draggerGfx).add("djs-dragging"),n.addMarker(p,os)}),e.on("connectionSegment.move.move",function(l){var d=l.context,p=d.connection,m=d.segmentStartIndex,x=d.segmentEndIndex,y=d.segmentStart,C=d.segmentEnd,E=d.axis,h=d.originalWaypoints.slice(),v=as(y,E,l["d"+E]),g=as(C,E,l["d"+E]),_=h.length,R=0;h[m]=v,h[x]=g;var w,M;m<2&&(w=Lt(p.source,v),m===1?w==="intersect"&&(h.shift(),h[0]=v,R--):w!=="intersect"&&(h.unshift(y),R++)),x>_-3&&(M=Lt(p.target,g),x===_-2?M==="intersect"&&(h.pop(),h[h.length-1]=g):M!=="intersect"&&h.push(C)),d.newWaypoints=p.waypoints=s(p,h),u(d,R,l),d.newSegmentStartIndex=m+R,c(l)}),e.on("connectionSegment.move.hover",function(l){l.context.hover=l.hover,n.addMarker(l.hover,is)}),e.on(["connectionSegment.move.out","connectionSegment.move.cleanup"],function(l){var d=l.context.hover;d&&n.removeMarker(d,is)}),e.on("connectionSegment.move.cleanup",function(l){var d=l.context,p=d.connection;d.draggerGfx&&V(d.draggerGfx),n.removeMarker(p,os)}),e.on(["connectionSegment.move.cancel","connectionSegment.move.end"],function(l){var d=l.context,p=d.connection;p.waypoints=d.originalWaypoints,c(l)}),e.on("connectionSegment.move.end",function(l){var d=l.context,p=d.connection,m=d.newWaypoints,x=d.newSegmentStartIndex;m=m.map(function(g){return{original:g.original,x:Math.round(g.x),y:Math.round(g.y)}});var y=f(m,x),C=y.waypoints,E=s(p,C),h=y.segmentOffset,v={segmentMove:{segmentStartIndex:d.segmentStartIndex,newSegmentStartIndex:x+h}};o.updateWaypoints(p,E,v)})}Ar.$inject=["injector","eventBus","canvas","dragging","graphicsFactory","modeling"];var wf=Math.abs,us=Math.round;function fs(t,e,n){n=n===void 0?10:n;var r,i;for(r=0;r<e.length;r++)if(i=e[r],wf(i-t)<=n)return i}function ls(t){return{x:t.x,y:t.y}}function ds(t){return{x:t.x+t.width,y:t.y+t.height}}function Pe(t,e){return!t||isNaN(t.x)||isNaN(t.y)?e:{x:us(t.x+t.width/2),y:us(t.y+t.height/2)}}function Kt(t,e){var n=t.snapped;return n?typeof e=="string"?n[e]:n.x&&n.y:!1}function pt(t,e,n){if(typeof e!="string")throw new Error("axis must be in [x, y]");if(typeof n!="number"&&n!==!1)throw new Error("value must be Number or false");var r,i=t[e],o=t.snapped=t.snapped||{};return n===!1?o[e]=!1:(o[e]=!0,r=n-i,t[e]+=r,t["d"+e]+=r),i}function Tr(t){return t.children||[]}var Ef=Math.abs,ps=Math.round,Oi=10;function kr(t){function e(o,a){if(I(o)){for(var s=o.length;s--;)if(Ef(o[s]-a)<=Oi)return o[s]}else{o=+o;var c=a%o;if(c<Oi)return a-c;if(c>o-Oi)return a-c+o}return a}function n(o,a){if(o.waypoints)return Xa(a,o);if(o.width)return{x:ps(o.width/2+o.x),y:ps(o.height/2+o.y)}}function r(o){var a=o.context,s=a.snapPoints,c=a.connection,u=c.waypoints,f=a.segmentStart,l=a.segmentStartIndex,d=a.segmentEnd,p=a.segmentEndIndex,m=a.axis;if(s)return s;var x=[u[l-1],f,d,u[p+1]];return l<2&&x.unshift(n(c.source,o)),p>u.length-3&&x.unshift(n(c.target,o)),a.snapPoints=s={horizontal:[],vertical:[]},S(x,function(y){y&&(y=y.original||y,m==="y"&&s.horizontal.push(y.y),m==="x"&&s.vertical.push(y.x))}),s}t.on("connectionSegment.move.move",1500,function(o){var a=r(o),s=o.x,c=o.y,u,f;if(a){u=e(a.vertical,s),f=e(a.horizontal,c);var l=s-u,d=c-f;P(o,{dx:o.dx-l,dy:o.dy-d,x:u,y:f}),(l||a.vertical.indexOf(s)!==-1)&&pt(o,"x",u),(d||a.horizontal.indexOf(c)!==-1)&&pt(o,"y",f)}});function i(o){var a=o.snapPoints,s=o.connection.waypoints,c=o.bendpointIndex;if(a)return a;var u=[s[c-1],s[c+1]];return o.snapPoints=a={horizontal:[],vertical:[]},S(u,function(f){f&&(f=f.original||f,a.horizontal.push(f.y),a.vertical.push(f.x))}),a}t.on(["connect.hover","connect.move","connect.end"],1500,function(o){var a=o.context,s=a.hover,c=s&&n(s,o);!$(s)||!c||!c.x||!c.y||(pt(o,"x",c.x),pt(o,"y",c.y))}),t.on(["bendpoint.move.move","bendpoint.move.end"],1500,function(o){var a=o.context,s=i(a),c=a.hover,u=c&&n(c,o),f=o.x,l=o.y,d,p;if(s){d=e(u?s.vertical.concat([u.x]):s.vertical,f),p=e(u?s.horizontal.concat([u.y]):s.horizontal,l);var m=f-d,x=l-p;P(o,{dx:o.dx-m,dy:o.dy-x,x:o.x-m,y:o.y-x}),(m||s.vertical.indexOf(f)!==-1)&&pt(o,"x",d),(x||s.horizontal.indexOf(l)!==-1)&&pt(o,"y",p)}})}kr.$inject=["eventBus"];var hs={__depends__:[Nt,dt],__init__:["bendpoints","bendpointSnapping","bendpointMovePreview"],bendpoints:["type",Mr],bendpointMove:["type",Mn],bendpointMovePreview:["type",Or],connectionSegmentMove:["type",Ar],bendpointSnapping:["type",kr]};var Lr=Math.max,jr=Math.min,Sf=20;function gs(t,e,n){var r=n.x,i=n.y,o={x:t.x,y:t.y,width:t.width,height:t.height};return e.indexOf("n")!==-1?(o.y=t.y+i,o.height=t.height-i):e.indexOf("s")!==-1&&(o.height=t.height+i),e.indexOf("e")!==-1?o.width=t.width+r:e.indexOf("w")!==-1&&(o.x=t.x+r,o.width=t.width-r),o}function Ir(t,e,n){var r=e[t],i=n.min&&n.min[t],o=n.max&&n.max[t];return H(i)&&(r=(/top|left/.test(t)?jr:Lr)(r,i)),H(o)&&(r=(/top|left/.test(t)?Lr:jr)(r,o)),r}function ms(t,e){if(!e)return t;var n=ct(t);return _i({top:Ir("top",n,e),right:Ir("right",n,e),bottom:Ir("bottom",n,e),left:Ir("left",n,e)})}function vs(t,e,n,r){var i=ct(e),o={top:/n/.test(t)?i.bottom-n.height:i.top,left:/w/.test(t)?i.right-n.width:i.left,bottom:/s/.test(t)?i.top+n.height:i.bottom,right:/e/.test(t)?i.left+n.width:i.right},a=r?ct(r):o,s={top:jr(o.top,a.top),left:jr(o.left,a.left),bottom:Lr(o.bottom,a.bottom),right:Lr(o.right,a.right)};return _i(s)}function On(t,e){return typeof t<"u"?t:Sf}function Cf(t,e){var n,r,i,o;return typeof e=="object"?(n=On(e.left),r=On(e.right),i=On(e.top),o=On(e.bottom)):n=r=i=o=On(e),{x:t.x-n,y:t.y-i,width:t.width+n+r,height:t.height+i+o}}function bf(t){return!(t.waypoints||t.type==="label")}function ys(t,e){var n;if(t.length===void 0?n=Q(t.children,bf):n=t,n.length)return Cf(nt(n),e)}var xs=10;function Oe(t,e,n,r){this._dragging=r,this._rules=e;var i=this;function o(c,u){var f=c.shape,l=c.direction,d=c.resizeConstraints,p;c.delta=u,p=gs(f,l,u),c.newBounds=ms(p,d),c.canExecute=i.canResize(c)}function a(c){var u=c.resizeConstraints,f=c.minBounds;u===void 0&&(f===void 0&&(f=i.computeMinResizeBox(c)),c.resizeConstraints={min:ct(f)})}function s(c){var u=c.shape,f=c.canExecute,l=c.newBounds;if(f){if(l=bo(l),!Rf(u,l))return;n.resizeShape(u,l)}}t.on("resize.start",function(c){a(c.context)}),t.on("resize.move",function(c){var u={x:c.dx,y:c.dy};o(c.context,u)}),t.on("resize.end",function(c){s(c.context)})}Oe.prototype.canResize=function(t){var e=this._rules,n=pe(t,["newBounds","shape","delta","direction"]);return e.allowed("shape.resize",n)};Oe.prototype.activate=function(t,e,n){var r=this._dragging,i,o;if(typeof n=="string"&&(n={direction:n}),i=P({shape:e},n),o=i.direction,!o)throw new Error("must provide a direction (n|w|s|e|nw|se|ne|sw)");r.init(t,Ai(e,o),"resize",{autoActivate:!0,cursor:Mf(o),data:{shape:e,context:i}})};Oe.prototype.computeMinResizeBox=function(t){var e=t.shape,n=t.direction,r,i;return r=t.minDimensions||{width:xs,height:xs},i=ys(e,t.childrenBoxPadding),vs(n,e,r,i)};Oe.$inject=["eventBus","rules","modeling","dragging"];function Rf(t,e){return t.x!==e.x||t.y!==e.y||t.width!==e.width||t.height!==e.height}function Ai(t,e){var n=Z(t),r=ct(t),i={x:n.x,y:n.y};return e.indexOf("n")!==-1?i.y=r.top:e.indexOf("s")!==-1&&(i.y=r.bottom),e.indexOf("e")!==-1?i.x=r.right:e.indexOf("w")!==-1&&(i.x=r.left),i}function Mf(t){var e="resize-";return t==="n"||t==="s"?e+"ns":t==="e"||t==="w"?e+"ew":t==="nw"||t==="se"?e+"nwse":e+"nesw"}var _s="djs-resizing",ws="resize-not-ok",Pf=500;function Dr(t,e,n){function r(o){var a=o.shape,s=o.newBounds,c=o.frame;c||(c=o.frame=n.addFrame(a,e.getActiveLayer()),e.addMarker(a,_s)),s.width>5&&O(c,{x:s.x,width:s.width}),s.height>5&&O(c,{y:s.y,height:s.height}),o.canExecute?j(c).remove(ws):j(c).add(ws)}function i(o){var a=o.shape,s=o.frame;s&&V(o.frame),e.removeMarker(a,_s)}t.on("resize.move",Pf,function(o){r(o.context)}),t.on("resize.cleanup",function(o){i(o.context)})}Dr.$inject=["eventBus","canvas","previewSupport"];var Nr=-6,Hr=8,Br=20,An="djs-resizer",Of=["n","w","s","e","nw","ne","se","sw"];function Bt(t,e,n,r){this._resize=r,this._canvas=e;var i=this;t.on("selection.changed",function(o){var a=o.newSelection;i.removeResizers(),a.length===1&&S(a,Xt(i.addResizer,i))}),t.on("shape.changed",function(o){var a=o.element;n.isSelected(a)&&(i.removeResizers(),i.addResizer(a))})}Bt.prototype.makeDraggable=function(t,e,n){var r=this._resize;function i(o){wt(o)&&r.activate(o,t,n)}D.bind(e,"mousedown",i),D.bind(e,"touchstart",i)};Bt.prototype._createResizer=function(t,e,n,r){var i=this._getResizersParent(),o=Af(r),a=A("g");j(a).add(An),j(a).add(An+"-"+t.id),j(a).add(An+"-"+r),T(i,a);var s=A("rect");O(s,{x:-Hr/2+o.x,y:-Hr/2+o.y,rx:2,width:Hr,height:Hr}),j(s).add(An+"-visual"),T(a,s);var c=A("rect");return O(c,{x:-Br/2+o.x,y:-Br/2+o.y,width:Br,height:Br}),j(c).add(An+"-hit"),T(a,c),Vo(a,e,n),a};Bt.prototype.createResizer=function(t,e){var n=Ai(t,e),r=this._createResizer(t,n.x,n.y,e);this.makeDraggable(t,r,e)};Bt.prototype.addResizer=function(t){var e=this;$(t)||S(Of,function(n){e._resize.canResize({shape:t,direction:n})&&e.createResizer(t,n)})};Bt.prototype.removeResizers=function(){var t=this._getResizersParent();zn(t)};Bt.prototype._getResizersParent=function(){return this._canvas.getLayer("resizers")};Bt.$inject=["eventBus","canvas","selection","resize"];function Af(t){var e={x:0,y:0};return t.indexOf("e")!==-1?e.x=-Nr:t.indexOf("w")!==-1&&(e.x=Nr),t.indexOf("s")!==-1?e.y=-Nr:t.indexOf("n")!==-1&&(e.y=Nr),e}var Es={__depends__:[dt,Nt,nn],__init__:["resize","resizePreview","resizeHandles"],resize:["type",Oe],resizePreview:["type",Dr],resizeHandles:["type",Bt]};function Pt(){this._targets={},this._snapOrigins={},this._snapLocations=[],this._defaultSnaps={}}Pt.prototype.getSnapOrigin=function(t){return this._snapOrigins[t]};Pt.prototype.setSnapOrigin=function(t,e){this._snapOrigins[t]=e,this._snapLocations.indexOf(t)===-1&&this._snapLocations.push(t)};Pt.prototype.addDefaultSnap=function(t,e){var n=this._defaultSnaps[t];n||(n=this._defaultSnaps[t]=[]),n.push(e)};Pt.prototype.getSnapLocations=function(){return this._snapLocations};Pt.prototype.setSnapLocations=function(t){this._snapLocations=t};Pt.prototype.pointsForTarget=function(t){var e=t.id||t,n=this._targets[e];return n||(n=this._targets[e]=new zr,n.initDefaults(this._defaultSnaps)),n};function zr(){this._snapValues={}}zr.prototype.add=function(t,e){var n=this._snapValues[t];n||(n=this._snapValues[t]={x:[],y:[]}),n.x.indexOf(e.x)===-1&&n.x.push(e.x),n.y.indexOf(e.y)===-1&&n.y.push(e.y)};zr.prototype.snap=function(t,e,n,r){var i=this._snapValues[e];return i&&fs(t[n],i[n],r)};zr.prototype.initDefaults=function(t){var e=this;S(t||{},function(n,r){S(n,function(i){e.add(r,i)})})};var Tf=1250;function Ae(t,e,n){var r=this;this._elementRegistry=t,e.on(["create.start","shape.move.start"],function(i){r.initSnap(i)}),e.on(["create.move","create.end","shape.move.move","shape.move.end"],Tf,function(i){var o=i.context,a=o.shape,s=o.snapContext,c=o.target;if(!(i.originalEvent&&J(i.originalEvent))&&!(Kt(i)||!c)){var u=s.pointsForTarget(c);u.initialized||(u=r.addSnapTargetPoints(u,a,c),u.initialized=!0),n.snap(i,u)}}),e.on(["create.cleanup","shape.move.cleanup"],function(){n.hide()})}Ae.$inject=["elementRegistry","eventBus","snapping"];Ae.prototype.initSnap=function(t){var e=this._elementRegistry,n=t.context,r=n.shape,i=n.snapContext;i||(i=n.snapContext=new Pt);var o;e.get(r.id)?o=Pe(r,t):o={x:t.x+Pe(r).x,y:t.y+Pe(r).y};var a={x:o.x-r.width/2,y:o.y-r.height/2},s={x:o.x+r.width/2,y:o.y+r.height/2};return i.setSnapOrigin("mid",{x:o.x-t.x,y:o.y-t.y}),It(r)||(i.setSnapOrigin("top-left",{x:a.x-t.x,y:a.y-t.y}),i.setSnapOrigin("bottom-right",{x:s.x-t.x,y:s.y-t.y})),i};Ae.prototype.addSnapTargetPoints=function(t,e,n){var r=this.getSnapTargets(e,n);return S(r,function(i){if(It(i)){It(e)&&t.add("mid",Pe(i));return}if($(i)){if(i.waypoints.length<3)return;var o=i.waypoints.slice(1,-1);S(o,function(a){t.add("mid",a)});return}t.add("mid",Pe(i))}),!H(e.x)||!H(e.y)||this._elementRegistry.get(e.id)&&t.add("mid",Pe(e)),t};Ae.prototype.getSnapTargets=function(t,e){return Tr(e).filter(function(n){return!kf(n)})};function kf(t){return!!t.hidden}var If=1250;function Te(t,e){var n=this;t.on(["resize.start"],function(r){n.initSnap(r)}),t.on(["resize.move","resize.end"],If,function(r){var i=r.context,o=i.shape,a=o.parent,s=i.direction,c=i.snapContext;if(!(r.originalEvent&&J(r.originalEvent))&&!Kt(r)){var u=c.pointsForTarget(a);u.initialized||(u=n.addSnapTargetPoints(u,o,a,s),u.initialized=!0),Df(s)&&pt(r,"x",r.x),Nf(s)&&pt(r,"y",r.y),e.snap(r,u)}}),t.on(["resize.cleanup"],function(){e.hide()})}Te.prototype.initSnap=function(t){var e=t.context,n=e.shape,r=e.direction,i=e.snapContext;i||(i=e.snapContext=new Pt);var o=Ss(n,r);return i.setSnapOrigin("corner",{x:o.x-t.x,y:o.y-t.y}),i};Te.prototype.addSnapTargetPoints=function(t,e,n,r){var i=this.getSnapTargets(e,n);return S(i,function(o){t.add("corner",ds(o)),t.add("corner",ls(o))}),t.add("corner",Ss(e,r)),t};Te.$inject=["eventBus","snapping"];Te.prototype.getSnapTargets=function(t,e){return Tr(e).filter(function(n){return!Lf(n,t)&&!$(n)&&!jf(n)&&!It(n)})};function Ss(t,e){var n=Z(t),r=ct(t),i={x:n.x,y:n.y};return e.indexOf("n")!==-1?i.y=r.top:e.indexOf("s")!==-1&&(i.y=r.bottom),e.indexOf("e")!==-1?i.x=r.right:e.indexOf("w")!==-1&&(i.x=r.left),i}function Lf(t,e){return t.host===e}function jf(t){return!!t.hidden}function Df(t){return t==="n"||t==="s"}function Nf(t){return t==="e"||t==="w"}var Hf=7,Bf=1e3;function zt(t){this._canvas=t,this._asyncHide=on(Xt(this.hide,this),Bf)}zt.$inject=["canvas"];zt.prototype.snap=function(t,e){var n=t.context,r=n.snapContext,i=r.getSnapLocations(),o={x:Kt(t,"x"),y:Kt(t,"y")};S(i,function(a){var s=r.getSnapOrigin(a),c={x:t.x+s.x,y:t.y+s.y};if(S(["x","y"],function(u){var f;o[u]||(f=e.snap(c,a,u,Hf),f!==void 0&&(o[u]={value:f,originValue:f-s[u]}))}),o.x&&o.y)return!1}),this.showSnapLine("vertical",o.x&&o.x.value),this.showSnapLine("horizontal",o.y&&o.y.value),S(["x","y"],function(a){var s=o[a];U(s)&&pt(t,a,s.originValue)})};zt.prototype._createLine=function(t){var e=this._canvas.getLayer("snap"),n=A("path");return O(n,{d:"M0,0 L0,0"}),j(n).add("djs-snap-line"),T(e,n),{update:function(r){H(r)?t==="horizontal"?O(n,{d:"M-100000,"+r+" L+100000,"+r,display:""}):O(n,{d:"M "+r+",-100000 L "+r+", +100000",display:""}):O(n,{display:"none"})}}};zt.prototype._createSnapLines=function(){this._snapLines={horizontal:this._createLine("horizontal"),vertical:this._createLine("vertical")}};zt.prototype.showSnapLine=function(t,e){var n=this.getSnapLine(t);n&&n.update(e),this._asyncHide()};zt.prototype.getSnapLine=function(t){return this._snapLines||this._createSnapLines(),this._snapLines[t]};zt.prototype.hide=function(){S(this._snapLines,function(t){t.update()})};var Cs={__init__:["createMoveSnapping","resizeSnapping","snapping"],createMoveSnapping:["type",Ae],resizeSnapping:["type",Te],snapping:["type",zt]};var zf=1e3;function tt(t){this._eventBus=t}tt.$inject=["eventBus"];function Ff(t,e){return function(n){return t.call(e||null,n.context,n.command,n)}}tt.prototype.on=function(t,e,n,r,i,o){if((X(e)||H(e))&&(o=i,i=r,r=n,n=e,e=null),X(n)&&(o=i,i=r,r=n,n=zf),U(i)&&(o=i,i=!1),!X(r))throw new Error("handlerFn must be a function");I(t)||(t=[t]);var a=this._eventBus;S(t,function(s){var c=["commandStack",s,e].filter(function(u){return u}).join(".");a.on(c,n,i?Ff(r,o):r,o)})};tt.prototype.canExecute=Yt("canExecute");tt.prototype.preExecute=Yt("preExecute");tt.prototype.preExecuted=Yt("preExecuted");tt.prototype.execute=Yt("execute");tt.prototype.executed=Yt("executed");tt.prototype.postExecute=Yt("postExecute");tt.prototype.postExecuted=Yt("postExecuted");tt.prototype.revert=Yt("revert");tt.prototype.reverted=Yt("reverted");function Yt(t){return function(n,r,i,o,a){(X(n)||H(n))&&(a=o,o=i,i=r,r=n,n=null),this.on(n,t,r,i,o,a)}}function qt(t,e){tt.call(this,t),this._gridSnapping=e;var n=this;this.preExecute("shape.resize",function(r){var i=r.context,o=i.hints||{},a=o.autoResize;if(a){var s=i.shape,c=i.newBounds;je(a)?i.newBounds=n.snapComplex(c,a):i.newBounds=n.snapSimple(s,c)}})}qt.$inject=["eventBus","gridSnapping","modeling"];ht(qt,tt);qt.prototype.snapSimple=function(t,e){var n=this._gridSnapping;return e.width=n.snapValue(e.width,{min:e.width}),e.height=n.snapValue(e.height,{min:e.height}),e.x=t.x+t.width/2-e.width/2,e.y=t.y+t.height/2-e.height/2,e};qt.prototype.snapComplex=function(t,e){return/w|e/.test(e)&&(t=this.snapHorizontally(t,e)),/n|s/.test(e)&&(t=this.snapVertically(t,e)),t};qt.prototype.snapHorizontally=function(t,e){var n=this._gridSnapping,r=/w/.test(e),i=/e/.test(e),o={};return o.width=n.snapValue(t.width,{min:t.width}),i&&(r?(o.x=n.snapValue(t.x,{max:t.x}),o.width+=n.snapValue(t.x-o.x,{min:t.x-o.x})):t.x=t.x+t.width-o.width),P(t,o),t};qt.prototype.snapVertically=function(t,e){var n=this._gridSnapping,r=/n/.test(e),i=/s/.test(e),o={};return o.height=n.snapValue(t.height,{min:t.height}),r&&(i?(o.y=n.snapValue(t.y,{max:t.y}),o.height+=n.snapValue(t.y-o.y,{min:t.y-o.y})):t.y=t.y+t.height-o.height),P(t,o),t};var $f=2e3;function Fr(t,e){t.on(["spaceTool.move","spaceTool.end"],$f,function(n){var r=n.context;if(r.initialized){var i=r.axis,o;i==="x"?(o=e.snapValue(n.dx),n.x=n.x+o-n.dx,n.dx=o):(o=e.snapValue(n.dy),n.y=n.y+o-n.dy,n.dy=o)}})}Fr.$inject=["eventBus","gridSnapping"];var bs={__init__:["gridSnappingResizeBehavior","gridSnappingSpaceToolBehavior"],gridSnappingResizeBehavior:["type",qt],gridSnappingSpaceToolBehavior:["type",Fr]};var Tn=10;function $r(t,e,n){return n||(n="round"),Math[n](t/e)*e}var Gf=1200,Vf=800;function Ft(t,e,n){var r=!n||n.active!==!1;this._eventBus=e;var i=this;e.on("diagram.init",Vf,function(){i.setActive(r)}),e.on(["create.move","create.end","bendpoint.move.move","bendpoint.move.end","connect.move","connect.end","connectionSegment.move.move","connectionSegment.move.end","resize.move","resize.end","shape.move.move","shape.move.end"],Gf,function(o){var a=o.originalEvent;if(!(!i.active||a&&J(a))){var s=o.context,c=s.gridSnappingContext;c||(c=s.gridSnappingContext={}),["x","y"].forEach(function(u){var f={},l=Kf(o,u,t);l&&(f.offset=l);var d=Wf(o,u);d&&P(f,d),Kt(o,u)||i.snapEvent(o,u,f)})}})}Ft.prototype.snapEvent=function(t,e,n){var r=this.snapValue(t[e],n);pt(t,e,r)};Ft.prototype.getGridSpacing=function(){return Tn};Ft.prototype.snapValue=function(t,e){var n=0;e&&e.offset&&(n=e.offset),t+=n,t=$r(t,Tn);var r,i;return e&&e.min&&(r=e.min,H(r)&&(r=$r(r+n,Tn,"ceil"),t=Math.max(t,r))),e&&e.max&&(i=e.max,H(i)&&(i=$r(i+n,Tn,"floor"),t=Math.min(t,i))),t-=n,t};Ft.prototype.isActive=function(){return this.active};Ft.prototype.setActive=function(t){this.active=t,this._eventBus.fire("gridSnapping.toggle",{active:t})};Ft.prototype.toggleActive=function(){this.setActive(!this.active)};Ft.$inject=["elementRegistry","eventBus","config.gridSnapping"];function Wf(t,e){var n=t.context,r=n.createConstraints,i=n.resizeConstraints||{},o=n.gridSnappingContext,a=o.snapConstraints;if(a&&a[e])return a[e];a||(a=o.snapConstraints={}),a[e]||(a[e]={});var s=n.direction;r&&(Gr(e)?(a.x.min=r.left,a.x.max=r.right):(a.y.min=r.top,a.y.max=r.bottom));var c=i.min,u=i.max;return c&&(Gr(e)?Ms(s)?a.x.max=c.left:a.x.min=c.right:Rs(s)?a.y.max=c.top:a.y.min=c.bottom),u&&(Gr(e)?Ms(s)?a.x.min=u.left:a.x.max=u.right:Rs(s)?a.y.min=u.top:a.y.max=u.bottom),a[e]}function Kf(t,e,n){var r=t.context,i=t.shape,o=r.gridSnappingContext,a=o.snapLocation,s=o.snapOffset;return s&&H(s[e])||(s||(s=o.snapOffset={}),H(s[e])||(s[e]=0),!i)||(n.get(i.id)||(Gr(e)?s[e]+=i[e]+i.width/2:s[e]+=i[e]+i.height/2),!a)||(e==="x"?/left/.test(a)?s[e]-=i.width/2:/right/.test(a)&&(s[e]+=i.width/2):/top/.test(a)?s[e]-=i.height/2:/bottom/.test(a)&&(s[e]+=i.height/2)),s[e]}function Gr(t){return t==="x"}function Rs(t){return t.indexOf("n")!==-1}function Ms(t){return t.indexOf("w")!==-1}var Ps={__depends__:[bs],__init__:["gridSnapping"],gridSnapping:["type",Ft]};var Vr="keyboard.keydown",Yf="keyboard.keyup",qf=1e3,Os="Keyboard binding is now implicit; explicit binding to an element got removed. For more information, see https://github.com/bpmn-io/diagram-js/issues/661";function et(t,e){var n=this;this._config=t=t||{},this._eventBus=e,this._keydownHandler=this._keydownHandler.bind(this),this._keyupHandler=this._keyupHandler.bind(this),e.on("diagram.destroy",function(){n._fire("destroy"),n.unbind()}),t.bindTo&&console.error("unsupported configuration <keyboard.bindTo>",new Error(Os));var r=t&&t.bind!==!1;e.on("canvas.init",function(i){n._target=i.svg,r&&n.bind(),n._fire("init")})}et.$inject=["config.keyboard","eventBus"];et.prototype._keydownHandler=function(t){this._keyHandler(t,Vr)};et.prototype._keyupHandler=function(t){this._keyHandler(t,Yf)};et.prototype._keyHandler=function(t,e){var n;if(!this._isEventIgnored(t)){var r={keyEvent:t};n=this._eventBus.fire(e||Vr,r),n&&t.preventDefault()}};et.prototype._isEventIgnored=function(t){return!1};et.prototype.bind=function(t){t&&console.error("unsupported argument <node>",new Error(Os)),this.unbind(),t=this._node=this._target,D.bind(t,"keydown",this._keydownHandler),D.bind(t,"keyup",this._keyupHandler),this._fire("bind")};et.prototype.getBinding=function(){return this._node};et.prototype.unbind=function(){var t=this._node;t&&(this._fire("unbind"),D.unbind(t,"keydown",this._keydownHandler),D.unbind(t,"keyup",this._keyupHandler)),this._node=null};et.prototype._fire=function(t){this._eventBus.fire("keyboard."+t,{node:this._node})};et.prototype.addListener=function(t,e,n){X(t)&&(n=e,e=t,t=qf),this._eventBus.on(n||Vr,t,e)};et.prototype.removeListener=function(t,e){this._eventBus.off(e||Vr,t)};et.prototype.hasModifier=Ca;et.prototype.isCmd=J;et.prototype.isShift=pr;et.prototype.isKey=st;var Uf=500;function kn(t,e){var n=this;t.on("editorActions.init",Uf,function(r){var i=r.editorActions;n.registerBindings(e,i)})}kn.$inject=["eventBus","keyboard"];kn.prototype.registerBindings=function(t,e){function n(r,i){e.isRegistered(r)&&t.addListener(i)}n("undo",function(r){var i=r.keyEvent;if(Oa(i))return e.trigger("undo"),!0}),n("redo",function(r){var i=r.keyEvent;if(Aa(i))return e.trigger("redo"),!0}),n("copy",function(r){var i=r.keyEvent;if(ba(i))return e.trigger("copy"),!0}),n("paste",function(r){var i=r.keyEvent;if(Ra(i))return e.trigger("paste"),!0}),n("duplicate",function(r){var i=r.keyEvent;if(Ma(i))return e.trigger("duplicate"),!0}),n("cut",function(r){var i=r.keyEvent;if(Pa(i))return e.trigger("cut"),!0}),n("stepZoom",function(r){var i=r.keyEvent;if(st(["+","="],i)&&J(i))return e.trigger("stepZoom",{value:1}),!0}),n("stepZoom",function(r){var i=r.keyEvent;if(st("-",i)&&J(i))return e.trigger("stepZoom",{value:-1}),!0}),n("zoom",function(r){var i=r.keyEvent;if(st("0",i)&&J(i))return e.trigger("zoom",{value:1}),!0}),n("removeSelection",function(r){var i=r.keyEvent;if(st(["Backspace","Delete"],i))return e.trigger("removeSelection"),!0})};var Wr={__init__:["keyboard","keyboardBindings"],keyboard:["type",et],keyboardBindings:["type",kn]};var Zf={moveSpeed:1,moveSpeedAccelerated:10},Xf=1500,Qf="left",Jf="up",tl="right",el="down",nl={ArrowLeft:Qf,ArrowUp:Jf,ArrowRight:tl,ArrowDown:el},rl={left:function(t){return{x:-t,y:0}},up:function(t){return{x:0,y:-t}},right:function(t){return{x:t,y:0}},down:function(t){return{x:0,y:t}}};function Kr(t,e,n,r,i){var o=this;this._config=P({},Zf,t||{}),e.addListener(Xf,function(a){var s=a.keyEvent,c=nl[s.key];if(c&&!e.isCmd(s)){var u=e.isShift(s);return o.moveSelection(c,u),!0}}),this.moveSelection=function(a,s){var c=i.get();if(c.length){var u=this._config[s?"moveSpeedAccelerated":"moveSpeed"],f=rl[a](u),l=r.allowed("elements.move",{shapes:c,hints:{keyboardMove:!0}});l&&n.moveElements(c,f)}}}Kr.$inject=["config.keyboardMoveSelection","keyboard","modeling","rules","selection"];var As={__depends__:[Wr,at],__init__:["keyboardMoveSelection"],keyboardMoveSelection:["type",Kr]};var il=new ue("ov"),ol=500;function Y(t,e,n,r){this._eventBus=e,this._canvas=n,this._elementRegistry=r,this._ids=il,this._overlayDefaults=P({show:null,scale:!0},t&&t.defaults),this._overlays={},this._overlayContainers=[],this._overlayRoot=al(n.getContainer()),this._init()}Y.$inject=["config.overlays","eventBus","canvas","elementRegistry"];Y.prototype.get=function(t){if(je(t)&&(t={id:t}),je(t.element)&&(t.element=this._elementRegistry.get(t.element)),t.element){var e=this._getOverlayContainer(t.element,!0);return e?t.type?Q(e.overlays,ii({type:t.type})):e.overlays.slice():[]}else return t.type?Q(this._overlays,ii({type:t.type})):t.id?this._overlays[t.id]:null};Y.prototype.add=function(t,e,n){if(U(e)&&(n=e,e=null),t.id||(t=this._elementRegistry.get(t)),!n.position)throw new Error("must specifiy overlay position");if(!n.html)throw new Error("must specifiy overlay html");if(!t)throw new Error("invalid element specified");var r=this._ids.next();return n=P({},this._overlayDefaults,n,{id:r,type:e,element:t,html:n.html}),this._addOverlay(n),r};Y.prototype.remove=function(t){var e=this.get(t)||[];I(e)||(e=[e]);var n=this;S(e,function(r){var i=n._getOverlayContainer(r.element,!0);if(r&&(qn(r.html),qn(r.htmlContainer),delete r.htmlContainer,delete r.element,delete n._overlays[r.id]),i){var o=i.overlays.indexOf(r);o!==-1&&i.overlays.splice(o,1)}})};Y.prototype.isShown=function(){return this._overlayRoot.style.display!=="none"};Y.prototype.show=function(){Yr(this._overlayRoot)};Y.prototype.hide=function(){Yr(this._overlayRoot,!1)};Y.prototype.clear=function(){this._overlays={},this._overlayContainers=[],Yn(this._overlayRoot)};Y.prototype._updateOverlayContainer=function(t){var e=t.element,n=t.html,r=e.x,i=e.y;if(e.waypoints){var o=nt(e);r=o.x,i=o.y}Ts(n,r,i),At(t.html,"data-container-id",e.id)};Y.prototype._updateOverlay=function(t){var e=t.position,n=t.htmlContainer,r=t.element,i=e.left,o=e.top;if(e.right!==void 0){var a;r.waypoints?a=nt(r).width:a=r.width,i=e.right*-1+a}if(e.bottom!==void 0){var s;r.waypoints?s=nt(r).height:s=r.height,o=e.bottom*-1+s}Ts(n,i||0,o||0),this._updateOverlayVisibilty(t,this._canvas.viewbox())};Y.prototype._createOverlayContainer=function(t){var e=vt('<div class="djs-overlays" />');ge(e,{position:"absolute"}),this._overlayRoot.appendChild(e);var n={html:e,element:t,overlays:[]};return this._updateOverlayContainer(n),this._overlayContainers.push(n),n};Y.prototype._updateRoot=function(t){var e=t.scale||1,n="matrix("+[e,0,0,e,-1*t.x*e,-1*t.y*e].join(",")+")";ks(this._overlayRoot,n)};Y.prototype._getOverlayContainer=function(t,e){var n=mt(this._overlayContainers,function(r){return r.element===t});return!n&&!e?this._createOverlayContainer(t):n};Y.prototype._addOverlay=function(t){var e=t.id,n=t.element,r=t.html,i,o;r.get&&r.constructor.prototype.jquery&&(r=r.get(0)),je(r)&&(r=vt(r)),o=this._getOverlayContainer(n),i=vt('<div class="djs-overlay" data-overlay-id="'+e+'">'),ge(i,{position:"absolute"}),i.appendChild(r),t.type&&bt(i).add("djs-overlay-"+t.type);var a=this._canvas.findRoot(n),s=this._canvas.getRootElement();Yr(i,a===s),t.htmlContainer=i,o.overlays.push(t),o.html.appendChild(i),this._overlays[e]=t,this._updateOverlay(t),this._updateOverlayVisibilty(t,this._canvas.viewbox())};Y.prototype._updateOverlayVisibilty=function(t,e){var n=t.show,r=this._canvas.findRoot(t.element),i=n&&n.minZoom,o=n&&n.maxZoom,a=t.htmlContainer,s=this._canvas.getRootElement(),c=!0;(r!==s||n&&(gt(i)&&i>e.scale||gt(o)&&o<e.scale))&&(c=!1),Yr(a,c),this._updateOverlayScale(t,e)};Y.prototype._updateOverlayScale=function(t,e){var n=t.scale,r,i,o=t.htmlContainer,a,s="";n!==!0&&(n===!1?(r=1,i=1):(r=n.min,i=n.max),gt(r)&&e.scale<r&&(a=(1/e.scale||1)*r),gt(i)&&e.scale>i&&(a=(1/e.scale||1)*i)),gt(a)&&(s="scale("+a+","+a+")"),ks(o,s)};Y.prototype._updateOverlaysVisibilty=function(t){var e=this;S(this._overlays,function(n){e._updateOverlayVisibilty(n,t)})};Y.prototype._init=function(){var t=this._eventBus,e=this;function n(r){e._updateRoot(r),e._updateOverlaysVisibilty(r),e.show()}t.on("canvas.viewbox.changing",function(r){e.hide()}),t.on("canvas.viewbox.changed",function(r){n(r.viewbox)}),t.on(["shape.remove","connection.remove"],function(r){var i=r.element,o=e.get({element:i});S(o,function(c){e.remove(c.id)});var a=e._getOverlayContainer(i);if(a){qn(a.html);var s=e._overlayContainers.indexOf(a);s!==-1&&e._overlayContainers.splice(s,1)}}),t.on("element.changed",ol,function(r){var i=r.element,o=e._getOverlayContainer(i,!0);o&&(S(o.overlays,function(a){e._updateOverlay(a)}),e._updateOverlayContainer(o))}),t.on("element.marker.update",function(r){var i=e._getOverlayContainer(r.element,!0);i&&bt(i.html)[r.add?"add":"remove"](r.marker)}),t.on("root.set",function(){e._updateOverlaysVisibilty(e._canvas.viewbox())}),t.on("diagram.clear",this.clear,this)};function al(t){var e=vt('<div class="djs-overlay-container" />');return ge(e,{position:"absolute",width:0,height:0}),t.insertBefore(e,t.firstChild),e}function Ts(t,e,n){ge(t,{left:e+"px",top:n+"px"})}function Yr(t,e){t.style.display=e===!1?"none":""}function ks(t,e){t.style["transform-origin"]="top left",["","-ms-","-webkit-"].forEach(function(n){t.style[n+"transform"]=e})}var Is={__init__:["overlays"],overlays:["type",Y]};var sl=new ue;function fe(t){this._scheduled={},t.on("diagram.destroy",()=>{Object.keys(this._scheduled).forEach(e=>{this.cancel(e)})})}fe.$inject=["eventBus"];fe.prototype.schedule=function(t,e=sl.next()){this.cancel(e);let n=this._schedule(t,e);return this._scheduled[e]=n,n.promise};fe.prototype._schedule=function(t,e){let n=cl();return{executionId:setTimeout(()=>{try{this._scheduled[e]=null;try{n.resolve(t())}catch(i){n.reject(i)}}catch(i){console.error("Scheduler#_schedule execution failed",i)}}),promise:n.promise}};fe.prototype.cancel=function(t){let e=this._scheduled[t];e&&(this._cancel(e),this._scheduled[t]=null)};fe.prototype._cancel=function(t){clearTimeout(t.executionId)};function cl(){let t={};return t.promise=new Promise((e,n)=>{t.resolve=e,t.reject=n}),t}var Ls={scheduler:["type",fe]};var ul="djs-element-hidden",qr=".entry",fl=1e3,js=8,ll=300;function G(t,e,n,r){this._canvas=t,this._elementRegistry=e,this._eventBus=n,this._scheduler=r,this._current=null,this._init()}G.$inject=["canvas","elementRegistry","eventBus","scheduler"];G.prototype._init=function(){var t=this;this._eventBus.on("selection.changed",function(e){var n=e.newSelection,r=n.length?n.length===1?n[0]:n:null;r?t.open(r,!0):t.close()}),this._eventBus.on("elements.changed",function(e){var n=e.elements,r=t._current;if(r){var i=r.target,o=I(i)?i:[i],a=o.filter(function(c){return n.includes(c)});if(a.length){t.close();var s=o.filter(function(c){return t._elementRegistry.get(c.id)});s.length&&t._updateAndOpen(s.length>1?s:s[0])}}}),this._eventBus.on("canvas.viewbox.changed",function(){t._updatePosition()}),this._eventBus.on("element.marker.update",function(e){if(t.isOpen()){var n=e.element,r=t._current,i=I(r.target)?r.target:[r.target];i.includes(n)&&t._updateVisibility()}}),this._container=this._createContainer()};G.prototype._createContainer=function(){var t=vt('<div class="djs-context-pad-parent"></div>');return this._canvas.getContainer().appendChild(t),t};G.prototype.registerProvider=function(t,e){e||(e=t,t=fl),this._eventBus.on("contextPad.getProviders",t,function(n){n.providers.push(e)})};G.prototype.getEntries=function(t){var e=this._getProviders(),n=I(t)?"getMultiElementContextPadEntries":"getContextPadEntries",r={};return S(e,function(i){if(X(i[n])){var o=i[n](t);X(o)?r=o(r):S(o,function(a,s){r[s]=a})}}),r};G.prototype.trigger=function(t,e,n){var r=this,i,o,a=e.delegateTarget||e.target;if(!a)return e.preventDefault();if(i=At(a,"data-action"),o=e.originalEvent||e,t==="mouseover"){this._timeout=setTimeout(function(){r._mouseout=r.triggerEntry(i,"hover",o,n)},ll);return}else if(t==="mouseout"){clearTimeout(this._timeout),this._mouseout&&(this._mouseout(),this._mouseout=null);return}return this.triggerEntry(i,t,o,n)};G.prototype.triggerEntry=function(t,e,n,r){if(this.isShown()){var i=this._current.target,o=this._current.entries,a=o[t];if(a){var s=a.action;if(this._eventBus.fire("contextPad.trigger",{entry:a,event:n})!==!1){if(X(s)){if(e==="click")return s(n,i,r)}else if(s[e])return s[e](n,i,r);n.preventDefault()}}}};G.prototype.open=function(t,e){if(!(!e&&this.isOpen(t))){var n=this._eventBus.fire("contextPad.open.allowed",{target:t});n!==!1&&(this.close(),this._updateAndOpen(t))}};G.prototype._getProviders=function(){var t=this._eventBus.createEvent({type:"contextPad.getProviders",providers:[]});return this._eventBus.fire(t),t.providers};G.prototype._updateAndOpen=function(t){var e=this.getEntries(t),n=this._createHtml(t),r;S(e,function(i,o){var a=i.group||"default",s=vt(i.html||'<div class="entry" draggable="true"></div>'),c;At(s,"data-action",o),c=rt("[data-group="+Rr(a)+"]",n),c||(c=vt('<div class="group"></div>'),At(c,"data-group",a),n.appendChild(c)),c.appendChild(s),i.className&&dl(s,i.className),i.title&&At(s,"title",i.title),i.imageUrl&&(r=vt("<img>"),At(r,"src",i.imageUrl),r.style.width="100%",r.style.height="100%",s.appendChild(r))}),bt(n).add("open"),this._current={entries:e,html:n,target:t},this._updatePosition(),this._updateVisibility(),this._eventBus.fire("contextPad.open",{current:this._current})};G.prototype._createHtml=function(t){var e=this,n=vt('<div class="djs-context-pad"></div>');return te.bind(n,qr,"click",function(r){e.trigger("click",r)}),te.bind(n,qr,"dragstart",function(r){e.trigger("dragstart",r)}),te.bind(n,qr,"mouseover",function(r){e.trigger("mouseover",r)}),te.bind(n,qr,"mouseout",function(r){e.trigger("mouseout",r)}),D.bind(n,"mousedown",function(r){r.stopPropagation()}),this._container.appendChild(n),this._eventBus.fire("contextPad.create",{target:t,pad:n}),n};G.prototype.getPad=function(t){console.warn(new Error("ContextPad#getPad is deprecated and will be removed in future library versions, cf. https://github.com/bpmn-io/diagram-js/pull/888"));let e;return this.isOpen()&&hl(this._current.target,t)?e=this._current.html:e=this._createHtml(t),{html:e}};G.prototype.close=function(){this.isOpen()&&(clearTimeout(this._timeout),this._container.innerHTML="",this._eventBus.fire("contextPad.close",{current:this._current}),this._current=null)};G.prototype.isOpen=function(t){var e=this._current;if(!e)return!1;if(!t)return!0;var n=e.target;return I(t)!==I(n)?!1:I(t)?t.length===n.length&&Zt(t,function(r){return n.includes(r)}):n===t};G.prototype.isShown=function(){return this.isOpen()&&bt(this._current.html).has("open")};G.prototype.show=function(){this.isOpen()&&(bt(this._current.html).add("open"),this._updatePosition(),this._eventBus.fire("contextPad.show",{current:this._current}))};G.prototype.hide=function(){this.isOpen()&&(bt(this._current.html).remove("open"),this._eventBus.fire("contextPad.hide",{current:this._current}))};G.prototype._getPosition=function(t){if(!I(t)&&$(t)){var e=this._canvas.viewbox(),n=pl(t),r=n.x*e.scale-e.x*e.scale,i=n.y*e.scale-e.y*e.scale;return{left:r+js*this._canvas.zoom(),top:i}}var o=this._canvas.getContainer(),a=o.getBoundingClientRect(),s=this._getTargetBounds(t);return{left:s.right-a.left+js*this._canvas.zoom(),top:s.top-a.top}};G.prototype._updatePosition=function(){let t=()=>{if(this.isOpen()){var e=this._current.html,n=this._getPosition(this._current.target);"x"in n&&"y"in n?(e.style.left=n.x+"px",e.style.top=n.y+"px"):["top","right","bottom","left"].forEach(function(r){r in n&&(e.style[r]=n[r]+"px")})}};this._scheduler.schedule(t,"ContextPad#_updatePosition")};G.prototype._updateVisibility=function(){let t=()=>{if(this.isOpen()){var e=this,n=this._current.target,r=I(n)?n:[n],i=r.some(function(o){return e._canvas.hasMarker(o,ul)});i?e.hide():e.show()}};this._scheduler.schedule(t,"ContextPad#_updateVisibility")};G.prototype._getTargetBounds=function(t){var e=this,n=I(t)?t:[t],r=n.map(function(i){return e._canvas.getGraphics(i)});return r.reduce(function(i,o){let a=o.getBoundingClientRect();return i.top=Math.min(i.top,a.top),i.right=Math.max(i.right,a.right),i.bottom=Math.max(i.bottom,a.bottom),i.left=Math.min(i.left,a.left),i.x=i.left,i.y=i.top,i.width=i.right-i.left,i.height=i.bottom-i.top,i},{top:1/0,right:-1/0,bottom:-1/0,left:1/0})};function dl(t,e){var n=bt(t);e=I(e)?e:e.split(/\s+/g),e.forEach(function(r){n.add(r)})}function pl(t){return t.waypoints[t.waypoints.length-1]}function hl(t,e){return t=I(t)?t:[t],e=I(e)?e:[e],t.length===e.length&&Zt(t,function(n){return e.includes(n)})}var Ds={__depends__:[Fe,Ls,Is],contextPad:["type",G]};function In(t){return Math.log(t)/Math.log(10)}function Ti(t,e){var n=In(t.min),r=In(t.max),i=Math.abs(n)+Math.abs(r);return i/e}function Ns(t,e){return Math.max(t.min,Math.min(t.max,e))}var gl=Math.sign||function(t){return t>=0?1:-1},ki={min:.2,max:4},Hs=10,ml=.1,vl=.75;function St(t,e,n){t=t||{},this._enabled=!1,this._canvas=n,this._container=n._container,this._handleWheel=Xt(this._handleWheel,this),this._totalDelta=0,this._scale=t.scale||vl;var r=this;e.on("canvas.mouseover",function(){r._init(t.enabled!==!1)}),e.on("canvas.mouseout",function(){r._init(!1)})}St.$inject=["config.zoomScroll","eventBus","canvas"];St.prototype.scroll=function(e){this._canvas.scroll(e)};St.prototype.reset=function(){this._canvas.zoom("fit-viewport")};St.prototype.zoom=function(e,n){var r=Ti(ki,Hs*2);this._totalDelta+=e,Math.abs(this._totalDelta)>ml&&(this._zoom(e,n,r),this._totalDelta=0)};St.prototype._handleWheel=function(e){if(this._enabled){var n=this._container;e.preventDefault();var r=e.ctrlKey||Zo()&&e.metaKey,i=e.shiftKey,o=-1*this._scale,a;if(r?o*=e.deltaMode===0?.02:.32:o*=e.deltaMode===0?1:16,r){var s=n.getBoundingClientRect(),c={x:e.clientX-s.left,y:e.clientY-s.top};a=Math.sqrt(Math.pow(e.deltaY,2)+Math.pow(e.deltaX,2))*gl(e.deltaY)*o,this.zoom(a,c)}else i?a={dx:o*e.deltaY,dy:0}:a={dx:o*e.deltaX,dy:o*e.deltaY},this.scroll(a)}};St.prototype.stepZoom=function(e,n){var r=Ti(ki,Hs);this._zoom(e,n,r)};St.prototype._zoom=function(t,e,n){var r=this._canvas,i=t>0?1:-1,o=In(r.zoom()),a=Math.round(o/n)*n;a+=n*i;var s=Math.pow(10,a);r.zoom(Ns(ki,s),e)};St.prototype.toggle=function(e){var n=this._container,r=this._handleWheel,i=this._enabled;return typeof e>"u"&&(e=!i),i!==e&&D[e?"bind":"unbind"](n,"wheel",r,!1),this._enabled=e,e};St.prototype._init=function(t){this.toggle(t)};var Bs={__init__:["zoomScroll"],zoomScroll:["type",St]};var yl=15;function Ur(t,e){var n;function r(s){return a(s.originalEvent)}t.on("canvas.focus.changed",function(s){s.focused?t.on("element.mousedown",500,r):t.off("element.mousedown",r)}),t.on("diagram.destroy",function(){n&&o()});function i(s){var c=n.start,u=n.button,f=jt(s),l=Vt(f,c);if(!n.dragging&&xl(l)>yl&&(n.dragging=!0,u===0&&dr(t),En("grab")),n.dragging){var d=n.last||n.start;l=Vt(f,d),e.scroll({dx:l.x,dy:l.y}),n.last=f}s.preventDefault()}function o(s){D.unbind(document,"mousemove",i),D.unbind(document,"mouseup",o),n=null,lr()}function a(s){if(!sn(s.target,".djs-draggable")){var c=s.button;if(!(c>=2||s.ctrlKey||s.shiftKey||s.altKey))return n={button:c,start:jt(s)},D.bind(document,"mousemove",i),D.bind(document,"mouseup",o),!0}}this.isActive=function(){return!!n}}Ur.$inject=["eventBus","canvas"];function xl(t){return Math.sqrt(Math.pow(t.x,2)+Math.pow(t.y,2))}var zs={__init__:["moveCanvas"],moveCanvas:["type",Ur]};function Fs(t){return P({original:t.point.original||t.point},t.actual)}function $t(t,e){this._elementRegistry=t,this._graphicsFactory=e}$t.$inject=["elementRegistry","graphicsFactory"];$t.prototype.getCroppedWaypoints=function(t,e,n){e=e||t.source,n=n||t.target;var r=this.getDockingPoint(t,e,!0),i=this.getDockingPoint(t,n),o=t.waypoints.slice(r.idx+1,i.idx);return o.unshift(Fs(r)),o.push(Fs(i)),o};$t.prototype.getDockingPoint=function(t,e,n){var r=t.waypoints,i,o,a;return i=n?0:r.length-1,o=r[i],a=this._getIntersection(e,t,n),{point:o,actual:a||o,idx:i}};$t.prototype._getIntersection=function(t,e,n){var r=this._getShapePath(t),i=this._getConnectionPath(e);return Ro(r,i,n)};$t.prototype._getConnectionPath=function(t){return this._graphicsFactory.getConnectionPath(t)};$t.prototype._getShapePath=function(t){return this._graphicsFactory.getShapePath(t)};$t.prototype._getGfx=function(t){return this._elementRegistry.getGraphics(t)};function ke(t){tt.call(this,t),this.init()}ke.$inject=["eventBus"];ht(ke,tt);ke.prototype.addRule=function(t,e,n){var r=this;typeof t=="string"&&(t=[t]),t.forEach(function(i){r.canExecute(i,e,function(o,a,s){return n(o)},!0)})};ke.prototype.init=function(){};var Zr=20,_l=5,Xr=Math.round,$s=20,wl={"h:h":20,"v:v":20,"h:v":-10,"v:h":-10};function El(t,e){return!{t:/top/,r:/right/,b:/bottom/,l:/left/,h:/./,v:/./}[e].test(t)}function Sl(t,e){return{t:/top/,r:/right/,b:/bottom/,l:/left/,h:/left|right/,v:/top|bottom/}[t].test(e)}function Ks(t,e,n){var r=Lt(e,t,_l),i=n.split(":")[0],o=Xr((e.x-t.x)/2+t.x),a=Xr((e.y-t.y)/2+t.y),s,c,u=Sl(i,r),f=/h|r|l/.test(i),l=!1,d=!1;return u?(s=f?{x:o,y:t.y}:{x:t.x,y:a},c=f?"h:h":"v:v"):(l=El(r,i),c=f?"h:v":"v:h",l?f?(d=a===t.y,s={x:t.x+Zr*(/l/.test(i)?-1:1),y:d?a+Zr:a}):(d=o===t.x,s={x:d?o+Zr:o,y:t.y+Zr*(/t/.test(i)?-1:1)}):s={x:o,y:a}),{waypoints:Ii(t,s,c).concat(s),directions:c,turnNextDirections:d}}function Cl(t,e,n){return Ks(t,e,n)}function bl(t,e,n){var r=Ks(e,t,Gs(n));return{waypoints:r.waypoints.slice().reverse(),directions:Gs(r.directions),turnNextDirections:r.turnNextDirections}}function Rl(t,e){var n=t.directions.split(":")[1],r=e.directions.split(":")[0];t.turnNextDirections&&(n=n=="h"?"v":"h"),e.turnNextDirections&&(r=r=="h"?"v":"h");var i=n+":"+r,o=Ii(t.waypoints[t.waypoints.length-1],e.waypoints[0],i);return{waypoints:o,directions:i}}function Gs(t){return t.split(":").reverse().join(":")}function Ml(t,e,n){var r=Xr((e.x-t.x)/2+t.x),i=Xr((e.y-t.y)/2+t.y);if(n==="h:v")return[{x:e.x,y:t.y}];if(n==="v:h")return[{x:t.x,y:e.y}];if(n==="h:h")return[{x:r,y:t.y},{x:r,y:e.y}];if(n==="v:v")return[{x:t.x,y:i},{x:e.x,y:i}];throw new Error("invalid directions: can only handle varians of [hv]:[hv]")}function Ii(t,e,n){if(n=n||"h:h",!jl(n))throw new Error("unknown directions: <"+n+">: must be specified as <start>:<end> with start/end in { h,v,t,r,b,l }");if(qs(n)){var r=Cl(t,e,n),i=bl(t,e,n),o=Rl(r,i);return[].concat(r.waypoints,o.waypoints,i.waypoints)}return Ml(t,e,n)}function Pl(t,e,n){var r=Ii(t,e,n);return r.unshift(t),r.push(e),Nl(r)}function Ol(t,e,n,r,i){var o=i&&i.preferredLayouts||[],a=Yi(o,"straight")[0]||"h:h",s=wl[a]||0,c=Lt(t,e,s),u=Ll(c,a);n=n||Z(t),r=r||Z(e);var f=u.split(":"),l=Ws(n,t,f[0],Dl(c)),d=Ws(r,e,f[1],c);return Pl(l,d,u)}function Ys(t,e,n,r,i,o){I(n)&&(i=n,o=r,n=Z(t),r=Z(e)),o=P({preferredLayouts:[]},o),i=i||[];var a=o.preferredLayouts,s=a.indexOf("straight")!==-1,c;return c=s&&Tl(t,e,n,r,o),c||(c=o.connectionEnd&&Il(e,t,r,i),c)||(c=o.connectionStart&&kl(t,e,n,i),c)?c:!o.connectionStart&&!o.connectionEnd&&i&&i.length?i:Ol(t,e,n,r,o)}function Al(t,e,n){return t>=e&&t<=n}function Vs(t,e,n){var r={x:"width",y:"height"};return Al(e[t],n[t],n[t]+n[r[t]])}function Tl(t,e,n,r,i){var o={},a,s;return s=Lt(t,e),/^(top|bottom|left|right)$/.test(s)?(/top|bottom/.test(s)&&(a="x"),/left|right/.test(s)&&(a="y"),i.preserveDocking==="target"?Vs(a,r,t)?(o[a]=r[a],[{x:o.x!==void 0?o.x:n.x,y:o.y!==void 0?o.y:n.y,original:{x:o.x!==void 0?o.x:n.x,y:o.y!==void 0?o.y:n.y}},{x:r.x,y:r.y}]):null:Vs(a,n,e)?(o[a]=n[a],[{x:n.x,y:n.y},{x:o.x!==void 0?o.x:r.x,y:o.y!==void 0?o.y:r.y,original:{x:o.x!==void 0?o.x:r.x,y:o.y!==void 0?o.y:r.y}}]):null):null}function kl(t,e,n,r){return Li(t,e,n,r)}function Il(t,e,n,r){var i=r.slice().reverse();return i=Li(t,e,n,i),i?i.reverse():null}function Li(t,e,n,r){function i(f){return f.length<3?!0:f.length>4?!1:!!mt(f,function(l,d){var p=f[d-1];return p&&ee(l,p)<3})}function o(f,l,d){var p=_t(l,f);switch(p){case"v":return{x:d.x,y:f.y};case"h":return{x:f.x,y:d.y}}return{x:f.x,y:f.y}}function a(f,l,d){var p;for(p=f.length-2;p!==0;p--)if(vi(f[p],l,$s)||vi(f[p],d,$s))return f.slice(p);return f}if(i(r))return null;var s=r[0],c=r.slice(),u;return c[0]=n,c[1]=o(c[1],s,n),u=a(c,t,e),u!==c&&(c=Li(t,e,n,u)),c&&_t(c)?null:c}function Ll(t,e){if(qs(e))return e;switch(t){case"intersect":return"t:t";case"top":case"bottom":return"v:v";case"left":case"right":return"h:h";default:return e}}function jl(t){return t&&/^h|v|t|r|b|l:h|v|t|r|b|l$/.test(t)}function qs(t){return t&&/t|r|b|l/.test(t)}function Dl(t){return{top:"bottom",bottom:"top",left:"right",right:"left","top-left":"bottom-right","bottom-right":"top-left","top-right":"bottom-left","bottom-left":"top-right"}[t]}function Ws(t,e,n,r){if(n==="h"&&(n=/left/.test(r)?"l":"r"),n==="v"&&(n=/top/.test(r)?"t":"b"),n==="t")return{original:t,x:t.x,y:e.y};if(n==="r")return{original:t,x:e.x+e.width,y:t.y};if(n==="b")return{original:t,x:t.x,y:e.y+e.height};if(n==="l")return{original:t,x:e.x,y:t.y};throw new Error("unexpected dockingDirection: <"+n+">")}function Nl(t){return t.reduce(function(e,n,r){var i=e[e.length-1],o=t[r+1];return Ne(i,o,n,0)||e.push(n),e},[])}var Us={slate:{fill:"#ffffff",headerFill:"#f1f5f9",stroke:"#475569",badgeText:"#475569",titleText:"#0f172a"},blue:{fill:"#ffffff",headerFill:"#eff6ff",stroke:"#2563eb",badgeText:"#1d4ed8",titleText:"#0f172a"},emerald:{fill:"#ffffff",headerFill:"#ecfdf5",stroke:"#059669",badgeText:"#047857",titleText:"#0f172a"},amber:{fill:"#ffffff",headerFill:"#fffbeb",stroke:"#d97706",badgeText:"#b45309",titleText:"#0f172a"},rose:{fill:"#ffffff",headerFill:"#fff1f2",stroke:"#C21057",badgeText:"#C21057",titleText:"#0f172a"}},Ln='-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';function Zs(t){if(!t)return;let e=t.querySelector("defs");if(e||(e=A("defs"),T(t,e)),!e.querySelector("#cq-arrow-end")){let n=A("marker");O(n,{id:"cq-arrow-end",viewBox:"0 0 10 10",refX:"8",refY:"5",markerWidth:"6.5",markerHeight:"6.5",orient:"auto-start-reverse"});let r=A("path");O(r,{d:"M 0 1.5 L 8.5 5 L 0 8.5 z",fill:"#475569"}),T(n,r),T(e,n)}}function Hl(t,e=20){let n=String(t||"").trim().split(/\s+/).filter(Boolean);if(n.length===0)return[""];let r=[],i=n[0];for(let o=1;o<n.length;o++)(i+" "+n[o]).length<=e?i+=" "+n[o]:(r.push(i),i=n[o]);return r.push(i),r.slice(0,3)}var Qr=class extends Ct{constructor(e,n){super(e,1500),this._canvas=n}canRender(e){return!e.labelTarget}drawShape(e,n){Zs(this._canvas.getContainer().querySelector("svg"));let r=n.width||168,i=n.height||76,o=n.shapeType||"service",a=Us[n.theme]||Us.slate,s=n.label!==void 0?n.label:"Service",c=n.subtitle!==void 0?n.subtitle:"";if(o==="group"){let x=A("rect");O(x,{x:0,y:0,width:r,height:i,rx:14,ry:14,fill:"rgba(248, 250, 252, 0.55)",stroke:a.stroke,"stroke-width":1.75,"stroke-dasharray":"7 5"}),T(e,x);let y=Math.min(r-20,Math.max(90,s.length*7.5+24)),C=A("rect");O(C,{x:12,y:10,width:y,height:24,rx:6,ry:6,fill:a.headerFill,stroke:a.stroke,"stroke-width":1}),T(e,C);let E=A("text");return O(E,{x:22,y:26,fill:a.titleText,"font-family":Ln,"font-size":"11px","font-weight":"700"}),E.textContent=s,T(e,E),x}if(o==="database"){let y=A("path"),C=["M 0 11",`L 0 ${i-11}`,`A ${r/2} 11 0 0 0 ${r} ${i-11}`,`L ${r} 11`,`A ${r/2} 11 0 0 0 0 11`,"Z"].join(" ");O(y,{d:C,fill:a.fill,stroke:a.stroke,"stroke-width":2}),T(e,y);let E=A("ellipse");return O(E,{cx:r/2,cy:11,rx:r/2,ry:11,fill:a.headerFill,stroke:a.stroke,"stroke-width":2}),T(e,E),this._renderTextBlock(e,r,i,s,c,a,8),y}if(o==="queue"){let y=A("path"),C=["M 12 0",`L ${r-12} 0`,`A 12 ${i/2} 0 0 1 ${r-12} ${i}`,`L 12 ${i}`,`A 12 ${i/2} 0 0 1 12 0`,"Z"].join(" ");O(y,{d:C,fill:a.fill,stroke:a.stroke,"stroke-width":2}),T(e,y);let E=A("ellipse");return O(E,{cx:r-12,cy:i/2,rx:12,ry:i/2,fill:a.headerFill,stroke:a.stroke,"stroke-width":1.75}),T(e,E),this._renderTextBlock(e,r-10,i,s,c,a,0),y}if(o==="client"){let x=Math.min(34,i/2),y=A("rect");return O(y,{x:0,y:0,width:r,height:i,rx:x,ry:x,fill:a.headerFill,stroke:a.stroke,"stroke-width":2}),T(e,y),this._renderTextBlock(e,r,i,s,c,a,0),y}if(o==="gateway"){let x=A("polygon"),y=[`${r/2},0`,`${r},${i/2}`,`${r/2},${i}`,`0,${i/2}`].join(" ");return O(x,{points:y,fill:a.headerFill,stroke:a.stroke,"stroke-width":2,"stroke-linejoin":"round"}),T(e,x),this._renderTextBlock(e,r,i,s,c,a,0,14),x}let u=A("rect");O(u,{x:0,y:0,width:r,height:i,rx:12,ry:12,fill:a.fill,stroke:a.stroke,"stroke-width":2}),T(e,u);let f=A("path"),l=11,d=22,p=[`M 1 ${d}`,`L 1 ${l}`,`Q 1 1 ${l} 1`,`L ${r-l} 1`,`Q ${r-1} 1 ${r-1} ${l}`,`L ${r-1} ${d}`,"Z"].join(" ");O(f,{d:p,fill:a.headerFill}),T(e,f);let m=A("line");if(O(m,{x1:1,y1:d,x2:r-1,y2:d,stroke:a.stroke,"stroke-width":1,"stroke-opacity":.25}),T(e,m),c){let x=A("text");O(x,{x:r/2,y:15,"text-anchor":"middle",fill:a.badgeText,"font-family":Ln,"font-size":"9.5px","font-weight":"700","letter-spacing":"0.06em"}),x.textContent=String(c).toUpperCase(),T(e,x)}return this._renderMainLabel(e,r,i,s,a,c?11:0,20),u}_renderTextBlock(e,n,r,i,o,a,s=0,c=19){if(o){let u=A("text");O(u,{x:n/2,y:r/2-8+s,"text-anchor":"middle",fill:a.badgeText,"font-family":Ln,"font-size":"9.5px","font-weight":"700","letter-spacing":"0.05em"}),u.textContent=String(o).toUpperCase(),T(e,u)}this._renderMainLabel(e,n,r,i,a,s+(o?8:0),c)}_renderMainLabel(e,n,r,i,o,a=0,s=20){let c=Hl(i,s),u=15,f=(c.length-1)*u,l=r/2+a-f/2+4;c.forEach((d,p)=>{let m=A("text");O(m,{x:n/2,y:l+p*u,"text-anchor":"middle",fill:o.titleText,"font-family":Ln,"font-size":"12.5px","font-weight":"700"}),m.textContent=d,T(e,m)})}drawConnection(e,n){Zs(this._canvas.getContainer().querySelector("svg"));let r=n.waypoints||[];if(r.length<2)return A("g");let i=this._buildRoundedPath(r,8),o=A("path");if(O(o,{d:i,fill:"none",stroke:"#475569","stroke-width":2,"stroke-linecap":"round","stroke-linejoin":"round","marker-end":"url(#cq-arrow-end)"}),T(e,o),n.label&&String(n.label).trim().length>0){let a=this._getConnectionMidpoint(r),s=String(n.label).trim(),c=Math.max(40,s.length*6.5+16),u=20,f=A("rect");O(f,{x:a.x-c/2,y:a.y-u/2,width:c,height:u,rx:6,ry:6,fill:"#ffffff",stroke:"#cbd5e1","stroke-width":1.25}),T(e,f);let l=A("text");O(l,{x:a.x,y:a.y+3.5,"text-anchor":"middle",fill:"#334155","font-family":Ln,"font-size":"10.5px","font-weight":"600"}),l.textContent=s,T(e,l)}return o}_buildRoundedPath(e,n=8){if(e.length===2)return`M ${e[0].x} ${e[0].y} L ${e[1].x} ${e[1].y}`;let r=`M ${e[0].x} ${e[0].y}`;for(let o=1;o<e.length-1;o++){let a=e[o-1],s=e[o],c=e[o+1],u=s.x-a.x,f=s.y-a.y,l=Math.hypot(u,f),d=c.x-s.x,p=c.y-s.y,m=Math.hypot(d,p),x=Math.min(n,l/2,m/2);if(x<1)r+=` L ${s.x} ${s.y}`;else{let y=s.x-u/l*x,C=s.y-f/l*x,E=s.x+d/m*x,h=s.y+p/m*x;r+=` L ${y} ${C} Q ${s.x} ${s.y} ${E} ${h}`}}let i=e[e.length-1];return r+=` L ${i.x} ${i.y}`,r}_getConnectionMidpoint(e){let n=Math.floor((e.length-1)/2),r=e[n],i=e[n+1]||r;return{x:(r.x+i.x)/2,y:(r.y+i.y)/2}}};Qr.$inject=["eventBus","canvas"];var ji=class extends tn{layoutConnection(e,n={}){let r=n.source||e.source,i=n.target||e.target,o=n.connectionStart||Z(r),a=n.connectionEnd||Z(i);return Ys(r,i,o,a,e.waypoints,Object.assign({preferredLayouts:["h:h"]},n))}},Jr=class extends ke{init(){this.addRule("elements.move",()=>!0),this.addRule("shape.create",()=>!0),this.addRule("shape.resize",e=>e.newBounds?e.newBounds.width>=90&&e.newBounds.height>=48:!0),this.addRule("connection.create",e=>{let{source:n,target:r}=e;return!(!n||!r||n===r||!n.parent||!r.parent||n.waypoints||r.waypoints)}),this.addRule("connection.reconnect",()=>!0),this.addRule("connection.updateWaypoints",()=>!0)}};Jr.$inject=["eventBus"];var ti=class{constructor(e,n,r,i,o,a){this._connect=n,this._modeling=r,this._elementFactory=i,this._canvas=o,this._selection=a,e.registerProvider(this)}getContextPadEntries(e){let n=this._connect,r=this._modeling,i=this._elementFactory,o=this._canvas,a=this._selection,s={};return e.waypoints||(s.connect={group:"connect",className:"cq-pad-connect",title:"Drag or click to connect arrow to another node",html:'<div class="entry" title="Connect Arrow">\u2192</div>',action:{click:(c,u)=>{n.start(c,u)},dragstart:(c,u)=>{n.start(c,u)}}},s.append={group:"edit",className:"cq-pad-append",title:"Append connected node to the right",html:'<div class="entry" title="Append Connected Node">+</div>',action:{click:(c,u)=>{let f=o.getRootElement(),l=i.createShape({width:u.width||168,height:u.height||76,shapeType:u.shapeType==="group"?"service":u.shapeType||"service",label:"New Service",subtitle:"Compute",theme:u.theme||"slate"}),d={x:u.x+(u.width||168)+160,y:u.y+(u.height||76)/2},p=r.createShape(l,d,f);r.connect(u,p,{label:""}),a.select(p)}}}),s.delete={group:"edit",className:"cq-pad-delete",title:"Delete element",html:'<div class="entry cq-pad-danger" title="Delete">\xD7</div>',action:{click:(c,u)=>{r.removeElements([u])}}},s}};ti.$inject=["contextPad","connect","modeling","elementFactory","canvas","selection"];var Bl={__init__:["cloudQubesRenderer","cloudQubesRules","cloudQubesContextPadProvider"],cloudQubesRenderer:["type",Qr],cloudQubesRules:["type",Jr],cloudQubesContextPadProvider:["type",ti],layouter:["type",ji],connectionDocking:["type",$t]},Di=class{constructor(e,n={}){this.container=e,this.callbacks=n,this.diagram=new ye({canvas:{container:e},modules:[ya,Na,at,za,Ya,hs,Es,Cs,Ps,Wr,As,ur,Ds,dt,Bs,zs,Bl]}),this.canvas=this.diagram.get("canvas"),this.modeling=this.diagram.get("modeling"),this.elementFactory=this.diagram.get("elementFactory"),this.elementRegistry=this.diagram.get("elementRegistry"),this.selection=this.diagram.get("selection"),this.commandStack=this.diagram.get("commandStack"),this.eventBus=this.diagram.get("eventBus"),this.root=this.elementFactory.createRoot({id:"cq-root"}),this.canvas.setRootElement(this.root),this.pendingConnectSource=null,this._bindEvents()}_bindEvents(){this.eventBus.on("selection.changed",e=>{let n=e.newSelection&&e.newSelection[0]?e.newSelection[0]:null;this.callbacks.onSelectionChange&&this.callbacks.onSelectionChange(n)}),this.eventBus.on("element.click",e=>{let n=e.element;if(!(!n||n===this.root||n.waypoints)&&this.pendingConnectSource!==void 0&&this.pendingConnectSource!==!1){if(this.pendingConnectSource===null)this.pendingConnectSource=n,this.callbacks.onConnectStep&&this.callbacks.onConnectStep("target",n);else if(this.pendingConnectSource!==n){let r=this.pendingConnectSource;this.pendingConnectSource=!1;let i=this.modeling.connect(r,n,{label:""});this.selection.select(i),this.callbacks.onConnectStep&&this.callbacks.onConnectStep("done",i)}}}),this.eventBus.on("element.dblclick",e=>{let n=e.element;!n||n===this.root||this.callbacks.onElementDoubleClick&&this.callbacks.onElementDoubleClick(n)})}startTwoClickConnect(){this.pendingConnectSource=null}cancelTwoClickConnect(){this.pendingConnectSource=!1}addNode({shapeType:e="service",label:n="Service",subtitle:r="Compute",theme:i="slate",x:o,y:a,width:s,height:c}){let u=e==="group",f=e==="gateway",l=s||(u?440:f?156:172),d=c||(u?240:f?86:76),p=this.elementRegistry.filter(E=>E!==this.root&&!E.waypoints),m=o!==void 0?o:160+p.length%3*230,x=a!==void 0?a:140+Math.floor(p.length/3)*135,y=this.elementFactory.createShape({width:l,height:d,shapeType:e,label:n,subtitle:r,theme:i}),C=this.modeling.createShape(y,{x:m+l/2,y:x+d/2},this.root);if(u){let E=this.canvas.getGraphics(C);E&&E.parentNode&&E.parentNode.insertBefore(E,E.parentNode.firstChild)}return this.selection.select(C),C}connectNodes(e,n,r=""){return this.modeling.connect(e,n,{label:r})}updateElement(e,n={}){if(!e||e===this.root)return;Object.assign(e,n);let r=this.canvas.getGraphics(e);if(r){let i=r.querySelector(".djs-visual");if(i){for(;i.firstChild;)i.removeChild(i.firstChild);let o=this.diagram.get("cloudQubesRenderer");e.waypoints?o.drawConnection(i,e):o.drawShape(i,e)}}}duplicateElement(e){return!e||e===this.root||e.waypoints?null:this.addNode({shapeType:e.shapeType,label:e.label,subtitle:e.subtitle,theme:e.theme,width:e.width,height:e.height,x:e.x+36,y:e.y+36})}deleteElement(e){!e||e===this.root||this.modeling.removeElements([e])}clear(){let e=this.elementRegistry.filter(n=>n!==this.root);e.length>0&&this.modeling.removeElements(e),this.commandStack.clear()}undo(){this.commandStack.canUndo()&&this.commandStack.undo()}redo(){this.commandStack.canRedo()&&this.commandStack.redo()}zoomIn(){let e=this.canvas.zoom();this.canvas.zoom(Math.min(2.5,e*1.2))}zoomOut(){let e=this.canvas.zoom();this.canvas.zoom(Math.max(.3,e/1.2))}zoomFit(){this.canvas.zoom("fit-viewport","auto")}loadTemplate(e){if(this.clear(),e==="blank")return;if(e==="event_driven"){let s=this.addNode({shapeType:"client",label:"Producer API",subtitle:"Ingress",theme:"rose",x:70,y:170}),c=this.addNode({shapeType:"queue",label:"Cloud Pub/Sub",subtitle:"Event Stream",theme:"amber",x:310,y:170}),u=this.addNode({shapeType:"service",label:"Billing Worker",subtitle:"Cloud Run",theme:"emerald",x:565,y:95}),f=this.addNode({shapeType:"service",label:"Analytics Worker",subtitle:"Dataflow",theme:"blue",x:565,y:245}),l=this.addNode({shapeType:"database",label:"BigQuery Warehouse",subtitle:"OLAP Store",theme:"blue",x:810,y:170});this.connectNodes(s,c,"Publish"),this.connectNodes(c,u,"Push"),this.connectNodes(c,f,"Pull"),this.connectNodes(u,l,"Write"),this.connectNodes(f,l,"Stream"),this.selection.select([]);return}if(e==="rag_pipeline"){let s=this.addNode({shapeType:"client",label:"User Prompt",subtitle:"Client App",theme:"rose",x:60,y:170}),c=this.addNode({shapeType:"service",label:"RAG Orchestrator",subtitle:"API Service",theme:"slate",x:295,y:170}),u=this.addNode({shapeType:"database",label:"Vector Search DB",subtitle:"Embeddings",theme:"blue",x:545,y:90}),f=this.addNode({shapeType:"service",label:"Foundation LLM",subtitle:"Vertex AI",theme:"emerald",x:545,y:250});this.connectNodes(s,c,"Query"),this.connectNodes(c,u,"Top-K Cosine"),this.connectNodes(c,f,"Augmented Prompt"),this.selection.select([]);return}this.addNode({shapeType:"group",label:"Production VPC (us-central1)",subtitle:"Boundary",theme:"slate",x:280,y:55,width:515,height:315});let n=this.addNode({shapeType:"client",label:"Web & Mobile Clients",subtitle:"External",theme:"rose",x:55,y:175}),r=this.addNode({shapeType:"gateway",label:"Cloud Load Balancer",subtitle:"Gateway",theme:"emerald",x:310,y:170}),i=this.addNode({shapeType:"service",label:"Cloud Run API",subtitle:"Stateless Compute",theme:"slate",x:540,y:105}),o=this.addNode({shapeType:"queue",label:"Memorystore Redis",subtitle:"In-Memory Cache",theme:"amber",x:540,y:240}),a=this.addNode({shapeType:"database",label:"Cloud SQL Primary",subtitle:"PostgreSQL HA",theme:"blue",x:830,y:105});this.connectNodes(n,r,"HTTPS"),this.connectNodes(r,i,"Route"),this.connectNodes(i,o,"Cache Lookup"),this.connectNodes(i,a,"Read / Write"),this.selection.select([])}async exportToPngBlob(e=2){this.selection.select([]);let n=this.elementRegistry.filter(g=>g!==this.root);if(n.length===0)throw new Error("Canvas is empty. Add at least one shape before exporting.");let r=1/0,i=1/0,o=-1/0,a=-1/0;n.forEach(g=>{g.waypoints?g.waypoints.forEach(_=>{r=Math.min(r,_.x-40),i=Math.min(i,_.y-24),o=Math.max(o,_.x+40),a=Math.max(a,_.y+24)}):(r=Math.min(r,g.x),i=Math.min(i,g.y),o=Math.max(o,g.x+(g.width||160)),a=Math.max(a,g.y+(g.height||76)))});let s=36,c=Math.floor(r-s),u=Math.floor(i-s),f=Math.ceil(o-r+s*2),l=Math.ceil(a-i+s*2),d=this.container.querySelector("svg"),m=d.querySelector("g.viewport").cloneNode(!0);m.setAttribute("transform",`translate(${-c}, ${-u})`),m.querySelectorAll(".djs-outline, .djs-resizer, .djs-bendpoint, .djs-segment-dragger, .djs-hit").forEach(g=>g.remove());let x=document.createElementNS("http://www.w3.org/2000/svg","svg");x.setAttribute("xmlns","http://www.w3.org/2000/svg"),x.setAttribute("width",String(f)),x.setAttribute("height",String(l)),x.setAttribute("viewBox",`0 0 ${f} ${l}`);let y=d.querySelector("defs");y&&x.appendChild(y.cloneNode(!0));let C=document.createElementNS("http://www.w3.org/2000/svg","rect");C.setAttribute("x","0"),C.setAttribute("y","0"),C.setAttribute("width",String(f)),C.setAttribute("height",String(l)),C.setAttribute("rx","16"),C.setAttribute("ry","16"),C.setAttribute("fill","#ffffff"),x.appendChild(C),x.appendChild(m);let E=new XMLSerializer().serializeToString(x),h=new Blob([E],{type:"image/svg+xml;charset=utf-8"}),v=URL.createObjectURL(h);return new Promise((g,_)=>{let R=new Image;R.onload=()=>{let w=document.createElement("canvas");w.width=f*e,w.height=l*e;let M=w.getContext("2d");M.scale(e,e),M.drawImage(R,0,0,f,l),URL.revokeObjectURL(v),w.toBlob(b=>{b?g(b):_(new Error("Failed to encode diagram PNG"))},"image/png")},R.onerror=w=>{URL.revokeObjectURL(v),_(w)},R.src=v})}destroy(){this.diagram&&(this.diagram.destroy(),this.diagram=null)}},fw=Di;export{Di as CloudQubesDiagramStudio,fw as default};
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/didi/dist/index.js
+var CLASS_PATTERN = /^class[ {]/;
+function isClass(fn) {
+  return CLASS_PATTERN.test(fn.toString());
+}
+function isArray(obj) {
+  return Array.isArray(obj);
+}
+function hasOwnProp(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+function annotate(...args) {
+  if (args.length === 1 && isArray(args[0])) {
+    args = args[0];
+  }
+  args = [...args];
+  const fn = args.pop();
+  fn.$inject = args;
+  return fn;
+}
+var CONSTRUCTOR_ARGS = /constructor\s*[^(]*\(\s*([^)]*)\)/m;
+var FN_ARGS = /^(?:async\s+)?(?:function\s*[^(]*)?(?:\(\s*([^)]*)\)|(\w+))/m;
+var FN_ARG = /\/\*([^*]*)\*\//m;
+function parseAnnotations(fn) {
+  if (typeof fn !== "function") {
+    throw new Error(`Cannot annotate "${fn}". Expected a function!`);
+  }
+  const match = fn.toString().match(isClass(fn) ? CONSTRUCTOR_ARGS : FN_ARGS);
+  if (!match) {
+    return [];
+  }
+  const args = match[1] || match[2];
+  return args && args.split(",").map((arg) => {
+    const argMatch = arg.match(FN_ARG);
+    return (argMatch && argMatch[1] || arg).trim();
+  }) || [];
+}
+function Injector(modules, _parent) {
+  const parent = _parent || /** @type InjectorContext */
+  {
+    get: function(name, strict) {
+      if (strict === false) {
+        return null;
+      }
+      currentlyResolving.push(name);
+      throw error(`No provider for "${name}"!`);
+    }
+  };
+  const currentlyResolving = [];
+  const providers = this._providers = Object.create(parent._providers || null);
+  const instances = this._instances = /* @__PURE__ */ Object.create(null);
+  const self = instances.injector = this;
+  const error = function(msg) {
+    const stack = currentlyResolving.join(" -> ");
+    currentlyResolving.length = 0;
+    return new Error(stack ? `${msg} (Resolving: ${stack})` : msg);
+  };
+  function get(name, strict) {
+    if (!providers[name] && name.includes(".")) {
+      const parts = name.split(".");
+      let pivot = get(
+        /** @type { string } */
+        parts.shift()
+      );
+      while (parts.length) {
+        pivot = pivot[
+          /** @type { string } */
+          parts.shift()
+        ];
+      }
+      return pivot;
+    }
+    if (hasOwnProp(instances, name)) {
+      return instances[name];
+    }
+    if (hasOwnProp(providers, name)) {
+      if (currentlyResolving.indexOf(name) !== -1) {
+        currentlyResolving.push(name);
+        throw error("Cannot resolve circular dependency!");
+      }
+      currentlyResolving.push(name);
+      instances[name] = providers[name][0](providers[name][1]);
+      currentlyResolving.pop();
+      return instances[name];
+    }
+    return parent.get(name, strict);
+  }
+  function fnDef(fn, locals) {
+    if (typeof locals === "undefined") {
+      locals = {};
+    }
+    if (typeof fn !== "function") {
+      if (isArray(fn)) {
+        fn = annotate(fn.slice());
+      } else {
+        throw error(`Cannot invoke "${fn}". Expected a function!`);
+      }
+    }
+    const inject = fn.$inject || parseAnnotations(fn);
+    const dependencies = inject.map((dep) => {
+      if (hasOwnProp(locals, dep)) {
+        return locals[dep];
+      } else {
+        return get(dep);
+      }
+    });
+    return {
+      fn,
+      dependencies
+    };
+  }
+  function instantiate(type) {
+    const {
+      fn,
+      dependencies
+    } = fnDef(type);
+    const Constructor = Function.prototype.bind.call(fn, null, ...dependencies);
+    return new Constructor();
+  }
+  function invoke(func, context, locals) {
+    const {
+      fn,
+      dependencies
+    } = fnDef(func, locals);
+    return fn.apply(context, dependencies);
+  }
+  function createPrivateInjectorFactory(childInjector) {
+    return annotate((key) => childInjector.get(key));
+  }
+  function createChild(modules2, forceNewInstances) {
+    if (forceNewInstances && forceNewInstances.length) {
+      const fromParentModule = /* @__PURE__ */ Object.create(null);
+      const matchedScopes = /* @__PURE__ */ Object.create(null);
+      const privateInjectorsCache = [];
+      const privateChildInjectors = [];
+      const privateChildFactories = [];
+      let provider;
+      let cacheIdx;
+      let privateChildInjector;
+      let privateChildInjectorFactory;
+      for (let name in providers) {
+        provider = providers[name];
+        if (forceNewInstances.indexOf(name) !== -1) {
+          if (provider[2] === "private") {
+            cacheIdx = privateInjectorsCache.indexOf(provider[3]);
+            if (cacheIdx === -1) {
+              privateChildInjector = provider[3].createChild([], forceNewInstances);
+              privateChildInjectorFactory = createPrivateInjectorFactory(privateChildInjector);
+              privateInjectorsCache.push(provider[3]);
+              privateChildInjectors.push(privateChildInjector);
+              privateChildFactories.push(privateChildInjectorFactory);
+              fromParentModule[name] = [privateChildInjectorFactory, name, "private", privateChildInjector];
+            } else {
+              fromParentModule[name] = [privateChildFactories[cacheIdx], name, "private", privateChildInjectors[cacheIdx]];
+            }
+          } else {
+            fromParentModule[name] = [provider[2], provider[1]];
+          }
+          matchedScopes[name] = true;
+        }
+        if ((provider[2] === "factory" || provider[2] === "type") && provider[1].$scope) {
+          forceNewInstances.forEach((scope) => {
+            if (provider[1].$scope.indexOf(scope) !== -1) {
+              fromParentModule[name] = [provider[2], provider[1]];
+              matchedScopes[scope] = true;
+            }
+          });
+        }
+      }
+      forceNewInstances.forEach((scope) => {
+        if (!matchedScopes[scope]) {
+          throw new Error('No provider for "' + scope + '". Cannot use provider from the parent!');
+        }
+      });
+      modules2.unshift(fromParentModule);
+    }
+    return new Injector(modules2, self);
+  }
+  const factoryMap = {
+    factory: invoke,
+    type: instantiate,
+    value: function(value) {
+      return value;
+    }
+  };
+  function createInitializer(moduleDefinition, injector) {
+    const initializers = moduleDefinition.__init__ || [];
+    return function() {
+      initializers.forEach((initializer) => {
+        if (typeof initializer === "string") {
+          injector.get(initializer);
+        } else {
+          injector.invoke(initializer);
+        }
+      });
+    };
+  }
+  function loadModule(moduleDefinition) {
+    const moduleExports = moduleDefinition.__exports__;
+    if (moduleExports) {
+      const nestedModules = moduleDefinition.__modules__;
+      const clonedModule = Object.keys(moduleDefinition).reduce((clonedModule2, key) => {
+        if (key !== "__exports__" && key !== "__modules__" && key !== "__init__" && key !== "__depends__") {
+          clonedModule2[key] = moduleDefinition[key];
+        }
+        return clonedModule2;
+      }, /* @__PURE__ */ Object.create(null));
+      const childModules = (nestedModules || []).concat(clonedModule);
+      const privateInjector = createChild(childModules);
+      const getFromPrivateInjector = annotate(function(key) {
+        return privateInjector.get(key);
+      });
+      moduleExports.forEach(function(key) {
+        providers[key] = [getFromPrivateInjector, key, "private", privateInjector];
+      });
+      const initializers = (moduleDefinition.__init__ || []).slice();
+      initializers.unshift(function() {
+        privateInjector.init();
+      });
+      moduleDefinition = Object.assign({}, moduleDefinition, {
+        __init__: initializers
+      });
+      return createInitializer(moduleDefinition, privateInjector);
+    }
+    Object.keys(moduleDefinition).forEach(function(key) {
+      if (key === "__init__" || key === "__depends__") {
+        return;
+      }
+      const typeDeclaration = (
+        /** @type { TypedDeclaration } */
+        moduleDefinition[key]
+      );
+      if (typeDeclaration[2] === "private") {
+        providers[key] = typeDeclaration;
+        return;
+      }
+      const type = typeDeclaration[0];
+      const value = typeDeclaration[1];
+      providers[key] = [factoryMap[type], arrayUnwrap(type, value), type];
+    });
+    return createInitializer(moduleDefinition, self);
+  }
+  function resolveDependencies(moduleDefinitions, moduleDefinition) {
+    if (moduleDefinitions.indexOf(moduleDefinition) !== -1) {
+      return moduleDefinitions;
+    }
+    moduleDefinitions = (moduleDefinition.__depends__ || []).reduce(resolveDependencies, moduleDefinitions);
+    if (moduleDefinitions.indexOf(moduleDefinition) !== -1) {
+      return moduleDefinitions;
+    }
+    return moduleDefinitions.concat(moduleDefinition);
+  }
+  function bootstrap2(moduleDefinitions) {
+    const initializers = moduleDefinitions.reduce(resolveDependencies, []).map(loadModule);
+    let initialized = false;
+    return function() {
+      if (initialized) {
+        return;
+      }
+      initialized = true;
+      initializers.forEach((initializer) => initializer());
+    };
+  }
+  this.get = get;
+  this.invoke = invoke;
+  this.instantiate = instantiate;
+  this.createChild = createChild;
+  this.init = bootstrap2(modules);
+}
+function arrayUnwrap(type, value) {
+  if (type !== "value" && isArray(value)) {
+    value = annotate(value.slice());
+  }
+  return value;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/inherits-browser/dist/index.es.js
+function e(e2, t) {
+  t && (e2.super_ = t, e2.prototype = Object.create(t.prototype, { constructor: { value: e2, enumerable: false, writable: true, configurable: true } }));
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/draw/BaseRenderer.js
+var DEFAULT_RENDER_PRIORITY = 1e3;
+function BaseRenderer(eventBus, renderPriority) {
+  var self = this;
+  renderPriority = renderPriority || DEFAULT_RENDER_PRIORITY;
+  eventBus.on(["render.shape", "render.connection"], renderPriority, function(evt, context) {
+    var type = evt.type, element = context.element, visuals = context.gfx, attrs = context.attrs;
+    if (self.canRender(element)) {
+      if (type === "render.shape") {
+        return self.drawShape(visuals, element, attrs);
+      } else {
+        return self.drawConnection(visuals, element, attrs);
+      }
+    }
+  });
+  eventBus.on(["render.getShapePath", "render.getConnectionPath"], renderPriority, function(evt, element) {
+    if (self.canRender(element)) {
+      if (evt.type === "render.getShapePath") {
+        return self.getShapePath(element);
+      } else {
+        return self.getConnectionPath(element);
+      }
+    }
+  });
+}
+BaseRenderer.prototype.canRender = function(element) {
+};
+BaseRenderer.prototype.drawShape = function(visuals, shape) {
+};
+BaseRenderer.prototype.drawConnection = function(visuals, connection) {
+};
+BaseRenderer.prototype.getShapePath = function(shape) {
+};
+BaseRenderer.prototype.getConnectionPath = function(connection) {
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/min-dash/dist/index.js
+function flatten(arr) {
+  return Array.prototype.concat.apply([], arr);
+}
+var nativeToString = Object.prototype.toString;
+var nativeHasOwnProperty = Object.prototype.hasOwnProperty;
+function isUndefined(obj) {
+  return obj === void 0;
+}
+function isDefined(obj) {
+  return obj !== void 0;
+}
+function isNil(obj) {
+  return obj == null;
+}
+function isArray2(obj) {
+  return nativeToString.call(obj) === "[object Array]";
+}
+function isObject(obj) {
+  return nativeToString.call(obj) === "[object Object]";
+}
+function isNumber(obj) {
+  return nativeToString.call(obj) === "[object Number]";
+}
+function isFunction(obj) {
+  const tag = nativeToString.call(obj);
+  return tag === "[object Function]" || tag === "[object AsyncFunction]" || tag === "[object GeneratorFunction]" || tag === "[object AsyncGeneratorFunction]" || tag === "[object Proxy]";
+}
+function isString(obj) {
+  return nativeToString.call(obj) === "[object String]";
+}
+function ensureArray(obj) {
+  if (isArray2(obj)) {
+    return;
+  }
+  throw new Error("must supply array");
+}
+function has(target, key) {
+  return !isNil(target) && nativeHasOwnProperty.call(target, key);
+}
+function find(collection, matcher) {
+  const matchFn = toMatcher(matcher);
+  let match;
+  forEach(collection, function(val, key) {
+    if (matchFn(val, key)) {
+      match = val;
+      return false;
+    }
+  });
+  return match;
+}
+function filter(collection, matcher) {
+  const matchFn = toMatcher(matcher);
+  let result = [];
+  forEach(collection, function(val, key) {
+    if (matchFn(val, key)) {
+      result.push(val);
+    }
+  });
+  return result;
+}
+function forEach(collection, iterator) {
+  let val, result;
+  if (isUndefined(collection)) {
+    return;
+  }
+  const convertKey = isArray2(collection) ? toNum : identity;
+  for (let key in collection) {
+    if (has(collection, key)) {
+      val = collection[key];
+      result = iterator(val, convertKey(key));
+      if (result === false) {
+        return val;
+      }
+    }
+  }
+}
+function without(arr, matcher) {
+  if (isUndefined(arr)) {
+    return [];
+  }
+  ensureArray(arr);
+  const matchFn = toMatcher(matcher);
+  return arr.filter(function(el, idx) {
+    return !matchFn(el, idx);
+  });
+}
+function reduce(collection, iterator, result) {
+  forEach(collection, function(value, idx) {
+    result = iterator(result, value, idx);
+  });
+  return result;
+}
+function every(collection, matcher) {
+  return !!reduce(collection, function(matches, val, key) {
+    return matches && matcher(val, key);
+  }, true);
+}
+function some(collection, matcher) {
+  return !!find(collection, matcher);
+}
+function map(collection, fn) {
+  let result = [];
+  forEach(collection, function(val, key) {
+    result.push(fn(val, key));
+  });
+  return result;
+}
+function keys(collection) {
+  return collection && Object.keys(collection) || [];
+}
+function size(collection) {
+  return keys(collection).length;
+}
+function values(collection) {
+  return map(collection, (val) => val);
+}
+function groupBy(collection, extractor, grouped = {}) {
+  extractor = toExtractor(extractor);
+  forEach(collection, function(val) {
+    let discriminator = extractor(val) || "_";
+    let group = grouped[discriminator];
+    if (!group) {
+      group = grouped[discriminator] = [];
+    }
+    group.push(val);
+  });
+  return grouped;
+}
+function uniqueBy(extractor, ...collections) {
+  extractor = toExtractor(extractor);
+  let grouped = {};
+  forEach(collections, (c) => groupBy(c, extractor, grouped));
+  let result = map(grouped, function(val, key) {
+    return val[0];
+  });
+  return result;
+}
+function sortBy(collection, extractor) {
+  extractor = toExtractor(extractor);
+  let sorted = [];
+  forEach(collection, function(value, key) {
+    let disc = extractor(value, key);
+    let entry = {
+      d: disc,
+      v: value
+    };
+    for (var idx = 0; idx < sorted.length; idx++) {
+      let { d } = sorted[idx];
+      if (disc < d) {
+        sorted.splice(idx, 0, entry);
+        return;
+      }
+    }
+    sorted.push(entry);
+  });
+  return map(sorted, (e2) => e2.v);
+}
+function matchPattern(pattern) {
+  return function(el) {
+    return every(pattern, function(val, key) {
+      return el[key] === val;
+    });
+  };
+}
+function toExtractor(extractor) {
+  return isFunction(extractor) ? extractor : (e2) => {
+    return e2[extractor];
+  };
+}
+function toMatcher(matcher) {
+  return isFunction(matcher) ? matcher : (e2) => {
+    return e2 === matcher;
+  };
+}
+function identity(arg) {
+  return arg;
+}
+function toNum(arg) {
+  return Number(arg);
+}
+function debounce(fn, timeout) {
+  let timer;
+  let lastArgs;
+  let lastThis;
+  let lastNow;
+  function fire(force) {
+    let now = Date.now();
+    let scheduledDiff = force ? 0 : lastNow + timeout - now;
+    if (scheduledDiff > 0) {
+      return schedule(scheduledDiff);
+    }
+    fn.apply(lastThis, lastArgs);
+    clear3();
+  }
+  function schedule(timeout2) {
+    timer = setTimeout(fire, timeout2);
+  }
+  function clear3() {
+    if (timer) {
+      clearTimeout(timer);
+    }
+    timer = lastNow = lastArgs = lastThis = void 0;
+  }
+  function flush() {
+    if (timer) {
+      fire(true);
+    }
+    clear3();
+  }
+  function callback(...args) {
+    lastNow = Date.now();
+    lastArgs = args;
+    lastThis = this;
+    if (!timer) {
+      schedule(timeout);
+    }
+  }
+  callback.flush = flush;
+  callback.cancel = clear3;
+  return callback;
+}
+function bind(fn, target) {
+  return fn.bind(target);
+}
+function assign(target, ...others) {
+  return Object.assign(target, ...others);
+}
+function pick(target, properties) {
+  let result = {};
+  let obj = Object(target);
+  forEach(properties, function(prop) {
+    if (prop in obj) {
+      result[prop] = target[prop];
+    }
+  });
+  return result;
+}
+function omit(target, properties) {
+  let result = {};
+  let obj = Object(target);
+  forEach(obj, function(prop, key) {
+    if (properties.indexOf(key) === -1) {
+      result[key] = prop;
+    }
+  });
+  return result;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/tiny-svg/dist/index.js
+function ensureImported(element, target) {
+  if (element.ownerDocument !== target.ownerDocument) {
+    try {
+      return target.ownerDocument.importNode(element, true);
+    } catch (e2) {
+    }
+  }
+  return element;
+}
+function appendTo(element, target) {
+  return target.appendChild(ensureImported(element, target));
+}
+function append(target, node2) {
+  appendTo(node2, target);
+  return target;
+}
+var LENGTH_ATTR = 2;
+var CSS_PROPERTIES = {
+  "alignment-baseline": 1,
+  "baseline-shift": 1,
+  "clip": 1,
+  "clip-path": 1,
+  "clip-rule": 1,
+  "color": 1,
+  "color-interpolation": 1,
+  "color-interpolation-filters": 1,
+  "color-profile": 1,
+  "color-rendering": 1,
+  "cursor": 1,
+  "direction": 1,
+  "display": 1,
+  "dominant-baseline": 1,
+  "enable-background": 1,
+  "fill": 1,
+  "fill-opacity": 1,
+  "fill-rule": 1,
+  "filter": 1,
+  "flood-color": 1,
+  "flood-opacity": 1,
+  "font": 1,
+  "font-family": 1,
+  "font-size": LENGTH_ATTR,
+  "font-size-adjust": 1,
+  "font-stretch": 1,
+  "font-style": 1,
+  "font-variant": 1,
+  "font-weight": 1,
+  "glyph-orientation-horizontal": 1,
+  "glyph-orientation-vertical": 1,
+  "image-rendering": 1,
+  "kerning": 1,
+  "letter-spacing": 1,
+  "lighting-color": 1,
+  "marker": 1,
+  "marker-end": 1,
+  "marker-mid": 1,
+  "marker-start": 1,
+  "mask": 1,
+  "opacity": 1,
+  "overflow": 1,
+  "pointer-events": 1,
+  "shape-rendering": 1,
+  "stop-color": 1,
+  "stop-opacity": 1,
+  "stroke": 1,
+  "stroke-dasharray": 1,
+  "stroke-dashoffset": 1,
+  "stroke-linecap": 1,
+  "stroke-linejoin": 1,
+  "stroke-miterlimit": 1,
+  "stroke-opacity": 1,
+  "stroke-width": LENGTH_ATTR,
+  "text-anchor": 1,
+  "text-decoration": 1,
+  "text-rendering": 1,
+  "unicode-bidi": 1,
+  "visibility": 1,
+  "word-spacing": 1,
+  "writing-mode": 1
+};
+function getAttribute(node2, name) {
+  if (CSS_PROPERTIES[name]) {
+    return node2.style[name];
+  } else {
+    return node2.getAttributeNS(null, name);
+  }
+}
+function setAttribute(node2, name, value) {
+  var hyphenated = name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
+  var type = CSS_PROPERTIES[hyphenated];
+  if (type) {
+    if (type === LENGTH_ATTR && typeof value === "number") {
+      value = String(value) + "px";
+    }
+    node2.style[hyphenated] = value;
+  } else {
+    node2.setAttributeNS(null, name, value);
+  }
+}
+function setAttributes(node2, attrs) {
+  var names = Object.keys(attrs), i, name;
+  for (i = 0, name; name = names[i]; i++) {
+    setAttribute(node2, name, attrs[name]);
+  }
+}
+function attr(node2, name, value) {
+  if (typeof name === "string") {
+    if (value !== void 0) {
+      setAttribute(node2, name, value);
+    } else {
+      return getAttribute(node2, name);
+    }
+  } else {
+    setAttributes(node2, name);
+  }
+  return node2;
+}
+var toString = Object.prototype.toString;
+function classes(el) {
+  return new ClassList(el);
+}
+function ClassList(el) {
+  if (!el || !el.nodeType) {
+    throw new Error("A DOM element reference is required");
+  }
+  this.el = el;
+  this.list = el.classList;
+}
+ClassList.prototype.add = function(name) {
+  this.list.add(name);
+  return this;
+};
+ClassList.prototype.remove = function(name) {
+  if ("[object RegExp]" == toString.call(name)) {
+    return this.removeMatching(name);
+  }
+  this.list.remove(name);
+  return this;
+};
+ClassList.prototype.removeMatching = function(re) {
+  const arr = this.array();
+  for (let i = 0; i < arr.length; i++) {
+    if (re.test(arr[i])) {
+      this.remove(arr[i]);
+    }
+  }
+  return this;
+};
+ClassList.prototype.toggle = function(name, force) {
+  if ("undefined" !== typeof force) {
+    if (force !== this.list.toggle(name, force)) {
+      this.list.toggle(name);
+    }
+  } else {
+    this.list.toggle(name);
+  }
+  return this;
+};
+ClassList.prototype.array = function() {
+  return Array.from(this.list);
+};
+ClassList.prototype.has = ClassList.prototype.contains = function(name) {
+  return this.list.contains(name);
+};
+function clear(element) {
+  var child;
+  while (child = element.firstChild) {
+    element.removeChild(child);
+  }
+  return element;
+}
+function clone(element) {
+  return element.cloneNode(true);
+}
+var ns = {
+  svg: "http://www.w3.org/2000/svg"
+};
+var SVG_START = '<svg xmlns="' + ns.svg + '"';
+function parse(svg) {
+  var unwrap = false;
+  if (svg.substring(0, 4) === "<svg") {
+    if (svg.indexOf(ns.svg) === -1) {
+      svg = SVG_START + svg.substring(4);
+    }
+  } else {
+    svg = SVG_START + ">" + svg + "</svg>";
+    unwrap = true;
+  }
+  var parsed = parseDocument(svg);
+  if (!unwrap) {
+    return parsed;
+  }
+  var fragment = document.createDocumentFragment();
+  var parent = parsed.firstChild;
+  while (parent.firstChild) {
+    fragment.appendChild(parent.firstChild);
+  }
+  return fragment;
+}
+function parseDocument(svg) {
+  var parser;
+  parser = new DOMParser();
+  parser.async = false;
+  return parser.parseFromString(svg, "text/xml");
+}
+function create(name, attrs) {
+  var element;
+  name = name.trim();
+  if (name.charAt(0) === "<") {
+    element = parse(name).firstChild;
+    element = document.importNode(element, true);
+  } else {
+    element = document.createElementNS(ns.svg, name);
+  }
+  if (attrs) {
+    attr(element, attrs);
+  }
+  return element;
+}
+var node = null;
+function getNode() {
+  if (node === null) {
+    node = create("svg");
+  }
+  return node;
+}
+function extend(object, props) {
+  var i, k, keys2 = Object.keys(props);
+  for (i = 0; k = keys2[i]; i++) {
+    object[k] = props[k];
+  }
+  return object;
+}
+function createMatrix(a, b, c, d, e2, f) {
+  var matrix = getNode().createSVGMatrix();
+  switch (arguments.length) {
+    case 0:
+      return matrix;
+    case 1:
+      return extend(matrix, a);
+    case 6:
+      return extend(matrix, {
+        a,
+        b,
+        c,
+        d,
+        e: e2,
+        f
+      });
+  }
+}
+function createTransform(matrix) {
+  if (matrix) {
+    return getNode().createSVGTransformFromMatrix(matrix);
+  } else {
+    return getNode().createSVGTransform();
+  }
+}
+function remove(element) {
+  var parent = element.parentNode;
+  if (parent) {
+    parent.removeChild(element);
+  }
+  return element;
+}
+function wrapMatrix(transformList, transform3) {
+  if (transform3 instanceof SVGMatrix) {
+    return transformList.createSVGTransformFromMatrix(transform3);
+  }
+  return transform3;
+}
+function setTransforms(transformList, transforms) {
+  var i, t;
+  transformList.clear();
+  for (i = 0; t = transforms[i]; i++) {
+    transformList.appendItem(wrapMatrix(transformList, t));
+  }
+}
+function transform(node2, transforms) {
+  var transformList = node2.transform.baseVal;
+  if (transforms) {
+    if (!Array.isArray(transforms)) {
+      transforms = [transforms];
+    }
+    setTransforms(transformList, transforms);
+  }
+  return transformList.consolidate();
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/util/RenderUtil.js
+function componentsToPath(elements) {
+  return elements.flat().join(",").replace(/,?([A-Za-z]),?/g, "$1");
+}
+function move(point) {
+  return ["M", point.x, point.y];
+}
+function lineTo(point) {
+  return ["L", point.x, point.y];
+}
+function curveTo(p1, p2, p3) {
+  return ["C", p1.x, p1.y, p2.x, p2.y, p3.x, p3.y];
+}
+function drawPath(waypoints, cornerRadius) {
+  const pointCount = waypoints.length;
+  const path = [move(waypoints[0])];
+  for (let i = 1; i < pointCount; i++) {
+    const pointBefore = waypoints[i - 1];
+    const point = waypoints[i];
+    const pointAfter = waypoints[i + 1];
+    if (!pointAfter || !cornerRadius) {
+      path.push(lineTo(point));
+      continue;
+    }
+    const effectiveRadius = Math.min(
+      cornerRadius,
+      vectorLength(point.x - pointBefore.x, point.y - pointBefore.y),
+      vectorLength(pointAfter.x - point.x, pointAfter.y - point.y)
+    );
+    if (!effectiveRadius) {
+      path.push(lineTo(point));
+      continue;
+    }
+    const beforePoint = getPointAtLength(point, pointBefore, effectiveRadius);
+    const beforePoint2 = getPointAtLength(point, pointBefore, effectiveRadius * 0.5);
+    const afterPoint = getPointAtLength(point, pointAfter, effectiveRadius);
+    const afterPoint2 = getPointAtLength(point, pointAfter, effectiveRadius * 0.5);
+    path.push(lineTo(beforePoint));
+    path.push(curveTo(beforePoint2, afterPoint2, afterPoint));
+  }
+  return path;
+}
+function getPointAtLength(start, end, length2) {
+  const deltaX = end.x - start.x;
+  const deltaY = end.y - start.y;
+  const totalLength = vectorLength(deltaX, deltaY);
+  const percent = length2 / totalLength;
+  return {
+    x: start.x + deltaX * percent,
+    y: start.y + deltaY * percent
+  };
+}
+function vectorLength(x, y) {
+  return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+}
+function createLine(points, attrs, radius) {
+  if (isNumber(attrs)) {
+    radius = attrs;
+    attrs = null;
+  }
+  if (!attrs) {
+    attrs = {};
+  }
+  const line = create("path", attrs);
+  if (isNumber(radius)) {
+    line.dataset.cornerRadius = String(radius);
+  }
+  return updateLine(line, points);
+}
+function updateLine(gfx, points) {
+  const cornerRadius = parseInt(gfx.dataset.cornerRadius, 10) || 0;
+  attr(gfx, {
+    d: componentsToPath(drawPath(points, cornerRadius))
+  });
+  return gfx;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/util/Elements.js
+function getParents(elements) {
+  var elementsSet = new Set(elements);
+  return filter(elements, function(element) {
+    var parent = element.parent;
+    while (parent) {
+      if (elementsSet.has(parent)) {
+        return false;
+      }
+      parent = parent.parent;
+    }
+    return true;
+  });
+}
+function eachElement(elements, fn, depth) {
+  depth = depth || 0;
+  if (!isArray2(elements)) {
+    elements = [elements];
+  }
+  forEach(elements, function(s, i) {
+    var filter2 = fn(s, i, depth);
+    if (isArray2(filter2) && filter2.length) {
+      eachElement(filter2, fn, depth + 1);
+    }
+  });
+}
+function selfAndChildren(elements, unique, maxDepth) {
+  var result = /* @__PURE__ */ new Set(), processedChildren = /* @__PURE__ */ new Set();
+  eachElement(elements, function(element, i, depth) {
+    result.add(element);
+    var children = element.children;
+    if (maxDepth === -1 || depth < maxDepth) {
+      if (children && !processedChildren.has(children)) {
+        processedChildren.add(children);
+        return children;
+      }
+    }
+  });
+  return Array.from(result);
+}
+function selfAndAllChildren(elements, allowDuplicates) {
+  return selfAndChildren(elements, true, -1);
+}
+function getClosure(elements, isTopLevel, closure) {
+  if (isUndefined(isTopLevel)) {
+    isTopLevel = true;
+  }
+  if (isObject(isTopLevel)) {
+    closure = isTopLevel;
+    isTopLevel = true;
+  }
+  closure = closure || {};
+  var allShapes = copyObject(closure.allShapes), allConnections = copyObject(closure.allConnections), enclosedElements = copyObject(closure.enclosedElements), enclosedConnections = copyObject(closure.enclosedConnections);
+  var topLevel = copyObject(
+    closure.topLevel,
+    isTopLevel && groupBy(elements, function(e2) {
+      return e2.id;
+    })
+  );
+  function handleConnection(c) {
+    if (topLevel[c.source.id] && topLevel[c.target.id]) {
+      topLevel[c.id] = [c];
+    }
+    if (allShapes[c.source.id] && allShapes[c.target.id]) {
+      enclosedConnections[c.id] = enclosedElements[c.id] = c;
+    }
+    allConnections[c.id] = c;
+  }
+  function handleElement(element) {
+    enclosedElements[element.id] = element;
+    if (element.waypoints) {
+      enclosedConnections[element.id] = allConnections[element.id] = element;
+    } else {
+      allShapes[element.id] = element;
+      forEach(element.incoming, handleConnection);
+      forEach(element.outgoing, handleConnection);
+      return element.children;
+    }
+  }
+  eachElement(elements, handleElement);
+  return {
+    allShapes,
+    allConnections,
+    topLevel,
+    enclosedConnections,
+    enclosedElements
+  };
+}
+function getBBox(elements, stopRecursion) {
+  stopRecursion = !!stopRecursion;
+  if (!isArray2(elements)) {
+    elements = [elements];
+  }
+  var minX, minY, maxX, maxY;
+  forEach(elements, function(element) {
+    var bbox = element;
+    if (element.waypoints && !stopRecursion) {
+      bbox = getBBox(element.waypoints, true);
+    }
+    var x = bbox.x, y = bbox.y, height = bbox.height || 0, width = bbox.width || 0;
+    if (x < minX || minX === void 0) {
+      minX = x;
+    }
+    if (y < minY || minY === void 0) {
+      minY = y;
+    }
+    if (x + width > maxX || maxX === void 0) {
+      maxX = x + width;
+    }
+    if (y + height > maxY || maxY === void 0) {
+      maxY = y + height;
+    }
+  });
+  return {
+    x: minX,
+    y: minY,
+    height: maxY - minY,
+    width: maxX - minX
+  };
+}
+function getType(element) {
+  if ("waypoints" in element) {
+    return "connection";
+  }
+  if ("x" in element) {
+    return "shape";
+  }
+  return "root";
+}
+function isFrameElement(element) {
+  return !!(element && element.isFrame);
+}
+function copyObject(src1, src2) {
+  return assign({}, src1 || {}, src2 || {});
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/draw/DefaultRenderer.js
+var DEFAULT_RENDER_PRIORITY2 = 1;
+function DefaultRenderer(eventBus, styles) {
+  BaseRenderer.call(this, eventBus, DEFAULT_RENDER_PRIORITY2);
+  this.CONNECTION_STYLE = styles.style(["no-fill"], { strokeWidth: 5, stroke: "fuchsia" });
+  this.SHAPE_STYLE = styles.style({ fill: "white", stroke: "fuchsia", strokeWidth: 2 });
+  this.FRAME_STYLE = styles.style(["no-fill"], { stroke: "fuchsia", strokeDasharray: 4, strokeWidth: 2 });
+}
+e(DefaultRenderer, BaseRenderer);
+DefaultRenderer.prototype.canRender = function() {
+  return true;
+};
+DefaultRenderer.prototype.drawShape = function drawShape(visuals, element, attrs) {
+  var rect = create("rect");
+  attr(rect, {
+    x: 0,
+    y: 0,
+    width: element.width || 0,
+    height: element.height || 0
+  });
+  if (isFrameElement(element)) {
+    attr(rect, assign({}, this.FRAME_STYLE, attrs || {}));
+  } else {
+    attr(rect, assign({}, this.SHAPE_STYLE, attrs || {}));
+  }
+  append(visuals, rect);
+  return rect;
+};
+DefaultRenderer.prototype.drawConnection = function drawConnection(visuals, connection, attrs) {
+  var line = createLine(connection.waypoints, assign({}, this.CONNECTION_STYLE, attrs || {}));
+  append(visuals, line);
+  return line;
+};
+DefaultRenderer.prototype.getShapePath = function getShapePath(shape) {
+  var x = shape.x, y = shape.y, width = shape.width, height = shape.height;
+  var shapePath = [
+    ["M", x, y],
+    ["l", width, 0],
+    ["l", 0, height],
+    ["l", -width, 0],
+    ["z"]
+  ];
+  return componentsToPath(shapePath);
+};
+DefaultRenderer.prototype.getConnectionPath = function getConnectionPath(connection) {
+  var waypoints = connection.waypoints;
+  var idx, point, connectionPath = [];
+  for (idx = 0; point = waypoints[idx]; idx++) {
+    point = point.original || point;
+    connectionPath.push([idx === 0 ? "M" : "L", point.x, point.y]);
+  }
+  return componentsToPath(connectionPath);
+};
+DefaultRenderer.$inject = ["eventBus", "styles"];
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/draw/Styles.js
+function Styles() {
+  var defaultTraits = {
+    "no-fill": {
+      fill: "none"
+    },
+    "no-border": {
+      strokeOpacity: 0
+    },
+    "no-events": {
+      pointerEvents: "none"
+    }
+  };
+  var self = this;
+  this.cls = function(className, traits, additionalAttrs) {
+    var attrs = this.style(traits, additionalAttrs);
+    return assign(attrs, { "class": className });
+  };
+  this.style = function(traits, additionalAttrs) {
+    if (!isArray2(traits) && !additionalAttrs) {
+      additionalAttrs = traits;
+      traits = [];
+    }
+    var attrs = reduce(traits, function(attrs2, t) {
+      return assign(attrs2, defaultTraits[t] || {});
+    }, {});
+    return additionalAttrs ? assign(attrs, additionalAttrs) : attrs;
+  };
+  this.computeStyle = function(custom, traits, defaultStyles) {
+    if (!isArray2(traits)) {
+      defaultStyles = traits;
+      traits = [];
+    }
+    return self.style(traits || [], assign({}, defaultStyles, custom || {}));
+  };
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/draw/index.js
+var draw_default = {
+  __init__: ["defaultRenderer"],
+  defaultRenderer: ["type", DefaultRenderer],
+  styles: ["type", Styles]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/domify/index.js
+var wrapMap = {
+  legend: [1, "<fieldset>", "</fieldset>"],
+  tr: [2, "<table><tbody>", "</tbody></table>"],
+  col: [2, "<table><tbody></tbody><colgroup>", "</colgroup></table>"],
+  _default: [0, "", ""]
+};
+wrapMap.td = wrapMap.th = [3, "<table><tbody><tr>", "</tr></tbody></table>"];
+wrapMap.option = wrapMap.optgroup = [1, '<select multiple="multiple">', "</select>"];
+wrapMap.thead = wrapMap.tbody = wrapMap.colgroup = wrapMap.caption = wrapMap.tfoot = [1, "<table>", "</table>"];
+wrapMap.polyline = wrapMap.ellipse = wrapMap.polygon = wrapMap.circle = wrapMap.text = wrapMap.line = wrapMap.path = wrapMap.rect = wrapMap.g = [1, '<svg xmlns="http://www.w3.org/2000/svg" version="1.1">', "</svg>"];
+function domify(htmlString, document2 = globalThis.document) {
+  if (typeof htmlString !== "string") {
+    throw new TypeError("String expected");
+  }
+  const commentMatch = /^<!--(.*?)-->$/s.exec(htmlString);
+  if (commentMatch) {
+    return document2.createComment(commentMatch[1]);
+  }
+  const tagName = /<([\w:]+)/.exec(htmlString)?.[1];
+  if (!tagName) {
+    return document2.createTextNode(htmlString);
+  }
+  htmlString = htmlString.trim();
+  if (tagName === "body") {
+    const element2 = document2.createElement("html");
+    element2.innerHTML = htmlString;
+    const { lastChild } = element2;
+    lastChild.remove();
+    return lastChild;
+  }
+  let [depth, prefix, suffix] = Object.hasOwn(wrapMap, tagName) ? wrapMap[tagName] : wrapMap._default;
+  let element = document2.createElement("div");
+  element.innerHTML = prefix + htmlString + suffix;
+  while (depth--) {
+    element = element.lastChild;
+  }
+  if (element.firstChild === element.lastChild) {
+    const { firstChild } = element;
+    firstChild.remove();
+    return firstChild;
+  }
+  const fragment = document2.createDocumentFragment();
+  fragment.append(...element.childNodes);
+  return fragment;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/min-dom/dist/index.js
+function _mergeNamespaces(n, m) {
+  m.forEach(function(e2) {
+    e2 && typeof e2 !== "string" && !Array.isArray(e2) && Object.keys(e2).forEach(function(k) {
+      if (k !== "default" && !(k in n)) {
+        var d = Object.getOwnPropertyDescriptor(e2, k);
+        Object.defineProperty(n, k, d.get ? d : {
+          enumerable: true,
+          get: function() {
+            return e2[k];
+          }
+        });
+      }
+    });
+  });
+  return Object.freeze(n);
+}
+function assign2(element, ...styleSources) {
+  const target = element.style;
+  forEach(styleSources, function(style) {
+    if (!style) {
+      return;
+    }
+    forEach(style, function(value, key) {
+      target[key] = value;
+    });
+  });
+  return element;
+}
+function attr2(el, name, val) {
+  if (arguments.length == 2) {
+    return el.getAttribute(name);
+  }
+  if (val === null) {
+    return el.removeAttribute(name);
+  }
+  el.setAttribute(name, val);
+  return el;
+}
+var toString2 = Object.prototype.toString;
+function classes2(el) {
+  return new ClassList2(el);
+}
+function ClassList2(el) {
+  if (!el || !el.nodeType) {
+    throw new Error("A DOM element reference is required");
+  }
+  this.el = el;
+  this.list = el.classList;
+}
+ClassList2.prototype.add = function(name) {
+  this.list.add(name);
+  return this;
+};
+ClassList2.prototype.remove = function(name) {
+  if ("[object RegExp]" == toString2.call(name)) {
+    return this.removeMatching(name);
+  }
+  this.list.remove(name);
+  return this;
+};
+ClassList2.prototype.removeMatching = function(re) {
+  const arr = this.array();
+  for (let i = 0; i < arr.length; i++) {
+    if (re.test(arr[i])) {
+      this.remove(arr[i]);
+    }
+  }
+  return this;
+};
+ClassList2.prototype.toggle = function(name, force) {
+  if ("undefined" !== typeof force) {
+    if (force !== this.list.toggle(name, force)) {
+      this.list.toggle(name);
+    }
+  } else {
+    this.list.toggle(name);
+  }
+  return this;
+};
+ClassList2.prototype.array = function() {
+  return Array.from(this.list);
+};
+ClassList2.prototype.has = ClassList2.prototype.contains = function(name) {
+  return this.list.contains(name);
+};
+function clear2(element) {
+  var child;
+  while (child = element.firstChild) {
+    element.removeChild(child);
+  }
+  return element;
+}
+function closest(element, selector, checkYourSelf) {
+  var actualElement = checkYourSelf ? element : element.parentNode;
+  return actualElement && typeof actualElement.closest === "function" && actualElement.closest(selector) || null;
+}
+function getDefaultExportFromCjs(x) {
+  return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
+}
+var componentEvent = {};
+var hasRequiredComponentEvent;
+function requireComponentEvent() {
+  if (hasRequiredComponentEvent) return componentEvent;
+  hasRequiredComponentEvent = 1;
+  var bind3, unbind2, prefix;
+  function detect() {
+    bind3 = window.addEventListener ? "addEventListener" : "attachEvent";
+    unbind2 = window.removeEventListener ? "removeEventListener" : "detachEvent";
+    prefix = bind3 !== "addEventListener" ? "on" : "";
+  }
+  componentEvent.bind = function(el, type, fn, capture) {
+    if (!bind3) detect();
+    el[bind3](prefix + type, fn, capture || false);
+    return fn;
+  };
+  componentEvent.unbind = function(el, type, fn, capture) {
+    if (!unbind2) detect();
+    el[unbind2](prefix + type, fn, capture || false);
+    return fn;
+  };
+  return componentEvent;
+}
+var componentEventExports = requireComponentEvent();
+var index = /* @__PURE__ */ getDefaultExportFromCjs(componentEventExports);
+var event = /* @__PURE__ */ _mergeNamespaces({
+  __proto__: null,
+  default: index
+}, [componentEventExports]);
+var forceCaptureEvents = ["focus", "blur"];
+function bind2(el, selector, type, fn, capture) {
+  if (forceCaptureEvents.indexOf(type) !== -1) {
+    capture = true;
+  }
+  return event.bind(el, type, function(e2) {
+    var target = e2.target || e2.srcElement;
+    e2.delegateTarget = closest(target, selector, true);
+    if (e2.delegateTarget) {
+      fn.call(el, e2);
+    }
+  }, capture);
+}
+function unbind(el, type, fn, capture) {
+  if (forceCaptureEvents.indexOf(type) !== -1) {
+    capture = true;
+  }
+  return event.unbind(el, type, fn, capture);
+}
+var delegate = {
+  bind: bind2,
+  unbind
+};
+function query(selector, el) {
+  el = el || document;
+  return el.querySelector(selector);
+}
+function all(selector, el) {
+  el = el || document;
+  return el.querySelectorAll(selector);
+}
+function remove2(el) {
+  el.parentNode && el.parentNode.removeChild(el);
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/util/Collections.js
+function remove3(collection, element) {
+  if (!collection || !element) {
+    return -1;
+  }
+  var idx = collection.indexOf(element);
+  if (idx !== -1) {
+    collection.splice(idx, 1);
+  }
+  return idx;
+}
+function add(collection, element, idx) {
+  if (!collection || !element) {
+    return;
+  }
+  if (typeof idx !== "number") {
+    idx = -1;
+  }
+  var currentIdx = collection.indexOf(element);
+  if (currentIdx !== -1) {
+    if (currentIdx === idx) {
+      return;
+    } else {
+      if (idx !== -1) {
+        collection.splice(currentIdx, 1);
+      } else {
+        return;
+      }
+    }
+  }
+  if (idx !== -1) {
+    collection.splice(idx, 0, element);
+  } else {
+    collection.push(element);
+  }
+}
+function indexOf(collection, element) {
+  if (!collection || !element) {
+    return -1;
+  }
+  return collection.indexOf(element);
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/util/Geometry.js
+function pointDistance(a, b) {
+  if (!a || !b) {
+    return -1;
+  }
+  return Math.sqrt(
+    Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2)
+  );
+}
+function pointsOnLine(p, q, r, accuracy) {
+  if (typeof accuracy === "undefined") {
+    accuracy = 5;
+  }
+  if (!p || !q || !r) {
+    return false;
+  }
+  var val = (q.x - p.x) * (r.y - p.y) - (q.y - p.y) * (r.x - p.x), dist = pointDistance(p, q);
+  return Math.abs(val / dist) <= accuracy;
+}
+var ALIGNED_THRESHOLD = 2;
+function pointsAligned(a, b) {
+  var points = Array.from(arguments).flat();
+  const axisMap = {
+    "x": "v",
+    "y": "h"
+  };
+  for (const [axis, orientation] of Object.entries(axisMap)) {
+    if (pointsAlignedOnAxis(axis, points)) {
+      return orientation;
+    }
+  }
+  return false;
+}
+function pointsAlignedOnAxis(axis, points) {
+  const referencePoint = points[0];
+  return every(points, function(point) {
+    return Math.abs(referencePoint[axis] - point[axis]) <= ALIGNED_THRESHOLD;
+  });
+}
+function pointInRect(p, rect, tolerance) {
+  tolerance = tolerance || 0;
+  return p.x > rect.x - tolerance && p.y > rect.y - tolerance && p.x < rect.x + rect.width + tolerance && p.y < rect.y + rect.height + tolerance;
+}
+function getMidPoint(p, q) {
+  return {
+    x: Math.round(p.x + (q.x - p.x) / 2),
+    y: Math.round(p.y + (q.y - p.y) / 2)
+  };
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/path-intersection/intersect.js
+var p2s = /,?([a-z]),?/gi;
+var toFloat = parseFloat;
+var math = Math;
+var PI = math.PI;
+var mmin = math.min;
+var mmax = math.max;
+var pow = math.pow;
+var abs = math.abs;
+var pathCommand = /([a-z])[\s,]*((-?\d*\.?\d*(?:e[-+]?\d+)?[\s]*,?[\s]*)+)/ig;
+var pathValues = /(-?\d*\.?\d*(?:e[-+]?\d+)?)[\s]*,?[\s]*/ig;
+var arcNumber = "-?(?:\\d+\\.?\\d*|\\.\\d+)(?:[eE][-+]?\\d+)?";
+var arcSeparator = "[\\s]*,?[\\s]*";
+var arcValues = new RegExp(
+  "(?=(" + arcNumber + "))\\1" + arcSeparator + "(?=(" + arcNumber + "))\\2" + arcSeparator + "(?=(" + arcNumber + "))\\3" + arcSeparator + "([01])" + arcSeparator + "([01])" + arcSeparator + "(?=(" + arcNumber + "))\\6" + arcSeparator + "(?=(" + arcNumber + "))\\7" + arcSeparator,
+  "g"
+);
+var isArray3 = Array.isArray || function(o) {
+  return o instanceof Array;
+};
+function parsePathString(pathString) {
+  if (!pathString) {
+    return null;
+  }
+  var paramCounts = { a: 7, c: 6, h: 1, l: 2, m: 2, q: 4, s: 4, t: 2, v: 1, z: 0 }, pathComponents = [];
+  String(pathString).replace(pathCommand, function(a, b, c) {
+    var params = [], name = b.toLowerCase();
+    c.replace(name == "a" ? arcValues : pathValues, function() {
+      for (var i = 1; i < arguments.length - 2; i++) {
+        arguments[i] && params.push(+arguments[i]);
+      }
+    });
+    if (name == "m" && params.length > 2) {
+      pathComponents.push([b, ...params.splice(0, 2)]);
+      name = "l";
+      b = b == "m" ? "l" : "L";
+    }
+    while (params.length >= paramCounts[name]) {
+      pathComponents.push([b, ...params.splice(0, paramCounts[name])]);
+      if (!paramCounts[name]) {
+        break;
+      }
+    }
+  });
+  pathComponents.toString = pathToString;
+  return pathComponents;
+}
+function isPathAbsolute(pathComponents) {
+  for (var i = 0, ii = pathComponents.length; i < ii; i++) {
+    var command = pathComponents[i][0];
+    if (typeof command === "string" && command !== command.toUpperCase()) {
+      return false;
+    }
+  }
+  return true;
+}
+function isPathCurve(pathComponents) {
+  for (var i = 0, ii = pathComponents.length; i < ii; i++) {
+    var command = pathComponents[i][0];
+    if (command !== "M" && command !== "C") {
+      return false;
+    }
+  }
+  return true;
+}
+function rectBBox(x, y, width, height) {
+  if (arguments.length === 1) {
+    y = x.y;
+    width = x.width;
+    height = x.height;
+    x = x.x;
+  }
+  return {
+    x,
+    y,
+    width,
+    height,
+    x2: x + width,
+    y2: y + height
+  };
+}
+function pathToString() {
+  return this.join(",").replace(p2s, "$1");
+}
+function pathClone(pathComponents) {
+  var pathComponentsClone = new Array(pathComponents.length);
+  for (var i = 0, ii = pathComponents.length; i < ii; i++) {
+    var component = pathComponents[i];
+    var componentClone = pathComponentsClone[i] = new Array(component.length);
+    for (var j = 0, jj = component.length; j < jj; j++) {
+      componentClone[j] = component[j];
+    }
+  }
+  pathComponentsClone.toString = pathToString;
+  return pathComponentsClone;
+}
+function findDotsAtSegment(p1x, p1y, c1x, c1y, c2x, c2y, p2x, p2y, t) {
+  var t1 = 1 - t, t13 = pow(t1, 3), t12 = pow(t1, 2), t2 = t * t, t3 = t2 * t, x = t13 * p1x + t12 * 3 * t * c1x + t1 * 3 * t * t * c2x + t3 * p2x, y = t13 * p1y + t12 * 3 * t * c1y + t1 * 3 * t * t * c2y + t3 * p2y;
+  return {
+    x: fixError(x),
+    y: fixError(y)
+  };
+}
+function bezierBBox(points) {
+  var bbox = curveBBox(...points);
+  return rectBBox(
+    bbox.x0,
+    bbox.y0,
+    bbox.x1 - bbox.x0,
+    bbox.y1 - bbox.y0
+  );
+}
+function isPointInsideBBox(bbox, x, y) {
+  return x >= bbox.x && x <= bbox.x + bbox.width && y >= bbox.y && y <= bbox.y + bbox.height;
+}
+function isBBoxIntersect(bbox1, bbox2) {
+  return isPointInsideBBox(bbox2, bbox1.x, bbox1.y) || isPointInsideBBox(bbox2, bbox1.x2, bbox1.y) || isPointInsideBBox(bbox2, bbox1.x, bbox1.y2) || isPointInsideBBox(bbox2, bbox1.x2, bbox1.y2) || isPointInsideBBox(bbox1, bbox2.x, bbox2.y) || isPointInsideBBox(bbox1, bbox2.x2, bbox2.y) || isPointInsideBBox(bbox1, bbox2.x, bbox2.y2) || isPointInsideBBox(bbox1, bbox2.x2, bbox2.y2) || (bbox1.x < bbox2.x2 && bbox1.x > bbox2.x || bbox2.x < bbox1.x2 && bbox2.x > bbox1.x) && (bbox1.y < bbox2.y2 && bbox1.y > bbox2.y || bbox2.y < bbox1.y2 && bbox2.y > bbox1.y);
+}
+function base3(t, p1, p2, p3, p4) {
+  var t1 = -3 * p1 + 9 * p2 - 9 * p3 + 3 * p4, t2 = t * t1 + 6 * p1 - 12 * p2 + 6 * p3;
+  return t * t2 - 3 * p1 + 3 * p2;
+}
+function bezlen(x1, y1, x2, y2, x3, y3, x4, y4, z) {
+  if (z == null) {
+    z = 1;
+  }
+  z = z > 1 ? 1 : z < 0 ? 0 : z;
+  var z2 = z / 2, n = 12, Tvalues = [-0.1252, 0.1252, -0.3678, 0.3678, -0.5873, 0.5873, -0.7699, 0.7699, -0.9041, 0.9041, -0.9816, 0.9816], Cvalues = [0.2491, 0.2491, 0.2335, 0.2335, 0.2032, 0.2032, 0.1601, 0.1601, 0.1069, 0.1069, 0.0472, 0.0472], sum = 0;
+  for (var i = 0; i < n; i++) {
+    var ct = z2 * Tvalues[i] + z2, xbase = base3(ct, x1, x2, x3, x4), ybase = base3(ct, y1, y2, y3, y4), comb = xbase * xbase + ybase * ybase;
+    sum += Cvalues[i] * math.sqrt(comb);
+  }
+  return z2 * sum;
+}
+function intersectLines(x1, y1, x2, y2, x3, y3, x4, y4) {
+  if (mmax(x1, x2) < mmin(x3, x4) || mmin(x1, x2) > mmax(x3, x4) || mmax(y1, y2) < mmin(y3, y4) || mmin(y1, y2) > mmax(y3, y4)) {
+    return;
+  }
+  var nx = (x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4), ny = (x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4), denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+  if (!denominator) {
+    return;
+  }
+  var px = fixError(nx / denominator), py = fixError(ny / denominator), px2 = +px.toFixed(2), py2 = +py.toFixed(2);
+  if (px2 < +mmin(x1, x2).toFixed(2) || px2 > +mmax(x1, x2).toFixed(2) || px2 < +mmin(x3, x4).toFixed(2) || px2 > +mmax(x3, x4).toFixed(2) || py2 < +mmin(y1, y2).toFixed(2) || py2 > +mmax(y1, y2).toFixed(2) || py2 < +mmin(y3, y4).toFixed(2) || py2 > +mmax(y3, y4).toFixed(2)) {
+    return;
+  }
+  return { x: px, y: py };
+}
+function fixError(number) {
+  return Math.round(number * 1e11) / 1e11;
+}
+function findBezierIntersections(bez1, bez2, justCount, bbox1, bbox2) {
+  bbox1 = bbox1 || bezierBBox(bez1);
+  bbox2 = bbox2 || bezierBBox(bez2);
+  if (!isBBoxIntersect(bbox1, bbox2)) {
+    return justCount ? 0 : [];
+  }
+  var l1 = bezlen(...bez1), l2 = bezlen(...bez2), n1 = isLine(bez1) ? 1 : ~~(l1 / 5) || 1, n2 = isLine(bez2) ? 1 : ~~(l2 / 5) || 1, dots1 = new Array(n1 + 1), dots2 = new Array(n2 + 1), xy = {}, res = justCount ? 0 : [], i, j;
+  for (i = 0; i < n1 + 1; i++) {
+    var t = i / n1, p = findDotsAtSegment(...bez1, t);
+    dots1[i] = { x: p.x, y: p.y, t };
+  }
+  for (i = 0; i < n2 + 1; i++) {
+    t = i / n2;
+    p = findDotsAtSegment(...bez2, t);
+    dots2[i] = { x: p.x, y: p.y, t };
+  }
+  for (i = 0; i < n1; i++) {
+    for (j = 0; j < n2; j++) {
+      var di = dots1[i], di1 = dots1[i + 1], dj = dots2[j], dj1 = dots2[j + 1], ci = abs(di1.x - di.x) < 0.01 ? "y" : "x", cj = abs(dj1.x - dj.x) < 0.01 ? "y" : "x", is = intersectLines(di.x, di.y, di1.x, di1.y, dj.x, dj.y, dj1.x, dj1.y), key;
+      if (is) {
+        key = is.x.toFixed(9) + "#" + is.y.toFixed(9);
+        if (xy[key]) {
+          continue;
+        }
+        xy[key] = true;
+        var t1 = di.t + abs((is[ci] - di[ci]) / (di1[ci] - di[ci])) * (di1.t - di.t), t2 = dj.t + abs((is[cj] - dj[cj]) / (dj1[cj] - dj[cj])) * (dj1.t - dj.t);
+        if (t1 >= 0 && t1 <= 1 && t2 >= 0 && t2 <= 1) {
+          if (justCount) {
+            res++;
+          } else {
+            res.push({
+              x: is.x,
+              y: is.y,
+              t1,
+              t2
+            });
+          }
+        }
+      }
+    }
+  }
+  return res;
+}
+function findPathIntersections(path1, path2, justCount) {
+  var segments1 = pathToSegments(pathToCurve(path1)), segments2 = pathToSegments(pathToCurve(path2)), res = justCount ? 0 : [];
+  for (var i = 0, ii = segments1.length; i < ii; i++) {
+    var s1 = segments1[i];
+    for (var j = 0, jj = segments2.length; j < jj; j++) {
+      var s2 = segments2[j];
+      if (!isBBoxIntersect(s1.bbox, s2.bbox)) {
+        continue;
+      }
+      var intr = findBezierIntersections(s1.bez, s2.bez, justCount, s1.bbox, s2.bbox);
+      if (justCount) {
+        res += intr;
+      } else {
+        for (var k = 0, kk = intr.length; k < kk; k++) {
+          intr[k].segment1 = s1.segment;
+          intr[k].segment2 = s2.segment;
+          intr[k].bez1 = s1.bez;
+          intr[k].bez2 = s2.bez;
+          res.push(intr[k]);
+        }
+      }
+    }
+  }
+  return res;
+}
+function pathToSegments(pathComponents) {
+  var segments = [], x = 0, y = 0, xm = 0, ym = 0;
+  for (var i = 0, ii = pathComponents.length; i < ii; i++) {
+    var pi = pathComponents[i], bez;
+    if (pi[0] == "M") {
+      x = xm = pi[1];
+      y = ym = pi[2];
+      continue;
+    }
+    if (pi[0] == "C") {
+      bez = [x, y, pi[1], pi[2], pi[3], pi[4], pi[5], pi[6]];
+      x = pi[5];
+      y = pi[6];
+    } else {
+      bez = [x, y, x, y, xm, ym, xm, ym];
+      x = xm;
+      y = ym;
+    }
+    segments.push({
+      bez,
+      bbox: bezierBBox(bez),
+      segment: i
+    });
+  }
+  return segments;
+}
+function isPathComponents(path) {
+  return isArray3(path) && isArray3(path[0]);
+}
+function pathToAbsolute(pathComponents) {
+  if (isPathAbsolute(pathComponents)) {
+    return pathComponents;
+  }
+  var res = new Array(pathComponents.length), x = 0, y = 0, mx = 0, my = 0, start = 0, pa0;
+  if (pathComponents[0][0] == "M") {
+    x = +pathComponents[0][1];
+    y = +pathComponents[0][2];
+    mx = x;
+    my = y;
+    start++;
+    res[0] = ["M", x, y];
+  }
+  for (var r, pa, i = start, ii = pathComponents.length; i < ii; i++) {
+    pa = pathComponents[i];
+    pa0 = pa[0];
+    res[i] = r = new Array(pa.length);
+    if (pa0 != pa0.toUpperCase()) {
+      r[0] = pa0.toUpperCase();
+      switch (r[0]) {
+        case "A":
+          r[1] = pa[1];
+          r[2] = pa[2];
+          r[3] = pa[3];
+          r[4] = pa[4];
+          r[5] = pa[5];
+          r[6] = +pa[6] + x;
+          r[7] = +pa[7] + y;
+          break;
+        case "V":
+          r[1] = +pa[1] + y;
+          break;
+        case "H":
+          r[1] = +pa[1] + x;
+          break;
+        case "M":
+          mx = +pa[1] + x;
+          my = +pa[2] + y;
+        default:
+          for (var j = 1, jj = pa.length; j < jj; j++) {
+            r[j] = +pa[j] + (j % 2 ? x : y);
+          }
+      }
+    } else {
+      for (var k = 0, kk = pa.length; k < kk; k++) {
+        r[k] = pa[k];
+      }
+    }
+    pa0 = pa0.toUpperCase();
+    switch (r[0]) {
+      case "Z":
+        x = +mx;
+        y = +my;
+        break;
+      case "H":
+        x = r[1];
+        break;
+      case "V":
+        y = r[1];
+        break;
+      case "M":
+        mx = r[r.length - 2];
+        my = r[r.length - 1];
+      default:
+        x = r[r.length - 2];
+        y = r[r.length - 1];
+    }
+  }
+  res.toString = pathToString;
+  return res;
+}
+function isLine(bez) {
+  return bez[0] === bez[2] && bez[1] === bez[3] && bez[4] === bez[6] && bez[5] === bez[7];
+}
+function lineToCurve(x1, y1, x2, y2) {
+  return [
+    x1,
+    y1,
+    x2,
+    y2,
+    x2,
+    y2
+  ];
+}
+function qubicToCurve(x1, y1, ax, ay, x2, y2) {
+  var _13 = 1 / 3, _23 = 2 / 3;
+  return [
+    _13 * x1 + _23 * ax,
+    _13 * y1 + _23 * ay,
+    _13 * x2 + _23 * ax,
+    _13 * y2 + _23 * ay,
+    x2,
+    y2
+  ];
+}
+function arcToCurve(x1, y1, rx, ry, angle, large_arc_flag, sweep_flag, x2, y2, recursive) {
+  var _120 = PI * 120 / 180, rad = PI / 180 * (+angle || 0), res = [], xy, cos = math.cos(rad), sin = math.sin(rad), rotate2 = function(x3, y3) {
+    return { x: x3 * cos - y3 * sin, y: x3 * sin + y3 * cos };
+  };
+  if (!recursive) {
+    xy = rotate2(x1, -y1);
+    x1 = xy.x;
+    y1 = -xy.y;
+    xy = rotate2(x2, -y2);
+    x2 = xy.x;
+    y2 = -xy.y;
+    var x = (x1 - x2) / 2, y = (y1 - y2) / 2;
+    var h = x * x / (rx * rx) + y * y / (ry * ry);
+    if (h > 1) {
+      h = math.sqrt(h);
+      rx = h * rx;
+      ry = h * ry;
+    }
+    var rx2 = rx * rx, ry2 = ry * ry, k = (large_arc_flag == sweep_flag ? -1 : 1) * math.sqrt(abs((rx2 * ry2 - rx2 * y * y - ry2 * x * x) / (rx2 * y * y + ry2 * x * x))), cx = k * rx * y / ry + (x1 + x2) / 2, cy = k * -ry * x / rx + (y1 + y2) / 2, f1 = math.asin(((y1 - cy) / ry).toFixed(9)), f2 = math.asin(((y2 - cy) / ry).toFixed(9));
+    f1 = x1 < cx ? PI - f1 : f1;
+    f2 = x2 < cx ? PI - f2 : f2;
+    f1 < 0 && (f1 = PI * 2 + f1);
+    f2 < 0 && (f2 = PI * 2 + f2);
+    if (sweep_flag && f1 > f2) {
+      f1 = f1 - PI * 2;
+    }
+    if (!sweep_flag && f2 > f1) {
+      f2 = f2 - PI * 2;
+    }
+  } else {
+    f1 = recursive[0];
+    f2 = recursive[1];
+    cx = recursive[2];
+    cy = recursive[3];
+  }
+  var df = f2 - f1;
+  if (abs(df) > _120) {
+    var f2old = f2, x2old = x2, y2old = y2;
+    f2 = f1 + _120 * (sweep_flag && f2 > f1 ? 1 : -1);
+    x2 = cx + rx * math.cos(f2);
+    y2 = cy + ry * math.sin(f2);
+    res = arcToCurve(x2, y2, rx, ry, angle, 0, sweep_flag, x2old, y2old, [f2, f2old, cx, cy]);
+  }
+  df = f2 - f1;
+  var c1 = math.cos(f1), s1 = math.sin(f1), c2 = math.cos(f2), s2 = math.sin(f2), t = math.tan(df / 4), hx = 4 / 3 * rx * t, hy = 4 / 3 * ry * t, m1 = [x1, y1], m2 = [x1 + hx * s1, y1 - hy * c1], m3 = [x2 + hx * s2, y2 - hy * c2], m4 = [x2, y2];
+  m2[0] = 2 * m1[0] - m2[0];
+  m2[1] = 2 * m1[1] - m2[1];
+  if (recursive) {
+    return [m2, m3, m4].concat(res);
+  } else {
+    res = [m2, m3, m4].concat(res).join().split(",");
+    var newres = [];
+    for (var i = 0, ii = res.length; i < ii; i++) {
+      newres[i] = i % 2 ? rotate2(res[i - 1], res[i]).y : rotate2(res[i], res[i + 1]).x;
+    }
+    return newres;
+  }
+}
+function curveBBox(x0, y0, x1, y1, x2, y2, x3, y3) {
+  var tvalues = [], bounds = [[], []], a, b, c, t, t1, t2, b2ac, sqrtb2ac;
+  for (var i = 0; i < 2; ++i) {
+    if (i == 0) {
+      b = 6 * x0 - 12 * x1 + 6 * x2;
+      a = -3 * x0 + 9 * x1 - 9 * x2 + 3 * x3;
+      c = 3 * x1 - 3 * x0;
+    } else {
+      b = 6 * y0 - 12 * y1 + 6 * y2;
+      a = -3 * y0 + 9 * y1 - 9 * y2 + 3 * y3;
+      c = 3 * y1 - 3 * y0;
+    }
+    if (abs(a) < 1e-12) {
+      if (abs(b) < 1e-12) {
+        continue;
+      }
+      t = -c / b;
+      if (0 < t && t < 1) {
+        tvalues.push(t);
+      }
+      continue;
+    }
+    b2ac = b * b - 4 * c * a;
+    sqrtb2ac = math.sqrt(b2ac);
+    if (b2ac < 0) {
+      continue;
+    }
+    t1 = (-b + sqrtb2ac) / (2 * a);
+    if (0 < t1 && t1 < 1) {
+      tvalues.push(t1);
+    }
+    t2 = (-b - sqrtb2ac) / (2 * a);
+    if (0 < t2 && t2 < 1) {
+      tvalues.push(t2);
+    }
+  }
+  var j = tvalues.length, jlen = j, mt;
+  while (j--) {
+    t = tvalues[j];
+    mt = 1 - t;
+    bounds[0][j] = mt * mt * mt * x0 + 3 * mt * mt * t * x1 + 3 * mt * t * t * x2 + t * t * t * x3;
+    bounds[1][j] = mt * mt * mt * y0 + 3 * mt * mt * t * y1 + 3 * mt * t * t * y2 + t * t * t * y3;
+  }
+  bounds[0][jlen] = x0;
+  bounds[1][jlen] = y0;
+  bounds[0][jlen + 1] = x3;
+  bounds[1][jlen + 1] = y3;
+  bounds[0].length = bounds[1].length = jlen + 2;
+  return {
+    x0: mmin(...bounds[0]),
+    y0: mmin(...bounds[1]),
+    x1: mmax(...bounds[0]),
+    y1: mmax(...bounds[1])
+  };
+}
+function pathToCurve(path) {
+  if (!isPathComponents(path)) {
+    path = parsePathString(path);
+  }
+  if (isPathCurve(path)) {
+    return path;
+  }
+  var curvedPath = pathClone(pathToAbsolute(path)), attrs = { x: 0, y: 0, bx: 0, by: 0, X: 0, Y: 0, qx: null, qy: null }, processPath = function(path2, d, pathCommand3) {
+    var nx, ny;
+    if (!path2) {
+      return ["C", d.x, d.y, d.x, d.y, d.x, d.y];
+    }
+    !(path2[0] in { T: 1, Q: 1 }) && (d.qx = d.qy = null);
+    switch (path2[0]) {
+      case "M":
+        d.X = path2[1];
+        d.Y = path2[2];
+        break;
+      case "A":
+        path2 = ["C", ...arcToCurve(d.x, d.y, ...path2.slice(1))];
+        break;
+      case "S":
+        if (pathCommand3 == "C" || pathCommand3 == "S") {
+          nx = d.x * 2 - d.bx;
+          ny = d.y * 2 - d.by;
+        } else {
+          nx = d.x;
+          ny = d.y;
+        }
+        path2 = ["C", nx, ny, ...path2.slice(1)];
+        break;
+      case "T":
+        if (pathCommand3 == "Q" || pathCommand3 == "T") {
+          d.qx = d.x * 2 - d.qx;
+          d.qy = d.y * 2 - d.qy;
+        } else {
+          d.qx = d.x;
+          d.qy = d.y;
+        }
+        path2 = ["C", ...qubicToCurve(d.x, d.y, d.qx, d.qy, path2[1], path2[2])];
+        break;
+      case "Q":
+        d.qx = path2[1];
+        d.qy = path2[2];
+        path2 = ["C", ...qubicToCurve(d.x, d.y, path2[1], path2[2], path2[3], path2[4])];
+        break;
+      case "L":
+        path2 = ["C", ...lineToCurve(d.x, d.y, path2[1], path2[2])];
+        break;
+      case "H":
+        path2 = ["C", ...lineToCurve(d.x, d.y, path2[1], d.y)];
+        break;
+      case "V":
+        path2 = ["C", ...lineToCurve(d.x, d.y, d.x, path2[1])];
+        break;
+      case "Z":
+        path2 = ["C", ...lineToCurve(d.x, d.y, d.X, d.Y)];
+        break;
+    }
+    return path2;
+  }, fixArc = function(pp, i2) {
+    if (pp[i2].length > 7) {
+      pp[i2].shift();
+      var pi = pp[i2];
+      while (pi.length) {
+        pathCommands[i2] = "A";
+        pp.splice(i2++, 0, ["C", ...pi.splice(0, 6)]);
+      }
+      pp.splice(i2, 1);
+      ii = curvedPath.length;
+    }
+  }, pathCommands = [], pfirst = "", pathCommand2 = "";
+  for (var i = 0, ii = curvedPath.length; i < ii; i++) {
+    curvedPath[i] && (pfirst = curvedPath[i][0]);
+    if (pfirst != "C") {
+      pathCommands[i] = pfirst;
+      i && (pathCommand2 = pathCommands[i - 1]);
+    }
+    curvedPath[i] = processPath(curvedPath[i], attrs, pathCommand2);
+    if (pathCommands[i] != "A" && pfirst == "C") pathCommands[i] = "C";
+    fixArc(curvedPath, i);
+    var seg = curvedPath[i], seglen = seg.length;
+    attrs.x = seg[seglen - 2];
+    attrs.y = seg[seglen - 1];
+    attrs.bx = toFloat(seg[seglen - 4]) || attrs.x;
+    attrs.by = toFloat(seg[seglen - 3]) || attrs.y;
+  }
+  return curvedPath;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/util/ModelUtil.js
+function isConnection(value) {
+  return isObject(value) && has(value, "waypoints");
+}
+function isLabel(value) {
+  return isObject(value) && has(value, "labelTarget");
+}
+function isRoot(value) {
+  return isObject(value) && isNil(value.parent);
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/layout/LayoutUtil.js
+function roundBounds(bounds) {
+  return {
+    x: Math.round(bounds.x),
+    y: Math.round(bounds.y),
+    width: Math.round(bounds.width),
+    height: Math.round(bounds.height)
+  };
+}
+function roundPoint(point) {
+  return {
+    x: Math.round(point.x),
+    y: Math.round(point.y)
+  };
+}
+function asTRBL(bounds) {
+  return {
+    top: bounds.y,
+    right: bounds.x + (bounds.width || 0),
+    bottom: bounds.y + (bounds.height || 0),
+    left: bounds.x
+  };
+}
+function asBounds(trbl) {
+  return {
+    x: trbl.left,
+    y: trbl.top,
+    width: trbl.right - trbl.left,
+    height: trbl.bottom - trbl.top
+  };
+}
+function getBoundsMid(bounds) {
+  return roundPoint({
+    x: bounds.x + (bounds.width || 0) / 2,
+    y: bounds.y + (bounds.height || 0) / 2
+  });
+}
+function getConnectionMid(connection) {
+  var waypoints = connection.waypoints;
+  var parts = waypoints.reduce(function(parts2, point, index2) {
+    var lastPoint = waypoints[index2 - 1];
+    if (lastPoint) {
+      var lastPart = parts2[parts2.length - 1];
+      var startLength = lastPart && lastPart.endLength || 0;
+      var length2 = distance(lastPoint, point);
+      parts2.push({
+        start: lastPoint,
+        end: point,
+        startLength,
+        endLength: startLength + length2,
+        length: length2
+      });
+    }
+    return parts2;
+  }, []);
+  var totalLength = parts.reduce(function(length2, part) {
+    return length2 + part.length;
+  }, 0);
+  var midLength = totalLength / 2;
+  var i = 0;
+  var midSegment = parts[i];
+  while (midSegment.endLength < midLength) {
+    midSegment = parts[++i];
+  }
+  var segmentProgress = (midLength - midSegment.startLength) / midSegment.length;
+  var midPoint = {
+    x: midSegment.start.x + (midSegment.end.x - midSegment.start.x) * segmentProgress,
+    y: midSegment.start.y + (midSegment.end.y - midSegment.start.y) * segmentProgress
+  };
+  return midPoint;
+}
+function getMid(element) {
+  if (isConnection(element)) {
+    return getConnectionMid(element);
+  }
+  return getBoundsMid(element);
+}
+function getOrientation(rect, reference, padding) {
+  padding = padding || 0;
+  if (!isObject(padding)) {
+    padding = { x: padding, y: padding };
+  }
+  var rectOrientation = asTRBL(rect), referenceOrientation = asTRBL(reference);
+  var top = rectOrientation.bottom + padding.y <= referenceOrientation.top, right = rectOrientation.left - padding.x >= referenceOrientation.right, bottom = rectOrientation.top - padding.y >= referenceOrientation.bottom, left = rectOrientation.right + padding.x <= referenceOrientation.left;
+  var vertical = top ? "top" : bottom ? "bottom" : null, horizontal = left ? "left" : right ? "right" : null;
+  if (horizontal && vertical) {
+    return vertical + "-" + horizontal;
+  } else {
+    return horizontal || vertical || "intersect";
+  }
+}
+function filterRedundantWaypoints(waypoints) {
+  waypoints = waypoints.slice();
+  var idx = 0, point, previousPoint, nextPoint;
+  while (waypoints[idx]) {
+    point = waypoints[idx];
+    previousPoint = waypoints[idx - 1];
+    nextPoint = waypoints[idx + 1];
+    if (pointDistance(point, nextPoint) === 0 || pointsOnLine(previousPoint, nextPoint, point)) {
+      waypoints.splice(idx, 1);
+    } else {
+      idx++;
+    }
+  }
+  return waypoints;
+}
+function distance(a, b) {
+  return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/core/Canvas.js
+function round(number, resolution) {
+  return Math.round(number * resolution) / resolution;
+}
+function ensurePx(number) {
+  return isNumber(number) ? number + "px" : number;
+}
+function findRoot(element) {
+  while (element.parent) {
+    element = element.parent;
+  }
+  return element;
+}
+function createContainer(options) {
+  options = assign({}, { width: "100%", height: "100%" }, options);
+  const container = options.container || document.body;
+  const parent = document.createElement("div");
+  parent.setAttribute("class", "djs-container djs-parent bio-theme-parent");
+  assign2(parent, {
+    position: "relative",
+    overflow: "hidden",
+    width: ensurePx(options.width),
+    height: ensurePx(options.height)
+  });
+  container.appendChild(parent);
+  return parent;
+}
+function createGroup(parent, cls, childIndex) {
+  const group = create("g");
+  classes(group).add(cls);
+  const index2 = childIndex !== void 0 ? childIndex : parent.childNodes.length - 1;
+  parent.insertBefore(group, parent.childNodes[index2] || null);
+  return group;
+}
+var BASE_LAYER = "base";
+var PLANE_LAYER_INDEX = 0;
+var UTILITY_LAYER_INDEX = 1;
+var REQUIRED_MODEL_ATTRS = {
+  shape: ["x", "y", "width", "height"],
+  connection: ["waypoints"]
+};
+function Canvas(config, eventBus, graphicsFactory, elementRegistry) {
+  this._eventBus = eventBus;
+  this._elementRegistry = elementRegistry;
+  this._graphicsFactory = graphicsFactory;
+  this._rootsIdx = 0;
+  this._layers = {};
+  this._planes = [];
+  this._rootElement = null;
+  this._focused = false;
+  this._init(config || {});
+}
+Canvas.$inject = [
+  "config.canvas",
+  "eventBus",
+  "graphicsFactory",
+  "elementRegistry"
+];
+Canvas.prototype._init = function(config) {
+  const eventBus = this._eventBus;
+  const container = this._container = createContainer(config);
+  const svg = this._svg = create("svg");
+  attr(svg, {
+    width: "100%",
+    height: "100%"
+  });
+  attr2(svg, "tabindex", 0);
+  config.autoFocus && eventBus.on("element.hover", () => {
+    this.restoreFocus();
+  });
+  eventBus.on("element.mousedown", 500, (event2) => {
+    this.focus();
+  });
+  svg.addEventListener("focusin", () => {
+    this._setFocused(true);
+  });
+  svg.addEventListener("focusout", () => {
+    this._setFocused(false);
+  });
+  svg.addEventListener("mouseover", () => {
+    this._eventBus.fire("canvas.mouseover");
+  });
+  svg.addEventListener("mouseout", () => {
+    this._eventBus.fire("canvas.mouseout");
+  });
+  append(container, svg);
+  const viewport = this._viewport = createGroup(svg, "viewport");
+  if (config.deferUpdate) {
+    this._viewboxChanged = debounce(this._viewboxChanged, 300);
+  }
+  this._restoreFocus = debounce(this._restoreFocus, 0);
+  eventBus.on("diagram.init", () => {
+    eventBus.fire("canvas.init", {
+      svg,
+      viewport
+    });
+  });
+  eventBus.on([
+    "shape.added",
+    "connection.added",
+    "shape.removed",
+    "connection.removed",
+    "elements.changed",
+    "root.set"
+  ], () => {
+    delete this._cachedViewbox;
+  });
+  eventBus.on("diagram.destroy", 500, this._destroy, this);
+  eventBus.on("diagram.clear", 500, this._clear, this);
+};
+Canvas.prototype._destroy = function() {
+  this._restoreFocus.cancel();
+  this._eventBus.fire("canvas.destroy", {
+    svg: this._svg,
+    viewport: this._viewport
+  });
+  const parent = this._container.parentNode;
+  if (parent) {
+    parent.removeChild(this._container);
+  }
+  delete this._svg;
+  delete this._container;
+  delete this._layers;
+  delete this._planes;
+  delete this._rootElement;
+  delete this._viewport;
+};
+Canvas.prototype._setFocused = function(focused) {
+  if (focused == this._focused) {
+    return;
+  }
+  this._focused = focused;
+  this._eventBus.fire("canvas.focus.changed", { focused });
+};
+Canvas.prototype._clear = function() {
+  const allElements = this._elementRegistry.getAll();
+  allElements.forEach((element) => {
+    const type = getType(element);
+    if (type === "root") {
+      this.removeRootElement(element);
+    } else {
+      this._removeElement(element, type);
+    }
+  });
+  this._planes = [];
+  this._rootElement = null;
+  delete this._cachedViewbox;
+};
+Canvas.prototype.focus = function() {
+  this._svg.focus({ preventScroll: true });
+  this._setFocused(true);
+};
+Canvas.prototype.restoreFocus = function() {
+  this._restoreFocus();
+};
+Canvas.prototype._restoreFocus = function() {
+  if (document.activeElement === document.body) {
+    this.focus();
+  }
+};
+Canvas.prototype.isFocused = function() {
+  return this._focused;
+};
+Canvas.prototype.getDefaultLayer = function() {
+  return this.getLayer(BASE_LAYER, PLANE_LAYER_INDEX);
+};
+Canvas.prototype.getLayer = function(name, index2) {
+  if (!name) {
+    throw new Error("must specify a name");
+  }
+  let layer = this._layers[name];
+  if (!layer) {
+    layer = this._layers[name] = this._createLayer(name, index2);
+  }
+  if (typeof index2 !== "undefined" && layer.index !== index2) {
+    throw new Error("layer <" + name + "> already created at index <" + index2 + ">");
+  }
+  return layer.group;
+};
+Canvas.prototype._getChildIndex = function(index2) {
+  return reduce(this._layers, function(childIndex, layer) {
+    if (layer.visible && index2 >= layer.index) {
+      childIndex++;
+    }
+    return childIndex;
+  }, 0);
+};
+Canvas.prototype._createLayer = function(name, index2) {
+  if (typeof index2 === "undefined") {
+    index2 = UTILITY_LAYER_INDEX;
+  }
+  const childIndex = this._getChildIndex(index2);
+  return {
+    group: createGroup(this._viewport, "layer-" + name, childIndex),
+    index: index2,
+    visible: true
+  };
+};
+Canvas.prototype.showLayer = function(name) {
+  if (!name) {
+    throw new Error("must specify a name");
+  }
+  const layer = this._layers[name];
+  if (!layer) {
+    throw new Error("layer <" + name + "> does not exist");
+  }
+  const viewport = this._viewport;
+  const group = layer.group;
+  const index2 = layer.index;
+  if (layer.visible) {
+    return group;
+  }
+  const childIndex = this._getChildIndex(index2);
+  viewport.insertBefore(group, viewport.childNodes[childIndex] || null);
+  layer.visible = true;
+  return group;
+};
+Canvas.prototype.hideLayer = function(name) {
+  if (!name) {
+    throw new Error("must specify a name");
+  }
+  const layer = this._layers[name];
+  if (!layer) {
+    throw new Error("layer <" + name + "> does not exist");
+  }
+  const group = layer.group;
+  if (!layer.visible) {
+    return group;
+  }
+  remove(group);
+  layer.visible = false;
+  return group;
+};
+Canvas.prototype._removeLayer = function(name) {
+  const layer = this._layers[name];
+  if (layer) {
+    delete this._layers[name];
+    remove(layer.group);
+  }
+};
+Canvas.prototype.getActiveLayer = function() {
+  const plane = this._findPlaneForRoot(this.getRootElement());
+  if (!plane) {
+    return null;
+  }
+  return plane.layer;
+};
+Canvas.prototype.findRoot = function(element) {
+  const elements = this._resolveElements(element);
+  let root;
+  for (const element2 of elements) {
+    const plane = this._findPlaneForRoot(
+      findRoot(element2)
+    );
+    if (!plane) {
+      return;
+    }
+    if (root && plane.rootElement !== root) {
+      return void 0;
+    }
+    root = plane.rootElement;
+  }
+  return root;
+};
+Canvas.prototype.getRootElements = function() {
+  return this._planes.map(function(plane) {
+    return plane.rootElement;
+  });
+};
+Canvas.prototype._findPlaneForRoot = function(rootElement) {
+  return find(this._planes, function(plane) {
+    return plane.rootElement === rootElement;
+  });
+};
+Canvas.prototype._resolveElement = function(element) {
+  if (typeof element === "string") {
+    return this._elementRegistry.get(element);
+  }
+  return element;
+};
+Canvas.prototype._resolveElements = function(elements) {
+  if (!isArray2(elements)) {
+    elements = [elements];
+  }
+  return elements.map((element) => this._resolveElement(element)).filter(Boolean);
+};
+Canvas.prototype.getContainer = function() {
+  return this._container;
+};
+Canvas.prototype._updateMarker = function(element, marker, add2) {
+  let container;
+  element = this._resolveElement(element);
+  element.markers = element.markers || /* @__PURE__ */ new Set();
+  container = this._elementRegistry._elements[element.id];
+  if (!container) {
+    return;
+  }
+  forEach([container.gfx, container.secondaryGfx], function(gfx) {
+    if (gfx) {
+      if (add2) {
+        element.markers.add(marker);
+        classes(gfx).add(marker);
+      } else {
+        element.markers.delete(marker);
+        classes(gfx).remove(marker);
+      }
+    }
+  });
+  this._eventBus.fire("element.marker.update", { element, gfx: container.gfx, marker, add: !!add2 });
+};
+Canvas.prototype.addMarker = function(element, marker) {
+  this._updateMarker(element, marker, true);
+};
+Canvas.prototype.removeMarker = function(element, marker) {
+  this._updateMarker(element, marker, false);
+};
+Canvas.prototype.hasMarker = function(element, marker) {
+  element = this._resolveElement(element);
+  if (!element.markers) {
+    return false;
+  }
+  return element.markers.has(marker);
+};
+Canvas.prototype.toggleMarker = function(element, marker) {
+  if (this.hasMarker(element, marker)) {
+    this.removeMarker(element, marker);
+  } else {
+    this.addMarker(element, marker);
+  }
+};
+Canvas.prototype.getRootElement = function() {
+  const rootElement = this._rootElement;
+  if (rootElement || this._planes.length) {
+    return rootElement;
+  }
+  return this.setRootElement(this.addRootElement(null));
+};
+Canvas.prototype.addRootElement = function(rootElement) {
+  const idx = this._rootsIdx++;
+  if (!rootElement) {
+    rootElement = {
+      id: "__implicitroot_" + idx,
+      children: [],
+      isImplicit: true
+    };
+  }
+  const layerName = rootElement.layer = "root-" + idx;
+  this._ensureValid("root", rootElement);
+  const layer = this.getLayer(layerName, PLANE_LAYER_INDEX);
+  this.hideLayer(layerName);
+  this._addRoot(rootElement, layer);
+  this._planes.push({
+    rootElement,
+    layer
+  });
+  return rootElement;
+};
+Canvas.prototype.removeRootElement = function(rootElement) {
+  rootElement = this._resolveElement(rootElement);
+  const plane = this._findPlaneForRoot(rootElement);
+  if (!plane) {
+    return;
+  }
+  this._removeRoot(rootElement);
+  this._removeLayer(rootElement.layer);
+  this._planes = this._planes.filter(function(plane2) {
+    return plane2.rootElement !== rootElement;
+  });
+  if (this._rootElement === rootElement) {
+    this._rootElement = null;
+  }
+  return rootElement;
+};
+Canvas.prototype.setRootElement = function(rootElement) {
+  if (rootElement === this._rootElement) {
+    return rootElement;
+  }
+  let plane;
+  if (!rootElement) {
+    throw new Error("rootElement required");
+  }
+  plane = this._findPlaneForRoot(rootElement);
+  if (!plane) {
+    rootElement = this.addRootElement(rootElement);
+  }
+  this._setRoot(rootElement);
+  return rootElement;
+};
+Canvas.prototype._removeRoot = function(element) {
+  const elementRegistry = this._elementRegistry, eventBus = this._eventBus;
+  eventBus.fire("root.remove", { element });
+  eventBus.fire("root.removed", { element });
+  elementRegistry.remove(element);
+};
+Canvas.prototype._addRoot = function(element, gfx) {
+  const elementRegistry = this._elementRegistry, eventBus = this._eventBus;
+  eventBus.fire("root.add", { element });
+  elementRegistry.add(element, gfx);
+  eventBus.fire("root.added", { element, gfx });
+};
+Canvas.prototype._setRoot = function(rootElement, layer) {
+  const currentRoot = this._rootElement;
+  if (currentRoot) {
+    this._elementRegistry.updateGraphics(currentRoot, null, true);
+    this.hideLayer(currentRoot.layer);
+  }
+  if (rootElement) {
+    if (!layer) {
+      layer = this._findPlaneForRoot(rootElement).layer;
+    }
+    this._elementRegistry.updateGraphics(rootElement, this._svg, true);
+    this.showLayer(rootElement.layer);
+  }
+  this._rootElement = rootElement;
+  this._eventBus.fire("root.set", { element: rootElement });
+};
+Canvas.prototype._ensureValid = function(type, element) {
+  if (!element.id) {
+    throw new Error("element must have an id");
+  }
+  if (this._elementRegistry.get(element.id)) {
+    throw new Error("element <" + element.id + "> already exists");
+  }
+  const requiredAttrs = REQUIRED_MODEL_ATTRS[type];
+  const valid = every(requiredAttrs, function(attr3) {
+    return typeof element[attr3] !== "undefined";
+  });
+  if (!valid) {
+    throw new Error(
+      "must supply { " + requiredAttrs.join(", ") + " } with " + type
+    );
+  }
+};
+Canvas.prototype._setParent = function(element, parent, parentIndex) {
+  add(parent.children, element, parentIndex);
+  element.parent = parent;
+};
+Canvas.prototype._addElement = function(type, element, parent, parentIndex) {
+  parent = parent || this.getRootElement();
+  const eventBus = this._eventBus, graphicsFactory = this._graphicsFactory;
+  this._ensureValid(type, element);
+  eventBus.fire(type + ".add", { element, parent });
+  this._setParent(element, parent, parentIndex);
+  const gfx = graphicsFactory.create(type, element, parentIndex);
+  this._elementRegistry.add(element, gfx);
+  graphicsFactory.update(type, element, gfx);
+  eventBus.fire(type + ".added", { element, gfx });
+  return element;
+};
+Canvas.prototype.addShape = function(shape, parent, parentIndex) {
+  return this._addElement("shape", shape, parent, parentIndex);
+};
+Canvas.prototype.addConnection = function(connection, parent, parentIndex) {
+  return this._addElement("connection", connection, parent, parentIndex);
+};
+Canvas.prototype._removeElement = function(element, type) {
+  const elementRegistry = this._elementRegistry, graphicsFactory = this._graphicsFactory, eventBus = this._eventBus;
+  element = elementRegistry.get(element.id || element);
+  if (!element) {
+    return;
+  }
+  eventBus.fire(type + ".remove", { element });
+  graphicsFactory.remove(element);
+  remove3(element.parent && element.parent.children, element);
+  element.parent = null;
+  eventBus.fire(type + ".removed", { element });
+  elementRegistry.remove(element);
+  return element;
+};
+Canvas.prototype.removeShape = function(shape) {
+  return this._removeElement(shape, "shape");
+};
+Canvas.prototype.removeConnection = function(connection) {
+  return this._removeElement(connection, "connection");
+};
+Canvas.prototype.getGraphics = function(element, secondary) {
+  return this._elementRegistry.getGraphics(element, secondary);
+};
+Canvas.prototype._changeViewbox = function(changeFn) {
+  this._eventBus.fire("canvas.viewbox.changing");
+  changeFn.apply(this);
+  this._cachedViewbox = null;
+  this._viewboxChanged();
+};
+Canvas.prototype._viewboxChanged = function() {
+  this._eventBus.fire("canvas.viewbox.changed", { viewbox: this.viewbox() });
+};
+Canvas.prototype.viewbox = function(box) {
+  if (box === void 0 && this._cachedViewbox) {
+    return structuredClone(this._cachedViewbox);
+  }
+  const viewport = this._viewport, outerBox = this.getSize();
+  let innerBox, matrix, activeLayer, transform3, scale, x, y;
+  if (!box) {
+    activeLayer = this._rootElement ? this.getActiveLayer() : null;
+    innerBox = activeLayer && activeLayer.getBBox() || {};
+    transform3 = transform(viewport);
+    matrix = transform3 ? transform3.matrix : createMatrix();
+    scale = round(matrix.a, 1e3);
+    x = round(-matrix.e || 0, 1e3);
+    y = round(-matrix.f || 0, 1e3);
+    box = this._cachedViewbox = {
+      x: x ? x / scale : 0,
+      y: y ? y / scale : 0,
+      width: outerBox.width / scale,
+      height: outerBox.height / scale,
+      scale,
+      inner: {
+        width: innerBox.width || 0,
+        height: innerBox.height || 0,
+        x: innerBox.x || 0,
+        y: innerBox.y || 0
+      },
+      outer: outerBox
+    };
+    return box;
+  } else {
+    this._changeViewbox(function() {
+      scale = Math.min(outerBox.width / box.width, outerBox.height / box.height);
+      const matrix2 = this._svg.createSVGMatrix().scale(scale).translate(-box.x, -box.y);
+      transform(viewport, matrix2);
+    });
+  }
+  return box;
+};
+Canvas.prototype.scroll = function(delta2) {
+  const node2 = this._viewport;
+  let matrix = node2.getCTM();
+  if (delta2) {
+    this._changeViewbox(function() {
+      delta2 = assign({ dx: 0, dy: 0 }, delta2 || {});
+      matrix = this._svg.createSVGMatrix().translate(delta2.dx, delta2.dy).multiply(matrix);
+      setCTM(node2, matrix);
+    });
+  }
+  return { x: matrix.e, y: matrix.f };
+};
+Canvas.prototype.scrollToElement = function(element, padding) {
+  let defaultPadding = 100;
+  const elements = this._resolveElements(element);
+  if (!elements.length) {
+    return;
+  }
+  const rootElement = this.findRoot(elements);
+  if (!rootElement) {
+    return;
+  }
+  if (rootElement !== this.getRootElement()) {
+    this.setRootElement(rootElement);
+  }
+  const visibleElements = elements.filter((e2) => e2 != rootElement);
+  if (!visibleElements.length) {
+    return;
+  }
+  if (!padding) {
+    padding = {};
+  }
+  if (typeof padding === "number") {
+    defaultPadding = padding;
+  }
+  padding = {
+    top: padding.top || defaultPadding,
+    right: padding.right || defaultPadding,
+    bottom: padding.bottom || defaultPadding,
+    left: padding.left || defaultPadding
+  };
+  const elementBounds = getBBox(visibleElements), elementTrbl = asTRBL(elementBounds), viewboxBounds = this.viewbox(), zoom2 = this.zoom();
+  let dx, dy;
+  viewboxBounds.y += padding.top / zoom2;
+  viewboxBounds.x += padding.left / zoom2;
+  viewboxBounds.width -= (padding.right + padding.left) / zoom2;
+  viewboxBounds.height -= (padding.bottom + padding.top) / zoom2;
+  const viewboxTrbl = asTRBL(viewboxBounds);
+  const canFit = elementBounds.width < viewboxBounds.width && elementBounds.height < viewboxBounds.height;
+  if (!canFit) {
+    dx = elementBounds.x - viewboxBounds.x;
+    dy = elementBounds.y - viewboxBounds.y;
+  } else {
+    const dRight = Math.max(0, elementTrbl.right - viewboxTrbl.right), dLeft = Math.min(0, elementTrbl.left - viewboxTrbl.left), dBottom = Math.max(0, elementTrbl.bottom - viewboxTrbl.bottom), dTop = Math.min(0, elementTrbl.top - viewboxTrbl.top);
+    dx = dRight || dLeft;
+    dy = dBottom || dTop;
+  }
+  this.scroll({ dx: -dx * zoom2, dy: -dy * zoom2 });
+};
+Canvas.prototype.zoom = function(newScale, center2) {
+  if (!newScale) {
+    return this.viewbox(newScale).scale;
+  }
+  if (newScale === "fit-viewport") {
+    return this._fitViewport(center2);
+  }
+  let outer, matrix;
+  this._changeViewbox(function() {
+    if (typeof center2 !== "object") {
+      outer = this.viewbox().outer;
+      center2 = {
+        x: outer.width / 2,
+        y: outer.height / 2
+      };
+    }
+    matrix = this._setZoom(newScale, center2);
+  });
+  return round(matrix.a, 1e3);
+};
+function setCTM(node2, m) {
+  const mstr = "matrix(" + m.a + "," + m.b + "," + m.c + "," + m.d + "," + m.e + "," + m.f + ")";
+  node2.setAttribute("transform", mstr);
+}
+Canvas.prototype._fitViewport = function(center2) {
+  const vbox = this.viewbox(), outer = vbox.outer, inner = vbox.inner;
+  let newScale, newViewbox;
+  if (inner.x >= 0 && inner.y >= 0 && inner.x + inner.width <= outer.width && inner.y + inner.height <= outer.height && !center2) {
+    newViewbox = {
+      x: 0,
+      y: 0,
+      width: Math.max(inner.width + inner.x, outer.width),
+      height: Math.max(inner.height + inner.y, outer.height)
+    };
+  } else {
+    newScale = Math.min(1, outer.width / inner.width, outer.height / inner.height);
+    newViewbox = {
+      x: inner.x + (center2 ? inner.width / 2 - outer.width / newScale / 2 : 0),
+      y: inner.y + (center2 ? inner.height / 2 - outer.height / newScale / 2 : 0),
+      width: outer.width / newScale,
+      height: outer.height / newScale
+    };
+  }
+  this.viewbox(newViewbox);
+  return this.viewbox(false).scale;
+};
+Canvas.prototype._setZoom = function(scale, center2) {
+  const svg = this._svg, viewport = this._viewport;
+  const matrix = svg.createSVGMatrix();
+  const point = svg.createSVGPoint();
+  let centerPoint, originalPoint, currentMatrix, scaleMatrix, newMatrix;
+  currentMatrix = viewport.getCTM();
+  const currentScale = currentMatrix.a;
+  if (center2) {
+    centerPoint = assign(point, center2);
+    originalPoint = centerPoint.matrixTransform(currentMatrix.inverse());
+    scaleMatrix = matrix.translate(originalPoint.x, originalPoint.y).scale(1 / currentScale * scale).translate(-originalPoint.x, -originalPoint.y);
+    newMatrix = currentMatrix.multiply(scaleMatrix);
+  } else {
+    newMatrix = matrix.scale(scale);
+  }
+  setCTM(this._viewport, newMatrix);
+  return newMatrix;
+};
+Canvas.prototype.getSize = function() {
+  return {
+    width: this._container.clientWidth,
+    height: this._container.clientHeight
+  };
+};
+Canvas.prototype.getAbsoluteBBox = function(element) {
+  const vbox = this.viewbox();
+  let bbox;
+  if (element.waypoints) {
+    const gfx = this.getGraphics(element);
+    bbox = gfx.getBBox();
+  } else {
+    bbox = element;
+  }
+  const x = bbox.x * vbox.scale - vbox.x * vbox.scale;
+  const y = bbox.y * vbox.scale - vbox.y * vbox.scale;
+  const width = bbox.width * vbox.scale;
+  const height = bbox.height * vbox.scale;
+  return {
+    x,
+    y,
+    width,
+    height
+  };
+};
+Canvas.prototype.resized = function() {
+  delete this._cachedViewbox;
+  this._eventBus.fire("canvas.resized");
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/core/ElementRegistry.js
+var ELEMENT_ID = "data-element-id";
+function ElementRegistry(eventBus) {
+  this._elements = {};
+  this._eventBus = eventBus;
+}
+ElementRegistry.$inject = ["eventBus"];
+ElementRegistry.prototype.add = function(element, gfx, secondaryGfx) {
+  var id = element.id;
+  this._validateId(id);
+  attr(gfx, ELEMENT_ID, id);
+  if (secondaryGfx) {
+    attr(secondaryGfx, ELEMENT_ID, id);
+  }
+  this._elements[id] = { element, gfx, secondaryGfx };
+};
+ElementRegistry.prototype.remove = function(element) {
+  var elements = this._elements, id = element.id || element, container = id && elements[id];
+  if (container) {
+    attr(container.gfx, ELEMENT_ID, "");
+    if (container.secondaryGfx) {
+      attr(container.secondaryGfx, ELEMENT_ID, "");
+    }
+    delete elements[id];
+  }
+};
+ElementRegistry.prototype.updateId = function(element, newId) {
+  this._validateId(newId);
+  if (typeof element === "string") {
+    element = this.get(element);
+  }
+  this._eventBus.fire("element.updateId", {
+    element,
+    newId
+  });
+  var gfx = this.getGraphics(element), secondaryGfx = this.getGraphics(element, true);
+  this.remove(element);
+  element.id = newId;
+  this.add(element, gfx, secondaryGfx);
+};
+ElementRegistry.prototype.updateGraphics = function(filter2, gfx, secondary) {
+  var id = filter2.id || filter2;
+  var container = this._elements[id];
+  if (secondary) {
+    container.secondaryGfx = gfx;
+  } else {
+    container.gfx = gfx;
+  }
+  if (gfx) {
+    attr(gfx, ELEMENT_ID, id);
+  }
+  return gfx;
+};
+ElementRegistry.prototype.get = function(filter2) {
+  var id;
+  if (typeof filter2 === "string") {
+    id = filter2;
+  } else {
+    id = filter2 && attr(filter2, ELEMENT_ID);
+  }
+  var container = this._elements[id];
+  return container && container.element;
+};
+ElementRegistry.prototype.filter = function(fn) {
+  var filtered = [];
+  this.forEach(function(element, gfx) {
+    if (fn(element, gfx)) {
+      filtered.push(element);
+    }
+  });
+  return filtered;
+};
+ElementRegistry.prototype.find = function(fn) {
+  var map2 = this._elements, keys2 = Object.keys(map2);
+  for (var i = 0; i < keys2.length; i++) {
+    var id = keys2[i], container = map2[id], element = container.element, gfx = container.gfx;
+    if (fn(element, gfx)) {
+      return element;
+    }
+  }
+};
+ElementRegistry.prototype.getAll = function() {
+  return this.filter(function(e2) {
+    return e2;
+  });
+};
+ElementRegistry.prototype.forEach = function(fn) {
+  var map2 = this._elements;
+  Object.keys(map2).forEach(function(id) {
+    var container = map2[id], element = container.element, gfx = container.gfx;
+    return fn(element, gfx);
+  });
+};
+ElementRegistry.prototype.getGraphics = function(filter2, secondary) {
+  var id = filter2.id || filter2;
+  var container = this._elements[id];
+  return container && (secondary ? container.secondaryGfx : container.gfx);
+};
+ElementRegistry.prototype._validateId = function(id) {
+  if (!id) {
+    throw new Error("element must have an id");
+  }
+  if (this._elements[id]) {
+    throw new Error("element with id " + id + " already added");
+  }
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/object-refs/dist/index.js
+function extend2(collection, refs, property, target) {
+  var inverseProperty = property.inverse;
+  Object.defineProperty(collection, "remove", {
+    value: function(element) {
+      var idx = this.indexOf(element);
+      if (idx !== -1) {
+        this.splice(idx, 1);
+        refs.unset(element, inverseProperty, target);
+      }
+      return element;
+    }
+  });
+  Object.defineProperty(collection, "contains", {
+    value: function(element) {
+      return this.indexOf(element) !== -1;
+    }
+  });
+  Object.defineProperty(collection, "add", {
+    value: function(element, idx) {
+      var currentIdx = this.indexOf(element);
+      if (typeof idx === "undefined") {
+        if (currentIdx !== -1) {
+          return;
+        }
+        idx = this.length;
+      }
+      if (currentIdx !== -1) {
+        this.splice(currentIdx, 1);
+      }
+      this.splice(idx, 0, element);
+      if (currentIdx === -1) {
+        refs.set(element, inverseProperty, target);
+      }
+    }
+  });
+  Object.defineProperty(collection, "__refs_collection", {
+    value: true
+  });
+  return collection;
+}
+function isExtended(collection) {
+  return collection.__refs_collection === true;
+}
+function hasOwnProperty(e2, property) {
+  return Object.prototype.hasOwnProperty.call(e2, property.name || property);
+}
+function defineCollectionProperty(ref, property, target) {
+  var collection = extend2(target[property.name] || [], ref, property, target);
+  Object.defineProperty(target, property.name, {
+    enumerable: property.enumerable,
+    value: collection
+  });
+  if (collection.length) {
+    collection.forEach(function(o) {
+      ref.set(o, property.inverse, target);
+    });
+  }
+}
+function defineProperty(ref, property, target) {
+  var inverseProperty = property.inverse;
+  var _value = target[property.name];
+  Object.defineProperty(target, property.name, {
+    configurable: property.configurable,
+    enumerable: property.enumerable,
+    get: function() {
+      return _value;
+    },
+    set: function(value) {
+      if (value === _value) {
+        return;
+      }
+      var old = _value;
+      _value = null;
+      if (old) {
+        ref.unset(old, inverseProperty, target);
+      }
+      _value = value;
+      ref.set(_value, inverseProperty, target);
+    }
+  });
+}
+function Refs(a, b) {
+  if (!(this instanceof Refs)) {
+    return new Refs(a, b);
+  }
+  a.inverse = b;
+  b.inverse = a;
+  this.props = {};
+  this.props[a.name] = a;
+  this.props[b.name] = b;
+}
+Refs.prototype.bind = function(target, property) {
+  if (typeof property === "string") {
+    if (!this.props[property]) {
+      throw new Error("no property <" + property + "> in ref");
+    }
+    property = this.props[property];
+  }
+  if (property.collection) {
+    defineCollectionProperty(this, property, target);
+  } else {
+    defineProperty(this, property, target);
+  }
+};
+Refs.prototype.ensureRefsCollection = function(target, property) {
+  var collection = target[property.name];
+  if (!isExtended(collection)) {
+    defineCollectionProperty(this, property, target);
+  }
+  return collection;
+};
+Refs.prototype.ensureBound = function(target, property) {
+  if (!hasOwnProperty(target, property)) {
+    this.bind(target, property);
+  }
+};
+Refs.prototype.unset = function(target, property, value) {
+  if (target) {
+    this.ensureBound(target, property);
+    if (property.collection) {
+      this.ensureRefsCollection(target, property).remove(value);
+    } else {
+      target[property.name] = void 0;
+    }
+  }
+};
+Refs.prototype.set = function(target, property, value) {
+  if (target) {
+    this.ensureBound(target, property);
+    if (property.collection) {
+      this.ensureRefsCollection(target, property).add(value);
+    } else {
+      target[property.name] = value;
+    }
+  }
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/model/index.js
+var parentRefs = new Refs({ name: "children", enumerable: true, collection: true }, { name: "parent" });
+var labelRefs = new Refs({ name: "labels", enumerable: true, collection: true }, { name: "labelTarget" });
+var attacherRefs = new Refs({ name: "attachers", collection: true }, { name: "host" });
+var outgoingRefs = new Refs({ name: "outgoing", collection: true }, { name: "source" });
+var incomingRefs = new Refs({ name: "incoming", collection: true }, { name: "target" });
+function ElementImpl() {
+  Object.defineProperty(this, "businessObject", {
+    writable: true
+  });
+  Object.defineProperty(this, "label", {
+    get: function() {
+      return this.labels[0];
+    },
+    set: function(newLabel) {
+      var label = this.label, labels = this.labels;
+      if (!newLabel && label) {
+        labels.remove(label);
+      } else {
+        labels.add(newLabel, 0);
+      }
+    }
+  });
+  parentRefs.bind(this, "parent");
+  labelRefs.bind(this, "labels");
+  outgoingRefs.bind(this, "outgoing");
+  incomingRefs.bind(this, "incoming");
+}
+function ShapeImpl() {
+  ElementImpl.call(this);
+  parentRefs.bind(this, "children");
+  attacherRefs.bind(this, "host");
+  attacherRefs.bind(this, "attachers");
+}
+e(ShapeImpl, ElementImpl);
+function RootImpl() {
+  ElementImpl.call(this);
+  parentRefs.bind(this, "children");
+}
+e(RootImpl, ShapeImpl);
+function LabelImpl() {
+  ShapeImpl.call(this);
+  labelRefs.bind(this, "labelTarget");
+}
+e(LabelImpl, ShapeImpl);
+function ConnectionImpl() {
+  ElementImpl.call(this);
+  outgoingRefs.bind(this, "source");
+  incomingRefs.bind(this, "target");
+}
+e(ConnectionImpl, ElementImpl);
+var types = {
+  connection: ConnectionImpl,
+  shape: ShapeImpl,
+  label: LabelImpl,
+  root: RootImpl
+};
+function create2(type, attrs) {
+  var Type = types[type];
+  if (!Type) {
+    throw new Error("unknown type: <" + type + ">");
+  }
+  return assign(new Type(), attrs);
+}
+function isModelElement(obj) {
+  return obj instanceof ElementImpl;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/core/ElementFactory.js
+function ElementFactory() {
+  this._uid = 12;
+}
+ElementFactory.prototype.createRoot = function(attrs) {
+  return this.create("root", attrs);
+};
+ElementFactory.prototype.createLabel = function(attrs) {
+  return this.create("label", attrs);
+};
+ElementFactory.prototype.createShape = function(attrs) {
+  return this.create("shape", attrs);
+};
+ElementFactory.prototype.createConnection = function(attrs) {
+  return this.create("connection", attrs);
+};
+ElementFactory.prototype.create = function(type, attrs) {
+  attrs = assign({}, attrs || {});
+  if (!attrs.id) {
+    attrs.id = type + "_" + this._uid++;
+  }
+  return create2(type, attrs);
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/core/EventBus.js
+var FN_REF = "__fn";
+var DEFAULT_PRIORITY = 1e3;
+var slice = Array.prototype.slice;
+function EventBus() {
+  this._listeners = {};
+  this.on("diagram.destroy", 1, this._destroy, this);
+}
+EventBus.prototype.on = function(events, priority, callback, that) {
+  events = isArray2(events) ? events : [events];
+  if (isFunction(priority)) {
+    that = callback;
+    callback = priority;
+    priority = DEFAULT_PRIORITY;
+  }
+  if (!isNumber(priority)) {
+    throw new Error("priority must be a number");
+  }
+  var actualCallback = callback;
+  if (that) {
+    actualCallback = bind(callback, that);
+    actualCallback[FN_REF] = callback[FN_REF] || callback;
+  }
+  var self = this;
+  events.forEach(function(e2) {
+    self._addListener(e2, {
+      priority,
+      callback: actualCallback,
+      next: null
+    });
+  });
+};
+EventBus.prototype.once = function(events, priority, callback, that) {
+  var self = this;
+  if (isFunction(priority)) {
+    that = callback;
+    callback = priority;
+    priority = DEFAULT_PRIORITY;
+  }
+  if (!isNumber(priority)) {
+    throw new Error("priority must be a number");
+  }
+  function wrappedCallback() {
+    wrappedCallback.__isTomb = true;
+    var result = callback.apply(that, arguments);
+    self.off(events, wrappedCallback);
+    return result;
+  }
+  wrappedCallback[FN_REF] = callback;
+  this.on(events, priority, wrappedCallback);
+};
+EventBus.prototype.off = function(events, callback) {
+  events = isArray2(events) ? events : [events];
+  var self = this;
+  events.forEach(function(event2) {
+    self._removeListener(event2, callback);
+  });
+};
+EventBus.prototype.createEvent = function(data) {
+  var event2 = new InternalEvent();
+  event2.init(data);
+  return event2;
+};
+EventBus.prototype.fire = function(type, data) {
+  var event2, firstListener, returnValue, args;
+  args = slice.call(arguments);
+  if (typeof type === "object") {
+    data = type;
+    type = data.type;
+  }
+  if (!type) {
+    throw new Error("no event type specified");
+  }
+  firstListener = this._listeners[type];
+  if (!firstListener) {
+    return;
+  }
+  if (data instanceof InternalEvent) {
+    event2 = data;
+  } else {
+    event2 = this.createEvent(data);
+  }
+  args[0] = event2;
+  var originalType = event2.type;
+  if (type !== originalType) {
+    event2.type = type;
+  }
+  try {
+    returnValue = this._invokeListeners(event2, args, firstListener);
+  } finally {
+    if (type !== originalType) {
+      event2.type = originalType;
+    }
+  }
+  if (returnValue === void 0 && event2.defaultPrevented) {
+    returnValue = false;
+  }
+  return returnValue;
+};
+EventBus.prototype.handleError = function(error) {
+  return this.fire("error", { error }) === false;
+};
+EventBus.prototype._destroy = function() {
+  this._listeners = {};
+};
+EventBus.prototype._invokeListeners = function(event2, args, listener) {
+  var returnValue;
+  while (listener) {
+    if (event2.cancelBubble) {
+      break;
+    }
+    returnValue = this._invokeListener(event2, args, listener);
+    listener = listener.next;
+  }
+  return returnValue;
+};
+EventBus.prototype._invokeListener = function(event2, args, listener) {
+  var returnValue;
+  if (listener.callback.__isTomb) {
+    return returnValue;
+  }
+  try {
+    returnValue = invokeFunction(listener.callback, args);
+    if (returnValue !== void 0) {
+      event2.returnValue = returnValue;
+      event2.stopPropagation();
+    }
+    if (returnValue === false) {
+      event2.preventDefault();
+    }
+  } catch (error) {
+    if (!this.handleError(error)) {
+      console.error("unhandled error in event listener", error);
+      throw error;
+    }
+  }
+  return returnValue;
+};
+EventBus.prototype._addListener = function(event2, newListener) {
+  var listener = this._getListeners(event2), previousListener;
+  if (!listener) {
+    this._setListeners(event2, newListener);
+    return;
+  }
+  while (listener) {
+    if (listener.priority < newListener.priority) {
+      newListener.next = listener;
+      if (previousListener) {
+        previousListener.next = newListener;
+      } else {
+        this._setListeners(event2, newListener);
+      }
+      return;
+    }
+    previousListener = listener;
+    listener = listener.next;
+  }
+  previousListener.next = newListener;
+};
+EventBus.prototype._getListeners = function(name) {
+  return this._listeners[name];
+};
+EventBus.prototype._setListeners = function(name, listener) {
+  this._listeners[name] = listener;
+};
+EventBus.prototype._removeListener = function(event2, callback) {
+  var listener = this._getListeners(event2), nextListener, previousListener, listenerCallback;
+  if (!callback) {
+    this._setListeners(event2, null);
+    return;
+  }
+  while (listener) {
+    nextListener = listener.next;
+    listenerCallback = listener.callback;
+    if (listenerCallback === callback || listenerCallback[FN_REF] === callback) {
+      if (previousListener) {
+        previousListener.next = nextListener;
+      } else {
+        this._setListeners(event2, nextListener);
+      }
+    }
+    previousListener = listener;
+    listener = nextListener;
+  }
+};
+function InternalEvent() {
+}
+InternalEvent.prototype.stopPropagation = function() {
+  this.cancelBubble = true;
+};
+InternalEvent.prototype.preventDefault = function() {
+  this.defaultPrevented = true;
+};
+InternalEvent.prototype.init = function(data) {
+  assign(this, data || {});
+};
+function invokeFunction(fn, args) {
+  return fn.apply(null, args);
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/util/GraphicsUtil.js
+function getVisual(gfx) {
+  return gfx.childNodes[0];
+}
+function getChildren(gfx) {
+  return gfx.parentNode.childNodes[1];
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/util/SvgTransformUtil.js
+function transform2(gfx, x, y, angle, amount) {
+  var translate2 = createTransform();
+  translate2.setTranslate(x, y);
+  var rotate2 = createTransform();
+  rotate2.setRotate(angle || 0, 0, 0);
+  var scale = createTransform();
+  scale.setScale(amount || 1, amount || 1);
+  transform(gfx, [translate2, rotate2, scale]);
+}
+function translate(gfx, x, y) {
+  var translate2 = createTransform();
+  translate2.setTranslate(x, y);
+  transform(gfx, translate2);
+}
+function rotate(gfx, angle) {
+  var rotate2 = createTransform();
+  rotate2.setRotate(angle, 0, 0);
+  transform(gfx, rotate2);
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/core/GraphicsFactory.js
+function GraphicsFactory(eventBus, elementRegistry) {
+  this._eventBus = eventBus;
+  this._elementRegistry = elementRegistry;
+}
+GraphicsFactory.$inject = ["eventBus", "elementRegistry"];
+GraphicsFactory.prototype._getChildrenContainer = function(element) {
+  var gfx = this._elementRegistry.getGraphics(element);
+  var childrenGfx;
+  if (!element.parent) {
+    childrenGfx = gfx;
+  } else {
+    childrenGfx = getChildren(gfx);
+    if (!childrenGfx) {
+      childrenGfx = create("g");
+      classes(childrenGfx).add("djs-children");
+      append(gfx.parentNode, childrenGfx);
+    }
+  }
+  return childrenGfx;
+};
+GraphicsFactory.prototype._clear = function(gfx) {
+  var visual = getVisual(gfx);
+  clear2(visual);
+  return visual;
+};
+GraphicsFactory.prototype._createContainer = function(type, childrenGfx, parentIndex, isFrame) {
+  var outerGfx = create("g");
+  classes(outerGfx).add("djs-group");
+  if (typeof parentIndex !== "undefined") {
+    prependTo(outerGfx, childrenGfx, childrenGfx.childNodes[parentIndex]);
+  } else {
+    append(childrenGfx, outerGfx);
+  }
+  var gfx = create("g");
+  classes(gfx).add("djs-element");
+  classes(gfx).add("djs-" + type);
+  if (isFrame) {
+    classes(gfx).add("djs-frame");
+  }
+  append(outerGfx, gfx);
+  var visual = create("g");
+  classes(visual).add("djs-visual");
+  append(gfx, visual);
+  return gfx;
+};
+GraphicsFactory.prototype.create = function(type, element, parentIndex) {
+  var childrenGfx = this._getChildrenContainer(element.parent);
+  return this._createContainer(type, childrenGfx, parentIndex, isFrameElement(element));
+};
+GraphicsFactory.prototype.updateContainments = function(elements) {
+  var self = this, elementRegistry = this._elementRegistry, parents;
+  parents = reduce(elements, function(map2, e2) {
+    if (e2.parent) {
+      map2[e2.parent.id] = e2.parent;
+    }
+    return map2;
+  }, {});
+  forEach(parents, function(parent) {
+    var children = parent.children;
+    if (!children) {
+      return;
+    }
+    var childrenGfx = self._getChildrenContainer(parent);
+    var expected = childrenGfx.firstChild;
+    forEach(children, function(child) {
+      var childGfx = elementRegistry.getGraphics(child).parentNode;
+      if (childGfx === expected) {
+        expected = expected.nextSibling;
+      } else {
+        childrenGfx.insertBefore(childGfx, expected);
+      }
+    });
+  });
+};
+GraphicsFactory.prototype.drawShape = function(visual, element, attrs = {}) {
+  var eventBus = this._eventBus;
+  return eventBus.fire("render.shape", { gfx: visual, element, attrs });
+};
+GraphicsFactory.prototype.getShapePath = function(element) {
+  var eventBus = this._eventBus;
+  return eventBus.fire("render.getShapePath", element);
+};
+GraphicsFactory.prototype.drawConnection = function(visual, element, attrs = {}) {
+  var eventBus = this._eventBus;
+  return eventBus.fire("render.connection", { gfx: visual, element, attrs });
+};
+GraphicsFactory.prototype.getConnectionPath = function(connection) {
+  var eventBus = this._eventBus;
+  return eventBus.fire("render.getConnectionPath", connection);
+};
+GraphicsFactory.prototype.update = function(type, element, gfx) {
+  if (!element.parent) {
+    return;
+  }
+  var visual = this._clear(gfx);
+  if (type === "shape") {
+    this.drawShape(visual, element);
+    translate(gfx, element.x, element.y);
+  } else if (type === "connection") {
+    this.drawConnection(visual, element);
+  } else {
+    throw new Error("unknown type: " + type);
+  }
+  if (element.hidden) {
+    attr(gfx, "display", "none");
+  } else {
+    attr(gfx, "display", "block");
+  }
+};
+GraphicsFactory.prototype.remove = function(element) {
+  var gfx = this._elementRegistry.getGraphics(element);
+  remove(gfx.parentNode);
+};
+function prependTo(newNode, parentNode, siblingNode) {
+  var node2 = siblingNode || parentNode.firstChild;
+  if (newNode === node2) {
+    return;
+  }
+  parentNode.insertBefore(newNode, node2);
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/core/index.js
+var core_default = {
+  __depends__: [draw_default],
+  __init__: ["canvas"],
+  canvas: ["type", Canvas],
+  elementRegistry: ["type", ElementRegistry],
+  elementFactory: ["type", ElementFactory],
+  eventBus: ["type", EventBus],
+  graphicsFactory: ["type", GraphicsFactory]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/Diagram.js
+function bootstrap(modules) {
+  var injector = new Injector(modules);
+  injector.init();
+  return injector;
+}
+function createInjector(options) {
+  options = options || {};
+  var configModule = {
+    "config": ["value", options]
+  };
+  var modules = [configModule, core_default].concat(options.modules || []);
+  return bootstrap(modules);
+}
+function Diagram(options, injector) {
+  this._injector = injector || createInjector(options);
+  this.get("eventBus").fire("diagram.init");
+}
+Diagram.prototype.get = function(name, strict) {
+  return this._injector.get(name, strict);
+};
+Diagram.prototype.invoke = function(func, context, locals) {
+  return this._injector.invoke(func, context, locals);
+};
+Diagram.prototype.destroy = function() {
+  this.get("eventBus").fire("diagram.destroy");
+};
+Diagram.prototype.clear = function() {
+  this.get("eventBus").fire("diagram.clear");
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/command/CommandStack.js
+function CommandStack(eventBus, injector) {
+  this._handlerMap = {};
+  this._stack = [];
+  this._stackIdx = -1;
+  this._currentExecution = {
+    actions: [],
+    dirty: [],
+    trigger: null
+  };
+  this._injector = injector;
+  this._eventBus = eventBus;
+  this._uid = 1;
+  eventBus.on([
+    "diagram.destroy",
+    "diagram.clear"
+  ], function() {
+    this.clear(false);
+  }, this);
+}
+CommandStack.$inject = ["eventBus", "injector"];
+CommandStack.prototype.execute = function(command, context) {
+  if (!command) {
+    throw new Error("command required");
+  }
+  this._currentExecution.trigger = "execute";
+  const action = { command, context };
+  this._pushAction(action);
+  this._internalExecute(action);
+  this._popAction();
+};
+CommandStack.prototype.canExecute = function(command, context) {
+  const action = { command, context };
+  const handler = this._getHandler(command);
+  let result = this._fire(command, "canExecute", action);
+  if (result === void 0) {
+    if (!handler) {
+      return false;
+    }
+    if (handler.canExecute) {
+      result = handler.canExecute(context);
+    }
+  }
+  return result;
+};
+CommandStack.prototype.clear = function(emit) {
+  this._stack.length = 0;
+  this._stackIdx = -1;
+  if (emit !== false) {
+    this._fire("changed", { trigger: "clear" });
+  }
+};
+CommandStack.prototype.undo = function() {
+  let action = this._getUndoAction(), next;
+  if (action) {
+    this._currentExecution.trigger = "undo";
+    this._pushAction(action);
+    while (action) {
+      this._internalUndo(action);
+      next = this._getUndoAction();
+      if (!next || next.id !== action.id) {
+        break;
+      }
+      action = next;
+    }
+    this._popAction();
+  }
+};
+CommandStack.prototype.redo = function() {
+  let action = this._getRedoAction(), next;
+  if (action) {
+    this._currentExecution.trigger = "redo";
+    this._pushAction(action);
+    while (action) {
+      this._internalExecute(action, true);
+      next = this._getRedoAction();
+      if (!next || next.id !== action.id) {
+        break;
+      }
+      action = next;
+    }
+    this._popAction();
+  }
+};
+CommandStack.prototype.register = function(command, handler) {
+  this._setHandler(command, handler);
+};
+CommandStack.prototype.registerHandler = function(command, handlerCls) {
+  if (!command || !handlerCls) {
+    throw new Error("command and handlerCls must be defined");
+  }
+  const handler = this._injector.instantiate(handlerCls);
+  this.register(command, handler);
+};
+CommandStack.prototype.canUndo = function() {
+  return !!this._getUndoAction();
+};
+CommandStack.prototype.canRedo = function() {
+  return !!this._getRedoAction();
+};
+CommandStack.prototype._getRedoAction = function() {
+  return this._stack[this._stackIdx + 1];
+};
+CommandStack.prototype._getUndoAction = function() {
+  return this._stack[this._stackIdx];
+};
+CommandStack.prototype._internalUndo = function(action) {
+  const command = action.command, context = action.context;
+  const handler = this._getHandler(command);
+  this._atomicDo(() => {
+    this._fire(command, "revert", action);
+    if (handler.revert) {
+      this._markDirty(handler.revert(context));
+    }
+    this._revertedAction(action);
+    this._fire(command, "reverted", action);
+  });
+};
+CommandStack.prototype._fire = function(command, qualifier, event2) {
+  if (arguments.length < 3) {
+    event2 = qualifier;
+    qualifier = null;
+  }
+  const names = qualifier ? [command + "." + qualifier, qualifier] : [command];
+  let result;
+  event2 = this._eventBus.createEvent(event2);
+  for (const name of names) {
+    result = this._eventBus.fire("commandStack." + name, event2);
+    if (event2.cancelBubble) {
+      break;
+    }
+  }
+  return result;
+};
+CommandStack.prototype._createId = function() {
+  return this._uid++;
+};
+CommandStack.prototype._atomicDo = function(fn) {
+  const execution = this._currentExecution;
+  execution.atomic = true;
+  try {
+    fn();
+  } finally {
+    execution.atomic = false;
+  }
+};
+CommandStack.prototype._internalExecute = function(action, redo) {
+  const command = action.command, context = action.context;
+  const handler = this._getHandler(command);
+  if (!handler) {
+    throw new Error("no command handler registered for <" + command + ">");
+  }
+  this._pushAction(action);
+  if (!redo) {
+    this._fire(command, "preExecute", action);
+    if (handler.preExecute) {
+      handler.preExecute(context);
+    }
+    this._fire(command, "preExecuted", action);
+  }
+  this._atomicDo(() => {
+    this._fire(command, "execute", action);
+    if (handler.execute) {
+      this._markDirty(handler.execute(context));
+    }
+    this._executedAction(action, redo);
+    this._fire(command, "executed", action);
+  });
+  if (!redo) {
+    this._fire(command, "postExecute", action);
+    if (handler.postExecute) {
+      handler.postExecute(context);
+    }
+    this._fire(command, "postExecuted", action);
+  }
+  this._popAction();
+};
+CommandStack.prototype._pushAction = function(action) {
+  const execution = this._currentExecution, actions = execution.actions;
+  const baseAction = actions[0];
+  if (execution.atomic) {
+    throw new Error("illegal invocation in <execute> or <revert> phase (action: " + action.command + ")");
+  }
+  if (!action.id) {
+    action.id = baseAction && baseAction.id || this._createId();
+  }
+  actions.push(action);
+};
+CommandStack.prototype._popAction = function() {
+  const execution = this._currentExecution, trigger = execution.trigger, actions = execution.actions, dirty = execution.dirty;
+  actions.pop();
+  if (!actions.length) {
+    this._eventBus.fire("elements.changed", { elements: uniqueBy("id", dirty.reverse()) });
+    dirty.length = 0;
+    this._fire("changed", { trigger });
+    execution.trigger = null;
+  }
+};
+CommandStack.prototype._markDirty = function(elements) {
+  const execution = this._currentExecution;
+  if (!elements) {
+    return;
+  }
+  elements = isArray2(elements) ? elements : [elements];
+  execution.dirty = execution.dirty.concat(elements);
+};
+CommandStack.prototype._executedAction = function(action, redo) {
+  const stackIdx = ++this._stackIdx;
+  if (!redo) {
+    this._stack.splice(stackIdx, this._stack.length, action);
+  }
+};
+CommandStack.prototype._revertedAction = function(action) {
+  this._stackIdx--;
+};
+CommandStack.prototype._getHandler = function(command) {
+  return this._handlerMap[command];
+};
+CommandStack.prototype._setHandler = function(command, handler) {
+  if (!command || !handler) {
+    throw new Error("command and handler required");
+  }
+  if (this._handlerMap[command]) {
+    throw new Error("overriding handler for command <" + command + ">");
+  }
+  this._handlerMap[command] = handler;
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/command/index.js
+var command_default = {
+  commandStack: ["type", CommandStack]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/change-support/ChangeSupport.js
+function ChangeSupport(eventBus, canvas, elementRegistry, graphicsFactory) {
+  eventBus.on("element.changed", function(event2) {
+    var element = event2.element;
+    if (element.parent || element === canvas.getRootElement()) {
+      event2.gfx = elementRegistry.getGraphics(element);
+    }
+    if (!event2.gfx) {
+      return;
+    }
+    eventBus.fire(getType(element) + ".changed", event2);
+  });
+  eventBus.on("elements.changed", function(event2) {
+    var elements = event2.elements;
+    elements.forEach(function(e2) {
+      eventBus.fire("element.changed", { element: e2 });
+    });
+    graphicsFactory.updateContainments(elements);
+  });
+  eventBus.on("shape.changed", function(event2) {
+    graphicsFactory.update("shape", event2.element, event2.gfx);
+  });
+  eventBus.on("connection.changed", function(event2) {
+    graphicsFactory.update("connection", event2.element, event2.gfx);
+  });
+}
+ChangeSupport.$inject = [
+  "eventBus",
+  "canvas",
+  "elementRegistry",
+  "graphicsFactory"
+];
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/change-support/index.js
+var change_support_default = {
+  __init__: ["changeSupport"],
+  changeSupport: ["type", ChangeSupport]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/util/Event.js
+function __stopPropagation(event2) {
+  if (!event2 || typeof event2.stopPropagation !== "function") {
+    return;
+  }
+  event2.stopPropagation();
+}
+function getOriginal(event2) {
+  return event2.originalEvent || event2.srcEvent;
+}
+function stopPropagation(event2) {
+  __stopPropagation(event2);
+  __stopPropagation(getOriginal(event2));
+}
+function toPoint(event2) {
+  if (event2.pointers && event2.pointers.length) {
+    event2 = event2.pointers[0];
+  }
+  if (event2.touches && event2.touches.length) {
+    event2 = event2.touches[0];
+  }
+  return event2 ? {
+    x: event2.clientX,
+    y: event2.clientY
+  } : null;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/util/Platform.js
+function isMac() {
+  return /mac/i.test(navigator.platform);
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/util/Mouse.js
+function isButton(event2, button) {
+  return (getOriginal(event2) || event2).button === button;
+}
+function isPrimaryButton(event2) {
+  return isButton(event2, 0);
+}
+function isAuxiliaryButton(event2) {
+  return isButton(event2, 1);
+}
+function hasSecondaryModifier(event2) {
+  var originalEvent = getOriginal(event2) || event2;
+  return isPrimaryButton(event2) && originalEvent.shiftKey;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/interaction-events/InteractionEvents.js
+function allowAll(event2) {
+  return true;
+}
+function allowPrimaryAndAuxiliary(event2) {
+  return isPrimaryButton(event2) || isAuxiliaryButton(event2);
+}
+var LOW_PRIORITY = 500;
+function InteractionEvents(eventBus, elementRegistry, styles) {
+  var self = this;
+  function fire(type, event2, element) {
+    if (isIgnored(type, event2)) {
+      return;
+    }
+    var target, gfx, returnValue;
+    if (!element) {
+      target = event2.delegateTarget || event2.target;
+      if (target) {
+        gfx = target;
+        element = elementRegistry.get(gfx);
+      }
+    } else {
+      gfx = elementRegistry.getGraphics(element);
+    }
+    if (!gfx || !element) {
+      return;
+    }
+    returnValue = eventBus.fire(type, {
+      element,
+      gfx,
+      originalEvent: event2
+    });
+    if (returnValue === false) {
+      event2.stopPropagation();
+      event2.preventDefault();
+    }
+  }
+  var handlers = {};
+  function mouseHandler(localEventName) {
+    return handlers[localEventName];
+  }
+  function isIgnored(localEventName, event2) {
+    var filter2 = ignoredFilters[localEventName] || isPrimaryButton;
+    return !filter2(event2);
+  }
+  var bindings = {
+    click: "element.click",
+    contextmenu: "element.contextmenu",
+    dblclick: "element.dblclick",
+    mousedown: "element.mousedown",
+    mousemove: "element.mousemove",
+    mouseover: "element.hover",
+    mouseout: "element.out",
+    mouseup: "element.mouseup"
+  };
+  var ignoredFilters = {
+    "element.contextmenu": allowAll,
+    "element.mousedown": allowPrimaryAndAuxiliary,
+    "element.mouseup": allowPrimaryAndAuxiliary,
+    "element.click": allowPrimaryAndAuxiliary,
+    "element.dblclick": allowPrimaryAndAuxiliary
+  };
+  function triggerMouseEvent(eventName, event2, targetElement) {
+    var localEventName = bindings[eventName];
+    if (!localEventName) {
+      throw new Error("unmapped DOM event name <" + eventName + ">");
+    }
+    return fire(localEventName, event2, targetElement);
+  }
+  var ELEMENT_SELECTOR = "svg, .djs-element";
+  function registerEvent(node2, event2, localEvent, ignoredFilter) {
+    var handler = handlers[localEvent] = function(event3) {
+      fire(localEvent, event3);
+    };
+    if (ignoredFilter) {
+      ignoredFilters[localEvent] = ignoredFilter;
+    }
+    handler.$delegate = delegate.bind(node2, ELEMENT_SELECTOR, event2, handler);
+  }
+  function unregisterEvent(node2, event2, localEvent) {
+    var handler = mouseHandler(localEvent);
+    if (!handler) {
+      return;
+    }
+    delegate.unbind(node2, event2, handler.$delegate);
+  }
+  function registerEvents(svg) {
+    forEach(bindings, function(val, key) {
+      registerEvent(svg, key, val);
+    });
+  }
+  function unregisterEvents(svg) {
+    forEach(bindings, function(val, key) {
+      unregisterEvent(svg, key, val);
+    });
+  }
+  eventBus.on("canvas.destroy", function(event2) {
+    unregisterEvents(event2.svg);
+  });
+  eventBus.on("canvas.init", function(event2) {
+    registerEvents(event2.svg);
+  });
+  eventBus.on(["shape.added", "connection.added"], function(event2) {
+    var element = event2.element, gfx = event2.gfx;
+    eventBus.fire("interactionEvents.createHit", { element, gfx });
+  });
+  eventBus.on([
+    "shape.changed",
+    "connection.changed"
+  ], LOW_PRIORITY, function(event2) {
+    var element = event2.element, gfx = event2.gfx;
+    eventBus.fire("interactionEvents.updateHit", { element, gfx });
+  });
+  eventBus.on("interactionEvents.createHit", LOW_PRIORITY, function(event2) {
+    var element = event2.element, gfx = event2.gfx;
+    self.createDefaultHit(element, gfx);
+  });
+  eventBus.on("interactionEvents.updateHit", function(event2) {
+    var element = event2.element, gfx = event2.gfx;
+    self.updateDefaultHit(element, gfx);
+  });
+  var STROKE_HIT_STYLE = createHitStyle("djs-hit djs-hit-stroke");
+  var CLICK_STROKE_HIT_STYLE = createHitStyle("djs-hit djs-hit-click-stroke");
+  var ALL_HIT_STYLE = createHitStyle("djs-hit djs-hit-all");
+  var NO_MOVE_HIT_STYLE = createHitStyle("djs-hit djs-hit-no-move");
+  var HIT_TYPES = {
+    "all": ALL_HIT_STYLE,
+    "click-stroke": CLICK_STROKE_HIT_STYLE,
+    "stroke": STROKE_HIT_STYLE,
+    "no-move": NO_MOVE_HIT_STYLE
+  };
+  function createHitStyle(classNames, attrs) {
+    attrs = assign({
+      stroke: "white",
+      strokeWidth: 15
+    }, attrs || {});
+    return styles.cls(classNames, ["no-fill", "no-border"], attrs);
+  }
+  function applyStyle(hit, type) {
+    var attrs = HIT_TYPES[type];
+    if (!attrs) {
+      throw new Error("invalid hit type <" + type + ">");
+    }
+    attr(hit, attrs);
+    return hit;
+  }
+  function appendHit(gfx, hit) {
+    append(gfx, hit);
+  }
+  this.removeHits = function(gfx) {
+    var hits = all(".djs-hit", gfx);
+    forEach(hits, remove);
+  };
+  this.createDefaultHit = function(element, gfx) {
+    var waypoints = element.waypoints, isFrame = element.isFrame, boxType;
+    if (waypoints) {
+      return this.createWaypointsHit(gfx, waypoints);
+    } else {
+      boxType = isFrame ? "stroke" : "all";
+      return this.createBoxHit(gfx, boxType, {
+        width: element.width,
+        height: element.height
+      });
+    }
+  };
+  this.createWaypointsHit = function(gfx, waypoints) {
+    var hit = createLine(waypoints);
+    applyStyle(hit, "stroke");
+    appendHit(gfx, hit);
+    return hit;
+  };
+  this.createBoxHit = function(gfx, type, attrs) {
+    attrs = assign({
+      x: 0,
+      y: 0
+    }, attrs);
+    var hit = create("rect");
+    applyStyle(hit, type);
+    attr(hit, attrs);
+    appendHit(gfx, hit);
+    return hit;
+  };
+  this.updateDefaultHit = function(element, gfx) {
+    var hit = query(".djs-hit", gfx);
+    if (!hit) {
+      return;
+    }
+    if (element.waypoints) {
+      updateLine(hit, element.waypoints);
+    } else {
+      attr(hit, {
+        width: element.width,
+        height: element.height
+      });
+    }
+    return hit;
+  };
+  this.fire = fire;
+  this.triggerMouseEvent = triggerMouseEvent;
+  this.mouseHandler = mouseHandler;
+  this.registerEvent = registerEvent;
+  this.unregisterEvent = unregisterEvent;
+}
+InteractionEvents.$inject = [
+  "eventBus",
+  "elementRegistry",
+  "styles"
+];
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/interaction-events/index.js
+var interaction_events_default = {
+  __init__: ["interactionEvents"],
+  interactionEvents: ["type", InteractionEvents]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/selection/Selection.js
+function Selection(eventBus, canvas) {
+  this._eventBus = eventBus;
+  this._canvas = canvas;
+  this._selectedElements = /* @__PURE__ */ new Set();
+  var self = this;
+  eventBus.on(["shape.remove", "connection.remove"], function(e2) {
+    var element = e2.element;
+    self.deselect(element);
+  });
+  eventBus.on(["diagram.clear", "root.set"], function(e2) {
+    self.select(null);
+  });
+}
+Selection.$inject = ["eventBus", "canvas"];
+Selection.prototype.deselect = function(element) {
+  if (!this._selectedElements.has(element)) {
+    return;
+  }
+  var oldSelection = this.get();
+  this._selectedElements.delete(element);
+  this._eventBus.fire("selection.changed", {
+    oldSelection,
+    newSelection: this.get()
+  });
+};
+Selection.prototype.get = function() {
+  return Array.from(this._selectedElements);
+};
+Selection.prototype.isSelected = function(element) {
+  return this._selectedElements.has(element);
+};
+Selection.prototype.select = function(elements, add2) {
+  var oldSelection = this.get();
+  if (!isArray2(elements)) {
+    elements = elements ? [elements] : [];
+  }
+  var canvas = this._canvas;
+  var rootElement = canvas.getRootElement();
+  elements = elements.filter(function(element) {
+    var elementRoot = canvas.findRoot(element);
+    return rootElement === elementRoot;
+  });
+  if (add2) {
+    forEach(elements, (element) => {
+      this._selectedElements.add(element);
+    });
+  } else {
+    this._selectedElements = new Set(elements);
+  }
+  this._eventBus.fire("selection.changed", {
+    oldSelection,
+    newSelection: this.get()
+  });
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/selection/SelectionVisuals.js
+var MARKER_HOVER = "hover";
+var MARKER_SELECTED = "selected";
+function SelectionVisuals(canvas, eventBus) {
+  this._canvas = canvas;
+  function addMarker(e2, cls) {
+    canvas.addMarker(e2, cls);
+  }
+  function removeMarker(e2, cls) {
+    canvas.removeMarker(e2, cls);
+  }
+  eventBus.on("element.hover", function(event2) {
+    addMarker(event2.element, MARKER_HOVER);
+  });
+  eventBus.on("element.out", function(event2) {
+    removeMarker(event2.element, MARKER_HOVER);
+  });
+  eventBus.on("selection.changed", function(event2) {
+    function deselect(s) {
+      removeMarker(s, MARKER_SELECTED);
+    }
+    function select(s) {
+      addMarker(s, MARKER_SELECTED);
+    }
+    var oldSelection = new Set(event2.oldSelection), newSelection = new Set(event2.newSelection);
+    for (let e2 of oldSelection) {
+      if (!newSelection.has(e2)) {
+        deselect(e2);
+      }
+    }
+    for (let e2 of newSelection) {
+      if (!oldSelection.has(e2)) {
+        select(e2);
+      }
+    }
+  });
+}
+SelectionVisuals.$inject = [
+  "canvas",
+  "eventBus"
+];
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/selection/SelectionBehavior.js
+function SelectionBehavior(eventBus, selection, canvas, elementRegistry) {
+  eventBus.on("create.end", 500, function(event2) {
+    var context = event2.context, canExecute = context.canExecute, elements = context.elements, hints = context.hints || {}, autoSelect = hints.autoSelect;
+    if (canExecute) {
+      if (autoSelect === false) {
+        return;
+      }
+      if (isArray2(autoSelect)) {
+        selection.select(autoSelect);
+      } else {
+        selection.select(elements.filter(isShown));
+      }
+    }
+  });
+  eventBus.on("connect.end", 500, function(event2) {
+    var context = event2.context, connection = context.connection;
+    if (connection) {
+      selection.select(connection);
+    }
+  });
+  eventBus.on("shape.move.end", 500, function(event2) {
+    var previousSelection = event2.previousSelection || [];
+    var shape = elementRegistry.get(event2.context.shape.id);
+    var isSelected = find(previousSelection, function(selectedShape) {
+      return shape.id === selectedShape.id;
+    });
+    if (!isSelected) {
+      selection.select(shape);
+    }
+  });
+  eventBus.on("element.click", function(event2) {
+    if (!isPrimaryButton(event2)) {
+      return;
+    }
+    var element = event2.element;
+    if (element === canvas.getRootElement()) {
+      element = null;
+    }
+    var isSelected = selection.isSelected(element), isMultiSelect = selection.get().length > 1;
+    var add2 = hasSecondaryModifier(event2);
+    if (isSelected && isMultiSelect) {
+      if (add2) {
+        return selection.deselect(element);
+      } else {
+        return selection.select(element);
+      }
+    } else if (!isSelected) {
+      selection.select(element, add2);
+    } else {
+      selection.deselect(element);
+    }
+  });
+}
+SelectionBehavior.$inject = [
+  "eventBus",
+  "selection",
+  "canvas",
+  "elementRegistry"
+];
+function isShown(element) {
+  return !element.hidden;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/selection/index.js
+var selection_default = {
+  __init__: ["selectionVisuals", "selectionBehavior"],
+  __depends__: [
+    interaction_events_default
+  ],
+  selection: ["type", Selection],
+  selectionVisuals: ["type", SelectionVisuals],
+  selectionBehavior: ["type", SelectionBehavior]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/rules/Rules.js
+function Rules(injector) {
+  this._commandStack = injector.get("commandStack", false);
+}
+Rules.$inject = ["injector"];
+Rules.prototype.allowed = function(action, context) {
+  var allowed = true;
+  var commandStack = this._commandStack;
+  if (commandStack) {
+    allowed = commandStack.canExecute(action, context);
+  }
+  return allowed === void 0 ? true : allowed;
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/rules/index.js
+var rules_default = {
+  __init__: ["rules"],
+  rules: ["type", Rules]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/AlignElementsHandler.js
+function AlignElements(modeling, canvas) {
+  this._modeling = modeling;
+  this._canvas = canvas;
+}
+AlignElements.$inject = ["modeling", "canvas"];
+AlignElements.prototype.preExecute = function(context) {
+  var modeling = this._modeling;
+  var elements = context.elements, alignment = context.alignment;
+  forEach(elements, function(element) {
+    var delta2 = {
+      x: 0,
+      y: 0
+    };
+    if (isDefined(alignment.left)) {
+      delta2.x = alignment.left - element.x;
+    } else if (isDefined(alignment.right)) {
+      delta2.x = alignment.right - element.width - element.x;
+    } else if (isDefined(alignment.center)) {
+      delta2.x = alignment.center - Math.round(element.width / 2) - element.x;
+    } else if (isDefined(alignment.top)) {
+      delta2.y = alignment.top - element.y;
+    } else if (isDefined(alignment.bottom)) {
+      delta2.y = alignment.bottom - element.height - element.y;
+    } else if (isDefined(alignment.middle)) {
+      delta2.y = alignment.middle - Math.round(element.height / 2) - element.y;
+    }
+    modeling.moveElements([element], delta2, element.parent);
+  });
+};
+AlignElements.prototype.postExecute = function(context) {
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/AppendShapeHandler.js
+function AppendShapeHandler(modeling) {
+  this._modeling = modeling;
+}
+AppendShapeHandler.$inject = ["modeling"];
+AppendShapeHandler.prototype.preExecute = function(context) {
+  var source = context.source;
+  if (!source) {
+    throw new Error("source required");
+  }
+  var target = context.target || source.parent, shape = context.shape, hints = context.hints || {};
+  shape = context.shape = this._modeling.createShape(
+    shape,
+    context.position,
+    target,
+    { attach: hints.attach }
+  );
+  context.shape = shape;
+};
+AppendShapeHandler.prototype.postExecute = function(context) {
+  var hints = context.hints || {};
+  if (!existsConnection(context.source, context.shape)) {
+    if (hints.connectionTarget === context.source) {
+      this._modeling.connect(context.shape, context.source, context.connection);
+    } else {
+      this._modeling.connect(context.source, context.shape, context.connection);
+    }
+  }
+};
+function existsConnection(source, target) {
+  return some(source.outgoing, function(c) {
+    return c.target === target;
+  });
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/CreateConnectionHandler.js
+function CreateConnectionHandler(canvas, layouter) {
+  this._canvas = canvas;
+  this._layouter = layouter;
+}
+CreateConnectionHandler.$inject = ["canvas", "layouter"];
+CreateConnectionHandler.prototype.execute = function(context) {
+  var connection = context.connection, source = context.source, target = context.target, parent = context.parent, parentIndex = context.parentIndex, hints = context.hints;
+  if (!source || !target) {
+    throw new Error("source and target required");
+  }
+  if (!parent) {
+    throw new Error("parent required");
+  }
+  connection.source = source;
+  connection.target = target;
+  if (!connection.waypoints) {
+    connection.waypoints = this._layouter.layoutConnection(connection, hints);
+  }
+  this._canvas.addConnection(connection, parent, parentIndex);
+  return connection;
+};
+CreateConnectionHandler.prototype.revert = function(context) {
+  var connection = context.connection;
+  this._canvas.removeConnection(connection);
+  connection.source = null;
+  connection.target = null;
+  return connection;
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/CreateElementsHandler.js
+var round2 = Math.round;
+function CreateElementsHandler(modeling) {
+  this._modeling = modeling;
+}
+CreateElementsHandler.$inject = [
+  "modeling"
+];
+CreateElementsHandler.prototype.preExecute = function(context) {
+  var elements = context.elements, parent = context.parent, parentIndex = context.parentIndex, position = context.position, hints = context.hints;
+  var modeling = this._modeling;
+  forEach(elements, function(element) {
+    if (!isNumber(element.x)) {
+      element.x = 0;
+    }
+    if (!isNumber(element.y)) {
+      element.y = 0;
+    }
+  });
+  var visibleElements = filter(elements, function(element) {
+    return !element.hidden;
+  });
+  var bbox = getBBox(visibleElements);
+  forEach(elements, function(element) {
+    if (isConnection(element)) {
+      element.waypoints = map(element.waypoints, function(waypoint) {
+        return {
+          x: round2(waypoint.x - bbox.x - bbox.width / 2 + position.x),
+          y: round2(waypoint.y - bbox.y - bbox.height / 2 + position.y)
+        };
+      });
+    }
+    assign(element, {
+      x: round2(element.x - bbox.x - bbox.width / 2 + position.x),
+      y: round2(element.y - bbox.y - bbox.height / 2 + position.y)
+    });
+  });
+  var parentsSet = new Set(getParents(elements));
+  var cache = {};
+  forEach(elements, function(element) {
+    if (isConnection(element)) {
+      cache[element.id] = isNumber(parentIndex) ? modeling.createConnection(
+        cache[element.source.id],
+        cache[element.target.id],
+        parentIndex,
+        element,
+        element.parent || parent,
+        hints
+      ) : modeling.createConnection(
+        cache[element.source.id],
+        cache[element.target.id],
+        element,
+        element.parent || parent,
+        hints
+      );
+      return;
+    }
+    var createShapeHints = assign({}, hints);
+    if (!parentsSet.has(element)) {
+      createShapeHints.autoResize = false;
+    }
+    if (isLabel(element)) {
+      createShapeHints = omit(createShapeHints, ["attach"]);
+    }
+    cache[element.id] = isNumber(parentIndex) ? modeling.createShape(
+      element,
+      pick(element, ["x", "y", "width", "height"]),
+      element.parent || parent,
+      parentIndex,
+      createShapeHints
+    ) : modeling.createShape(
+      element,
+      pick(element, ["x", "y", "width", "height"]),
+      element.parent || parent,
+      createShapeHints
+    );
+  });
+  context.elements = values(cache);
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/CreateShapeHandler.js
+var round3 = Math.round;
+function CreateShapeHandler(canvas) {
+  this._canvas = canvas;
+}
+CreateShapeHandler.$inject = ["canvas"];
+CreateShapeHandler.prototype.execute = function(context) {
+  var shape = context.shape, positionOrBounds = context.position, parent = context.parent, parentIndex = context.parentIndex;
+  if (!parent) {
+    throw new Error("parent required");
+  }
+  if (!positionOrBounds) {
+    throw new Error("position required");
+  }
+  if (positionOrBounds.width !== void 0) {
+    assign(shape, positionOrBounds);
+  } else {
+    assign(shape, {
+      x: positionOrBounds.x - round3(shape.width / 2),
+      y: positionOrBounds.y - round3(shape.height / 2)
+    });
+  }
+  this._canvas.addShape(shape, parent, parentIndex);
+  return shape;
+};
+CreateShapeHandler.prototype.revert = function(context) {
+  var shape = context.shape;
+  this._canvas.removeShape(shape);
+  return shape;
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/CreateLabelHandler.js
+function CreateLabelHandler(canvas) {
+  CreateShapeHandler.call(this, canvas);
+}
+e(CreateLabelHandler, CreateShapeHandler);
+CreateLabelHandler.$inject = ["canvas"];
+var originalExecute = CreateShapeHandler.prototype.execute;
+CreateLabelHandler.prototype.execute = function(context) {
+  var label = context.shape;
+  ensureValidDimensions(label);
+  label.labelTarget = context.labelTarget;
+  return originalExecute.call(this, context);
+};
+var originalRevert = CreateShapeHandler.prototype.revert;
+CreateLabelHandler.prototype.revert = function(context) {
+  context.shape.labelTarget = null;
+  return originalRevert.call(this, context);
+};
+function ensureValidDimensions(label) {
+  ["width", "height"].forEach(function(prop) {
+    if (typeof label[prop] === "undefined") {
+      label[prop] = 0;
+    }
+  });
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/util/Removal.js
+function saveClear(collection, removeFn) {
+  if (typeof removeFn !== "function") {
+    throw new Error("removeFn iterator must be a function");
+  }
+  if (!collection) {
+    return [];
+  }
+  var e2;
+  while (e2 = collection[0]) {
+    removeFn(e2);
+  }
+  return collection;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/DeleteConnectionHandler.js
+function DeleteConnectionHandler(canvas, modeling) {
+  this._canvas = canvas;
+  this._modeling = modeling;
+}
+DeleteConnectionHandler.$inject = [
+  "canvas",
+  "modeling"
+];
+DeleteConnectionHandler.prototype.preExecute = function(context) {
+  var modeling = this._modeling;
+  var connection = context.connection;
+  saveClear(connection.incoming, function(connection2) {
+    modeling.removeConnection(connection2, { nested: true });
+  });
+  saveClear(connection.outgoing, function(connection2) {
+    modeling.removeConnection(connection2, { nested: true });
+  });
+};
+DeleteConnectionHandler.prototype.execute = function(context) {
+  var connection = context.connection, parent = connection.parent;
+  context.parent = parent;
+  context.parentIndex = indexOf(parent.children, connection);
+  context.source = connection.source;
+  context.target = connection.target;
+  this._canvas.removeConnection(connection);
+  connection.source = null;
+  connection.target = null;
+  return connection;
+};
+DeleteConnectionHandler.prototype.revert = function(context) {
+  var connection = context.connection, parent = context.parent, parentIndex = context.parentIndex;
+  connection.source = context.source;
+  connection.target = context.target;
+  add(parent.children, connection, parentIndex);
+  this._canvas.addConnection(connection, parent);
+  return connection;
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/DeleteElementsHandler.js
+function DeleteElementsHandler(modeling, elementRegistry) {
+  this._modeling = modeling;
+  this._elementRegistry = elementRegistry;
+}
+DeleteElementsHandler.$inject = [
+  "modeling",
+  "elementRegistry"
+];
+DeleteElementsHandler.prototype.postExecute = function(context) {
+  var modeling = this._modeling, elementRegistry = this._elementRegistry, elements = context.elements;
+  forEach(elements, function(element) {
+    if (!elementRegistry.get(element.id)) {
+      return;
+    }
+    if (element.waypoints) {
+      modeling.removeConnection(element);
+    } else {
+      modeling.removeShape(element);
+    }
+  });
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/DeleteShapeHandler.js
+function DeleteShapeHandler(canvas, modeling) {
+  this._canvas = canvas;
+  this._modeling = modeling;
+}
+DeleteShapeHandler.$inject = ["canvas", "modeling"];
+DeleteShapeHandler.prototype.preExecute = function(context) {
+  var modeling = this._modeling;
+  var shape = context.shape;
+  saveClear(shape.incoming, function(connection) {
+    modeling.removeConnection(connection, { nested: true });
+  });
+  saveClear(shape.outgoing, function(connection) {
+    modeling.removeConnection(connection, { nested: true });
+  });
+  saveClear(shape.children, function(child) {
+    if (isConnection(child)) {
+      modeling.removeConnection(child, { nested: true });
+    } else {
+      modeling.removeShape(child, { nested: true });
+    }
+  });
+};
+DeleteShapeHandler.prototype.execute = function(context) {
+  var canvas = this._canvas;
+  var shape = context.shape, oldParent = shape.parent;
+  context.oldParent = oldParent;
+  context.oldParentIndex = indexOf(oldParent.children, shape);
+  canvas.removeShape(shape);
+  return shape;
+};
+DeleteShapeHandler.prototype.revert = function(context) {
+  var canvas = this._canvas;
+  var shape = context.shape, oldParent = context.oldParent, oldParentIndex = context.oldParentIndex;
+  add(oldParent.children, shape, oldParentIndex);
+  canvas.addShape(shape, oldParent);
+  return shape;
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/DistributeElementsHandler.js
+function DistributeElements(modeling) {
+  this._modeling = modeling;
+}
+DistributeElements.$inject = ["modeling"];
+var OFF_AXIS = {
+  x: "y",
+  y: "x"
+};
+DistributeElements.prototype.preExecute = function(context) {
+  var modeling = this._modeling;
+  var groups = context.groups, axis = context.axis, dimension = context.dimension;
+  function updateRange(group, element) {
+    group.range.min = Math.min(element[axis], group.range.min);
+    group.range.max = Math.max(element[axis] + element[dimension], group.range.max);
+  }
+  function center2(element) {
+    return element[axis] + element[dimension] / 2;
+  }
+  function lastIdx(arr) {
+    return arr.length - 1;
+  }
+  function rangeDiff(range) {
+    return range.max - range.min;
+  }
+  function centerElement(refCenter, element) {
+    var delta2 = { y: 0 };
+    delta2[axis] = refCenter - center2(element);
+    if (delta2[axis]) {
+      delta2[OFF_AXIS[axis]] = 0;
+      modeling.moveElements([element], delta2, element.parent);
+    }
+  }
+  var firstGroup = groups[0], lastGroupIdx = lastIdx(groups), lastGroup = groups[lastGroupIdx];
+  var margin, spaceInBetween, groupsSize = 0;
+  forEach(groups, function(group, idx) {
+    var sortedElements, refElem, refCenter;
+    if (group.elements.length < 2) {
+      if (idx && idx !== groups.length - 1) {
+        updateRange(group, group.elements[0]);
+        groupsSize += rangeDiff(group.range);
+      }
+      return;
+    }
+    sortedElements = sortBy(group.elements, axis);
+    refElem = sortedElements[0];
+    if (idx === lastGroupIdx) {
+      refElem = sortedElements[lastIdx(sortedElements)];
+    }
+    refCenter = center2(refElem);
+    group.range = null;
+    forEach(sortedElements, function(element) {
+      centerElement(refCenter, element);
+      if (group.range === null) {
+        group.range = {
+          min: element[axis],
+          max: element[axis] + element[dimension]
+        };
+        return;
+      }
+      updateRange(group, element);
+    });
+    if (idx && idx !== groups.length - 1) {
+      groupsSize += rangeDiff(group.range);
+    }
+  });
+  spaceInBetween = Math.abs(lastGroup.range.min - firstGroup.range.max);
+  margin = Math.round((spaceInBetween - groupsSize) / (groups.length - 1));
+  if (margin < groups.length - 1) {
+    return;
+  }
+  forEach(groups, function(group, groupIdx) {
+    var delta2 = {}, prevGroup;
+    if (group === firstGroup || group === lastGroup) {
+      return;
+    }
+    prevGroup = groups[groupIdx - 1];
+    group.range.max = 0;
+    forEach(group.elements, function(element, idx) {
+      delta2[OFF_AXIS[axis]] = 0;
+      delta2[axis] = prevGroup.range.max - element[axis] + margin;
+      if (group.range.min !== element[axis]) {
+        delta2[axis] += element[axis] - group.range.min;
+      }
+      if (delta2[axis]) {
+        modeling.moveElements([element], delta2, element.parent);
+      }
+      group.range.max = Math.max(element[axis] + element[dimension], idx ? group.range.max : 0);
+    });
+  });
+};
+DistributeElements.prototype.postExecute = function(context) {
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/LayoutConnectionHandler.js
+function LayoutConnectionHandler(layouter, canvas) {
+  this._layouter = layouter;
+  this._canvas = canvas;
+}
+LayoutConnectionHandler.$inject = ["layouter", "canvas"];
+LayoutConnectionHandler.prototype.execute = function(context) {
+  var connection = context.connection;
+  var oldWaypoints = connection.waypoints;
+  assign(context, {
+    oldWaypoints
+  });
+  connection.waypoints = this._layouter.layoutConnection(connection, context.hints);
+  return connection;
+};
+LayoutConnectionHandler.prototype.revert = function(context) {
+  var connection = context.connection;
+  connection.waypoints = context.oldWaypoints;
+  return connection;
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/MoveConnectionHandler.js
+function MoveConnectionHandler() {
+}
+MoveConnectionHandler.prototype.execute = function(context) {
+  var connection = context.connection, delta2 = context.delta;
+  var newParent = context.newParent || connection.parent, newParentIndex = context.newParentIndex, oldParent = connection.parent;
+  context.oldParent = oldParent;
+  context.oldParentIndex = remove3(oldParent.children, connection);
+  add(newParent.children, connection, newParentIndex);
+  connection.parent = newParent;
+  forEach(connection.waypoints, function(p) {
+    p.x += delta2.x;
+    p.y += delta2.y;
+    if (p.original) {
+      p.original.x += delta2.x;
+      p.original.y += delta2.y;
+    }
+  });
+  return connection;
+};
+MoveConnectionHandler.prototype.revert = function(context) {
+  var connection = context.connection, newParent = connection.parent, oldParent = context.oldParent, oldParentIndex = context.oldParentIndex, delta2 = context.delta;
+  remove3(newParent.children, connection);
+  add(oldParent.children, connection, oldParentIndex);
+  connection.parent = oldParent;
+  forEach(connection.waypoints, function(p) {
+    p.x -= delta2.x;
+    p.y -= delta2.y;
+    if (p.original) {
+      p.original.x -= delta2.x;
+      p.original.y -= delta2.y;
+    }
+  });
+  return connection;
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/util/PositionUtil.js
+function center(bounds) {
+  return {
+    x: bounds.x + bounds.width / 2,
+    y: bounds.y + bounds.height / 2
+  };
+}
+function delta(a, b) {
+  return {
+    x: a.x - b.x,
+    y: a.y - b.y
+  };
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/util/AttachUtil.js
+function getNewAttachPoint(point, oldBounds, newBounds) {
+  var oldCenter = center(oldBounds), newCenter = center(newBounds), oldDelta = delta(point, oldCenter);
+  var newDelta = {
+    x: oldDelta.x * (newBounds.width / oldBounds.width),
+    y: oldDelta.y * (newBounds.height / oldBounds.height)
+  };
+  return roundPoint({
+    x: newCenter.x + newDelta.x,
+    y: newCenter.y + newDelta.y
+  });
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/helper/AnchorsHelper.js
+function getResizedSourceAnchor(connection, shape, oldBounds) {
+  var waypoints = safeGetWaypoints(connection), waypointsInsideNewBounds = getWaypointsInsideBounds(waypoints, shape), oldAnchor = waypoints[0];
+  if (waypointsInsideNewBounds.length) {
+    return waypointsInsideNewBounds[waypointsInsideNewBounds.length - 1];
+  }
+  return getNewAttachPoint(oldAnchor.original || oldAnchor, oldBounds, shape);
+}
+function getResizedTargetAnchor(connection, shape, oldBounds) {
+  var waypoints = safeGetWaypoints(connection), waypointsInsideNewBounds = getWaypointsInsideBounds(waypoints, shape), oldAnchor = waypoints[waypoints.length - 1];
+  if (waypointsInsideNewBounds.length) {
+    return waypointsInsideNewBounds[0];
+  }
+  return getNewAttachPoint(oldAnchor.original || oldAnchor, oldBounds, shape);
+}
+function getMovedSourceAnchor(connection, source, moveDelta) {
+  var waypoints = safeGetWaypoints(connection), oldBounds = subtract(source, moveDelta), oldAnchor = waypoints[0];
+  return getNewAttachPoint(oldAnchor.original || oldAnchor, oldBounds, source);
+}
+function getMovedTargetAnchor(connection, target, moveDelta) {
+  var waypoints = safeGetWaypoints(connection), oldBounds = subtract(target, moveDelta), oldAnchor = waypoints[waypoints.length - 1];
+  return getNewAttachPoint(oldAnchor.original || oldAnchor, oldBounds, target);
+}
+function subtract(bounds, delta2) {
+  return {
+    x: bounds.x - delta2.x,
+    y: bounds.y - delta2.y,
+    width: bounds.width,
+    height: bounds.height
+  };
+}
+function safeGetWaypoints(connection) {
+  var waypoints = connection.waypoints;
+  if (!waypoints.length) {
+    throw new Error("connection#" + connection.id + ": no waypoints");
+  }
+  return waypoints;
+}
+function getWaypointsInsideBounds(waypoints, bounds) {
+  var originalWaypoints = map(waypoints, getOriginal2);
+  return filter(originalWaypoints, function(waypoint) {
+    return isInsideBounds(waypoint, bounds);
+  });
+}
+function isInsideBounds(point, bounds) {
+  return getOrientation(bounds, point, 1) === "intersect";
+}
+function getOriginal2(point) {
+  return point.original || point;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/helper/MoveClosure.js
+function MoveClosure() {
+  this.allShapes = {};
+  this.allConnections = {};
+  this.enclosedElements = {};
+  this.enclosedConnections = {};
+  this.topLevel = {};
+}
+MoveClosure.prototype.add = function(element, isTopLevel) {
+  return this.addAll([element], isTopLevel);
+};
+MoveClosure.prototype.addAll = function(elements, isTopLevel) {
+  var newClosure = getClosure(elements, !!isTopLevel, this);
+  assign(this, newClosure);
+  return this;
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/helper/MoveHelper.js
+function MoveHelper(modeling) {
+  this._modeling = modeling;
+}
+MoveHelper.prototype.moveRecursive = function(elements, delta2, newParent) {
+  if (!elements) {
+    return [];
+  } else {
+    return this.moveClosure(this.getClosure(elements), delta2, newParent);
+  }
+};
+MoveHelper.prototype.moveClosure = function(closure, delta2, newParent, newHost, primaryShape) {
+  var modeling = this._modeling;
+  var allShapes = closure.allShapes, allConnections = closure.allConnections, enclosedConnections = closure.enclosedConnections, topLevel = closure.topLevel, keepParent = false;
+  if (primaryShape && primaryShape.parent === newParent) {
+    keepParent = true;
+  }
+  forEach(allShapes, function(shape) {
+    modeling.moveShape(shape, delta2, topLevel[shape.id] && !keepParent && newParent, {
+      recurse: false,
+      layout: false
+    });
+  });
+  forEach(allConnections, function(c) {
+    var sourceMoved = !!allShapes[c.source.id], targetMoved = !!allShapes[c.target.id];
+    if (enclosedConnections[c.id] && sourceMoved && targetMoved) {
+      modeling.moveConnection(c, delta2, topLevel[c.id] && !keepParent && newParent);
+    } else {
+      modeling.layoutConnection(c, {
+        connectionStart: sourceMoved && getMovedSourceAnchor(c, c.source, delta2),
+        connectionEnd: targetMoved && getMovedTargetAnchor(c, c.target, delta2)
+      });
+    }
+  });
+};
+MoveHelper.prototype.getClosure = function(elements) {
+  return new MoveClosure().addAll(elements, true);
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/MoveElementsHandler.js
+function MoveElementsHandler(modeling) {
+  this._helper = new MoveHelper(modeling);
+}
+MoveElementsHandler.$inject = ["modeling"];
+MoveElementsHandler.prototype.preExecute = function(context) {
+  context.closure = this._helper.getClosure(context.shapes);
+};
+MoveElementsHandler.prototype.postExecute = function(context) {
+  var hints = context.hints, primaryShape;
+  if (hints && hints.primaryShape) {
+    primaryShape = hints.primaryShape;
+    hints.oldParent = primaryShape.parent;
+  }
+  this._helper.moveClosure(
+    context.closure,
+    context.delta,
+    context.newParent,
+    context.newHost,
+    primaryShape
+  );
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/MoveShapeHandler.js
+function MoveShapeHandler(modeling) {
+  this._modeling = modeling;
+  this._helper = new MoveHelper(modeling);
+}
+MoveShapeHandler.$inject = ["modeling"];
+MoveShapeHandler.prototype.execute = function(context) {
+  var shape = context.shape, delta2 = context.delta, newParent = context.newParent || shape.parent, newParentIndex = context.newParentIndex, oldParent = shape.parent;
+  context.oldBounds = pick(shape, ["x", "y", "width", "height"]);
+  context.oldParent = oldParent;
+  context.oldParentIndex = remove3(oldParent.children, shape);
+  add(newParent.children, shape, newParentIndex);
+  assign(shape, {
+    parent: newParent,
+    x: shape.x + delta2.x,
+    y: shape.y + delta2.y
+  });
+  return shape;
+};
+MoveShapeHandler.prototype.postExecute = function(context) {
+  var shape = context.shape, delta2 = context.delta, hints = context.hints;
+  var modeling = this._modeling;
+  if (hints.layout !== false) {
+    forEach(shape.incoming, function(c) {
+      modeling.layoutConnection(c, {
+        connectionEnd: getMovedTargetAnchor(c, shape, delta2)
+      });
+    });
+    forEach(shape.outgoing, function(c) {
+      modeling.layoutConnection(c, {
+        connectionStart: getMovedSourceAnchor(c, shape, delta2)
+      });
+    });
+  }
+  if (hints.recurse !== false) {
+    this.moveChildren(context);
+  }
+};
+MoveShapeHandler.prototype.revert = function(context) {
+  var shape = context.shape, oldParent = context.oldParent, oldParentIndex = context.oldParentIndex, delta2 = context.delta;
+  add(oldParent.children, shape, oldParentIndex);
+  assign(shape, {
+    parent: oldParent,
+    x: shape.x - delta2.x,
+    y: shape.y - delta2.y
+  });
+  return shape;
+};
+MoveShapeHandler.prototype.moveChildren = function(context) {
+  var delta2 = context.delta, shape = context.shape;
+  this._helper.moveRecursive(shape.children, delta2, null);
+};
+MoveShapeHandler.prototype.getNewParent = function(context) {
+  return context.newParent || context.shape.parent;
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/ReconnectConnectionHandler.js
+function ReconnectConnectionHandler(modeling) {
+  this._modeling = modeling;
+}
+ReconnectConnectionHandler.$inject = ["modeling"];
+ReconnectConnectionHandler.prototype.execute = function(context) {
+  var newSource = context.newSource, newTarget = context.newTarget, connection = context.connection, dockingOrPoints = context.dockingOrPoints;
+  if (!newSource && !newTarget) {
+    throw new Error("newSource or newTarget required");
+  }
+  if (isArray2(dockingOrPoints)) {
+    context.oldWaypoints = connection.waypoints;
+    connection.waypoints = dockingOrPoints;
+  }
+  if (newSource) {
+    context.oldSource = connection.source;
+    connection.source = newSource;
+  }
+  if (newTarget) {
+    context.oldTarget = connection.target;
+    connection.target = newTarget;
+  }
+  return connection;
+};
+ReconnectConnectionHandler.prototype.postExecute = function(context) {
+  var connection = context.connection, newSource = context.newSource, newTarget = context.newTarget, dockingOrPoints = context.dockingOrPoints, hints = context.hints || {};
+  var layoutConnectionHints = {};
+  if (hints.connectionStart) {
+    layoutConnectionHints.connectionStart = hints.connectionStart;
+  }
+  if (hints.connectionEnd) {
+    layoutConnectionHints.connectionEnd = hints.connectionEnd;
+  }
+  if (hints.layoutConnection === false) {
+    return;
+  }
+  if (newSource && (!newTarget || hints.docking === "source")) {
+    layoutConnectionHints.connectionStart = layoutConnectionHints.connectionStart || getDocking(isArray2(dockingOrPoints) ? dockingOrPoints[0] : dockingOrPoints);
+  }
+  if (newTarget && (!newSource || hints.docking === "target")) {
+    layoutConnectionHints.connectionEnd = layoutConnectionHints.connectionEnd || getDocking(isArray2(dockingOrPoints) ? dockingOrPoints[dockingOrPoints.length - 1] : dockingOrPoints);
+  }
+  if (hints.newWaypoints) {
+    layoutConnectionHints.waypoints = hints.newWaypoints;
+  }
+  this._modeling.layoutConnection(connection, layoutConnectionHints);
+};
+ReconnectConnectionHandler.prototype.revert = function(context) {
+  var oldSource = context.oldSource, oldTarget = context.oldTarget, oldWaypoints = context.oldWaypoints, connection = context.connection;
+  if (oldSource) {
+    connection.source = oldSource;
+  }
+  if (oldTarget) {
+    connection.target = oldTarget;
+  }
+  if (oldWaypoints) {
+    connection.waypoints = oldWaypoints;
+  }
+  return connection;
+};
+function getDocking(point) {
+  return point.original || point;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/ReplaceShapeHandler.js
+function ReplaceShapeHandler(modeling, rules) {
+  this._modeling = modeling;
+  this._rules = rules;
+}
+ReplaceShapeHandler.$inject = ["modeling", "rules"];
+ReplaceShapeHandler.prototype.preExecute = function(context) {
+  var self = this, modeling = this._modeling, rules = this._rules;
+  var oldShape = context.oldShape, newData = context.newData, hints = context.hints || {}, newShape;
+  function canReconnect(source, target, connection) {
+    return rules.allowed("connection.reconnect", {
+      connection,
+      source,
+      target
+    });
+  }
+  var position = {
+    x: newData.x,
+    y: newData.y
+  };
+  var oldBounds = {
+    x: oldShape.x,
+    y: oldShape.y,
+    width: oldShape.width,
+    height: oldShape.height
+  };
+  newShape = context.newShape = context.newShape || self.createShape(newData, position, oldShape.parent, hints);
+  if (oldShape.host) {
+    modeling.updateAttachment(newShape, oldShape.host);
+  }
+  var children;
+  if (hints.moveChildren !== false) {
+    children = oldShape.children.slice();
+    modeling.moveElements(children, { x: 0, y: 0 }, newShape, hints);
+  }
+  var incoming = oldShape.incoming.slice(), outgoing = oldShape.outgoing.slice();
+  forEach(incoming, function(connection) {
+    var source = connection.source, allowed = canReconnect(source, newShape, connection);
+    if (allowed) {
+      self.reconnectEnd(
+        connection,
+        newShape,
+        getResizedTargetAnchor(connection, newShape, oldBounds),
+        hints
+      );
+    }
+  });
+  forEach(outgoing, function(connection) {
+    var target = connection.target, allowed = canReconnect(newShape, target, connection);
+    if (allowed) {
+      self.reconnectStart(
+        connection,
+        newShape,
+        getResizedSourceAnchor(connection, newShape, oldBounds),
+        hints
+      );
+    }
+  });
+};
+ReplaceShapeHandler.prototype.postExecute = function(context) {
+  var oldShape = context.oldShape;
+  this._modeling.removeShape(oldShape);
+};
+ReplaceShapeHandler.prototype.execute = function(context) {
+};
+ReplaceShapeHandler.prototype.revert = function(context) {
+};
+ReplaceShapeHandler.prototype.createShape = function(shape, position, target, hints) {
+  return this._modeling.createShape(shape, position, target, hints);
+};
+ReplaceShapeHandler.prototype.reconnectStart = function(connection, newSource, dockingPoint, hints) {
+  this._modeling.reconnectStart(connection, newSource, dockingPoint, hints);
+};
+ReplaceShapeHandler.prototype.reconnectEnd = function(connection, newTarget, dockingPoint, hints) {
+  this._modeling.reconnectEnd(connection, newTarget, dockingPoint, hints);
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/ResizeShapeHandler.js
+function ResizeShapeHandler(modeling) {
+  this._modeling = modeling;
+}
+ResizeShapeHandler.$inject = ["modeling"];
+ResizeShapeHandler.prototype.execute = function(context) {
+  var shape = context.shape, newBounds = context.newBounds, minBounds = context.minBounds;
+  if (newBounds.x === void 0 || newBounds.y === void 0 || newBounds.width === void 0 || newBounds.height === void 0) {
+    throw new Error("newBounds must have {x, y, width, height} properties");
+  }
+  if (minBounds && (newBounds.width < minBounds.width || newBounds.height < minBounds.height)) {
+    throw new Error("width and height cannot be less than minimum height and width");
+  } else if (!minBounds && newBounds.width < 10 || newBounds.height < 10) {
+    throw new Error("width and height cannot be less than 10px");
+  }
+  context.oldBounds = {
+    width: shape.width,
+    height: shape.height,
+    x: shape.x,
+    y: shape.y
+  };
+  assign(shape, {
+    width: newBounds.width,
+    height: newBounds.height,
+    x: newBounds.x,
+    y: newBounds.y
+  });
+  return shape;
+};
+ResizeShapeHandler.prototype.postExecute = function(context) {
+  var modeling = this._modeling;
+  var shape = context.shape, oldBounds = context.oldBounds, hints = context.hints || {};
+  if (hints.layout === false) {
+    return;
+  }
+  forEach(shape.incoming, function(c) {
+    modeling.layoutConnection(c, {
+      connectionEnd: getResizedTargetAnchor(c, shape, oldBounds)
+    });
+  });
+  forEach(shape.outgoing, function(c) {
+    modeling.layoutConnection(c, {
+      connectionStart: getResizedSourceAnchor(c, shape, oldBounds)
+    });
+  });
+};
+ResizeShapeHandler.prototype.revert = function(context) {
+  var shape = context.shape, oldBounds = context.oldBounds;
+  assign(shape, {
+    width: oldBounds.width,
+    height: oldBounds.height,
+    x: oldBounds.x,
+    y: oldBounds.y
+  });
+  return shape;
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/space-tool/SpaceUtil.js
+function getWaypointsUpdatingConnections(movingShapes, resizingShapes) {
+  var waypointsUpdatingConnections = [];
+  var adjustedShapes = new Set(movingShapes);
+  forEach(resizingShapes, function(shape) {
+    adjustedShapes.add(shape);
+  });
+  var seenConnections = /* @__PURE__ */ new Set();
+  adjustedShapes.forEach(function(shape) {
+    var incoming = shape.incoming, outgoing = shape.outgoing;
+    forEach(incoming.concat(outgoing), function(connection) {
+      var source = connection.source, target = connection.target;
+      if (adjustedShapes.has(source) || adjustedShapes.has(target)) {
+        if (!seenConnections.has(connection)) {
+          seenConnections.add(connection);
+          waypointsUpdatingConnections.push(connection);
+        }
+      }
+    });
+  });
+  return waypointsUpdatingConnections;
+}
+function resizeBounds(bounds, direction, delta2) {
+  var x = bounds.x, y = bounds.y, width = bounds.width, height = bounds.height, dx = delta2.x, dy = delta2.y;
+  switch (direction) {
+    case "n":
+      return {
+        x,
+        y: y + dy,
+        width,
+        height: height - dy
+      };
+    case "s":
+      return {
+        x,
+        y,
+        width,
+        height: height + dy
+      };
+    case "w":
+      return {
+        x: x + dx,
+        y,
+        width: width - dx,
+        height
+      };
+    case "e":
+      return {
+        x,
+        y,
+        width: width + dx,
+        height
+      };
+    default:
+      throw new Error("unknown direction: " + direction);
+  }
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/SpaceToolHandler.js
+function SpaceToolHandler(modeling) {
+  this._modeling = modeling;
+}
+SpaceToolHandler.$inject = ["modeling"];
+SpaceToolHandler.prototype.preExecute = function(context) {
+  var delta2 = context.delta, direction = context.direction, movingShapes = context.movingShapes, resizingShapes = context.resizingShapes, start = context.start, oldBounds = {};
+  this.moveShapes(movingShapes, delta2);
+  forEach(resizingShapes, function(shape) {
+    oldBounds[shape.id] = getBounds(shape);
+  });
+  this.resizeShapes(resizingShapes, delta2, direction);
+  this.updateConnectionWaypoints(
+    getWaypointsUpdatingConnections(movingShapes, resizingShapes),
+    delta2,
+    direction,
+    start,
+    movingShapes,
+    resizingShapes,
+    oldBounds
+  );
+};
+SpaceToolHandler.prototype.execute = function() {
+};
+SpaceToolHandler.prototype.revert = function() {
+};
+SpaceToolHandler.prototype.moveShapes = function(shapes, delta2) {
+  var self = this;
+  forEach(shapes, function(element) {
+    self._modeling.moveShape(element, delta2, null, {
+      autoResize: false,
+      layout: false,
+      recurse: false
+    });
+  });
+};
+SpaceToolHandler.prototype.resizeShapes = function(shapes, delta2, direction) {
+  var self = this;
+  forEach(shapes, function(shape) {
+    var newBounds = resizeBounds(shape, direction, delta2);
+    self._modeling.resizeShape(shape, newBounds, null, {
+      attachSupport: false,
+      autoResize: false,
+      layout: false
+    });
+  });
+};
+SpaceToolHandler.prototype.updateConnectionWaypoints = function(connections, delta2, direction, start, movingShapes, resizingShapes, oldBounds) {
+  var self = this, movingShapesSet = new Set(movingShapes), resizingShapesSet = new Set(resizingShapes);
+  forEach(connections, function(connection) {
+    var source = connection.source, target = connection.target, waypoints = copyWaypoints(connection), axis = getAxisFromDirection(direction), layoutHints = {};
+    var sourceAffected = movingShapesSet.has(source) || resizingShapesSet.has(source), targetAffected = movingShapesSet.has(target) || resizingShapesSet.has(target);
+    if (sourceAffected && targetAffected) {
+      waypoints = map(waypoints, function(waypoint) {
+        if (shouldMoveWaypoint(waypoint, start, direction)) {
+          waypoint[axis] = waypoint[axis] + delta2[axis];
+        }
+        if (waypoint.original && shouldMoveWaypoint(waypoint.original, start, direction)) {
+          waypoint.original[axis] = waypoint.original[axis] + delta2[axis];
+        }
+        return waypoint;
+      });
+      self._modeling.updateWaypoints(connection, waypoints, {
+        labelBehavior: false
+      });
+    } else if (sourceAffected || targetAffected) {
+      if (movingShapesSet.has(source)) {
+        layoutHints.connectionStart = getMovedSourceAnchor(connection, source, delta2);
+      } else if (movingShapesSet.has(target)) {
+        layoutHints.connectionEnd = getMovedTargetAnchor(connection, target, delta2);
+      } else if (resizingShapesSet.has(source)) {
+        layoutHints.connectionStart = getResizedSourceAnchor(
+          connection,
+          source,
+          oldBounds[source.id]
+        );
+      } else if (resizingShapesSet.has(target)) {
+        layoutHints.connectionEnd = getResizedTargetAnchor(
+          connection,
+          target,
+          oldBounds[target.id]
+        );
+      }
+      self._modeling.layoutConnection(connection, layoutHints);
+    }
+  });
+};
+function copyWaypoint(waypoint) {
+  return assign({}, waypoint);
+}
+function copyWaypoints(connection) {
+  return map(connection.waypoints, function(waypoint) {
+    waypoint = copyWaypoint(waypoint);
+    if (waypoint.original) {
+      waypoint.original = copyWaypoint(waypoint.original);
+    }
+    return waypoint;
+  });
+}
+function getAxisFromDirection(direction) {
+  switch (direction) {
+    case "n":
+      return "y";
+    case "w":
+      return "x";
+    case "s":
+      return "y";
+    case "e":
+      return "x";
+  }
+}
+function shouldMoveWaypoint(waypoint, start, direction) {
+  var relevantAxis = getAxisFromDirection(direction);
+  if (/e|s/.test(direction)) {
+    return waypoint[relevantAxis] > start;
+  } else if (/n|w/.test(direction)) {
+    return waypoint[relevantAxis] < start;
+  }
+}
+function getBounds(shape) {
+  return {
+    x: shape.x,
+    y: shape.y,
+    height: shape.height,
+    width: shape.width
+  };
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/ToggleShapeCollapseHandler.js
+function ToggleShapeCollapseHandler(modeling) {
+  this._modeling = modeling;
+}
+ToggleShapeCollapseHandler.$inject = ["modeling"];
+ToggleShapeCollapseHandler.prototype.execute = function(context) {
+  var shape = context.shape, children = shape.children;
+  context.oldChildrenVisibility = getElementsVisibilityRecursive(children);
+  shape.collapsed = !shape.collapsed;
+  var result = setHiddenRecursive(children, shape.collapsed);
+  return [shape].concat(result);
+};
+ToggleShapeCollapseHandler.prototype.revert = function(context) {
+  var shape = context.shape, oldChildrenVisibility = context.oldChildrenVisibility;
+  var children = shape.children;
+  var result = restoreVisibilityRecursive(children, oldChildrenVisibility);
+  shape.collapsed = !shape.collapsed;
+  return [shape].concat(result);
+};
+function getElementsVisibilityRecursive(elements) {
+  var result = {};
+  forEach(elements, function(element) {
+    result[element.id] = element.hidden;
+    if (element.children) {
+      result = assign({}, result, getElementsVisibilityRecursive(element.children));
+    }
+  });
+  return result;
+}
+function setHiddenRecursive(elements, newHidden) {
+  var result = [];
+  forEach(elements, function(element) {
+    element.hidden = newHidden;
+    result = result.concat(element);
+    if (element.children) {
+      result = result.concat(setHiddenRecursive(element.children, element.collapsed || newHidden));
+    }
+  });
+  return result;
+}
+function restoreVisibilityRecursive(elements, lastState) {
+  var result = [];
+  forEach(elements, function(element) {
+    element.hidden = lastState[element.id];
+    result = result.concat(element);
+    if (element.children) {
+      result = result.concat(restoreVisibilityRecursive(element.children, lastState));
+    }
+  });
+  return result;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/UpdateAttachmentHandler.js
+function UpdateAttachmentHandler(modeling) {
+  this._modeling = modeling;
+}
+UpdateAttachmentHandler.$inject = ["modeling"];
+UpdateAttachmentHandler.prototype.execute = function(context) {
+  var shape = context.shape, newHost = context.newHost, oldHost = shape.host;
+  context.oldHost = oldHost;
+  context.attacherIdx = removeAttacher(oldHost, shape);
+  addAttacher(newHost, shape);
+  shape.host = newHost;
+  return shape;
+};
+UpdateAttachmentHandler.prototype.revert = function(context) {
+  var shape = context.shape, newHost = context.newHost, oldHost = context.oldHost, attacherIdx = context.attacherIdx;
+  shape.host = oldHost;
+  removeAttacher(newHost, shape);
+  addAttacher(oldHost, shape, attacherIdx);
+  return shape;
+};
+function removeAttacher(host, attacher) {
+  return remove3(host && host.attachers, attacher);
+}
+function addAttacher(host, attacher, idx) {
+  if (!host) {
+    return;
+  }
+  var attachers = host.attachers;
+  if (!attachers) {
+    host.attachers = attachers = [];
+  }
+  add(attachers, attacher, idx);
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/cmd/UpdateWaypointsHandler.js
+function UpdateWaypointsHandler() {
+}
+UpdateWaypointsHandler.prototype.execute = function(context) {
+  var connection = context.connection, newWaypoints = context.newWaypoints;
+  context.oldWaypoints = connection.waypoints;
+  connection.waypoints = newWaypoints;
+  return connection;
+};
+UpdateWaypointsHandler.prototype.revert = function(context) {
+  var connection = context.connection, oldWaypoints = context.oldWaypoints;
+  connection.waypoints = oldWaypoints;
+  return connection;
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/Modeling.js
+function Modeling(eventBus, elementFactory, commandStack) {
+  this._eventBus = eventBus;
+  this._elementFactory = elementFactory;
+  this._commandStack = commandStack;
+  var self = this;
+  eventBus.on("diagram.init", function() {
+    self.registerHandlers(commandStack);
+  });
+}
+Modeling.$inject = ["eventBus", "elementFactory", "commandStack"];
+Modeling.prototype.getHandlers = function() {
+  return {
+    "shape.append": AppendShapeHandler,
+    "shape.create": CreateShapeHandler,
+    "shape.delete": DeleteShapeHandler,
+    "shape.move": MoveShapeHandler,
+    "shape.resize": ResizeShapeHandler,
+    "shape.replace": ReplaceShapeHandler,
+    "shape.toggleCollapse": ToggleShapeCollapseHandler,
+    "spaceTool": SpaceToolHandler,
+    "label.create": CreateLabelHandler,
+    "connection.create": CreateConnectionHandler,
+    "connection.delete": DeleteConnectionHandler,
+    "connection.move": MoveConnectionHandler,
+    "connection.layout": LayoutConnectionHandler,
+    "connection.updateWaypoints": UpdateWaypointsHandler,
+    "connection.reconnect": ReconnectConnectionHandler,
+    "elements.create": CreateElementsHandler,
+    "elements.move": MoveElementsHandler,
+    "elements.delete": DeleteElementsHandler,
+    "elements.distribute": DistributeElements,
+    "elements.align": AlignElements,
+    "element.updateAttachment": UpdateAttachmentHandler
+  };
+};
+Modeling.prototype.registerHandlers = function(commandStack) {
+  forEach(this.getHandlers(), function(handler, id) {
+    commandStack.registerHandler(id, handler);
+  });
+};
+Modeling.prototype.moveShape = function(shape, delta2, newParent, newParentIndex, hints) {
+  if (typeof newParentIndex === "object") {
+    hints = newParentIndex;
+    newParentIndex = null;
+  }
+  var context = {
+    shape,
+    delta: delta2,
+    newParent,
+    newParentIndex,
+    hints: hints || {}
+  };
+  this._commandStack.execute("shape.move", context);
+};
+Modeling.prototype.updateAttachment = function(shape, newHost) {
+  var context = {
+    shape,
+    newHost
+  };
+  this._commandStack.execute("element.updateAttachment", context);
+};
+Modeling.prototype.moveElements = function(shapes, delta2, target, hints) {
+  hints = hints || {};
+  var attach = hints.attach;
+  var newParent = target, newHost;
+  if (attach === true) {
+    newHost = target;
+    newParent = target.parent;
+  } else if (attach === false) {
+    newHost = null;
+  }
+  var context = {
+    shapes,
+    delta: delta2,
+    newParent,
+    newHost,
+    hints
+  };
+  this._commandStack.execute("elements.move", context);
+};
+Modeling.prototype.moveConnection = function(connection, delta2, newParent, newParentIndex, hints) {
+  if (typeof newParentIndex === "object") {
+    hints = newParentIndex;
+    newParentIndex = void 0;
+  }
+  var context = {
+    connection,
+    delta: delta2,
+    newParent,
+    newParentIndex,
+    hints: hints || {}
+  };
+  this._commandStack.execute("connection.move", context);
+};
+Modeling.prototype.layoutConnection = function(connection, hints) {
+  var context = {
+    connection,
+    hints: hints || {}
+  };
+  this._commandStack.execute("connection.layout", context);
+};
+Modeling.prototype.createConnection = function(source, target, parentIndex, connection, parent, hints) {
+  if (typeof parentIndex === "object") {
+    hints = parent;
+    parent = connection;
+    connection = parentIndex;
+    parentIndex = void 0;
+  }
+  connection = this._create("connection", connection);
+  var context = {
+    source,
+    target,
+    parent,
+    parentIndex,
+    connection,
+    hints
+  };
+  this._commandStack.execute("connection.create", context);
+  return context.connection;
+};
+Modeling.prototype.createShape = function(shape, position, target, parentIndex, hints) {
+  if (typeof parentIndex !== "number") {
+    hints = parentIndex;
+    parentIndex = void 0;
+  }
+  hints = hints || {};
+  var attach = hints.attach, parent, host;
+  shape = this._create("shape", shape);
+  if (attach) {
+    parent = target.parent;
+    host = target;
+  } else {
+    parent = target;
+  }
+  var context = {
+    position,
+    shape,
+    parent,
+    parentIndex,
+    host,
+    hints
+  };
+  this._commandStack.execute("shape.create", context);
+  return context.shape;
+};
+Modeling.prototype.createElements = function(elements, position, parent, parentIndex, hints) {
+  if (!isArray2(elements)) {
+    elements = [elements];
+  }
+  if (typeof parentIndex !== "number") {
+    hints = parentIndex;
+    parentIndex = void 0;
+  }
+  hints = hints || {};
+  var context = {
+    position,
+    elements,
+    parent,
+    parentIndex,
+    hints
+  };
+  this._commandStack.execute("elements.create", context);
+  return context.elements;
+};
+Modeling.prototype.createLabel = function(labelTarget, position, label, parent) {
+  label = this._create("label", label);
+  var context = {
+    labelTarget,
+    position,
+    parent: parent || labelTarget.parent,
+    shape: label
+  };
+  this._commandStack.execute("label.create", context);
+  return context.shape;
+};
+Modeling.prototype.appendShape = function(source, shape, position, target, hints) {
+  hints = hints || {};
+  shape = this._create("shape", shape);
+  var context = {
+    source,
+    position,
+    target,
+    shape,
+    connection: hints.connection,
+    connectionParent: hints.connectionParent,
+    hints
+  };
+  this._commandStack.execute("shape.append", context);
+  return context.shape;
+};
+Modeling.prototype.removeElements = function(elements) {
+  var context = {
+    elements
+  };
+  this._commandStack.execute("elements.delete", context);
+};
+Modeling.prototype.distributeElements = function(groups, axis, dimension) {
+  var context = {
+    groups,
+    axis,
+    dimension
+  };
+  this._commandStack.execute("elements.distribute", context);
+};
+Modeling.prototype.removeShape = function(shape, hints) {
+  var context = {
+    shape,
+    hints: hints || {}
+  };
+  this._commandStack.execute("shape.delete", context);
+};
+Modeling.prototype.removeConnection = function(connection, hints) {
+  var context = {
+    connection,
+    hints: hints || {}
+  };
+  this._commandStack.execute("connection.delete", context);
+};
+Modeling.prototype.replaceShape = function(oldShape, newShape, hints) {
+  var context = {
+    oldShape,
+    newData: newShape,
+    hints: hints || {}
+  };
+  this._commandStack.execute("shape.replace", context);
+  return context.newShape;
+};
+Modeling.prototype.alignElements = function(elements, alignment) {
+  var context = {
+    elements,
+    alignment
+  };
+  this._commandStack.execute("elements.align", context);
+};
+Modeling.prototype.resizeShape = function(shape, newBounds, minBounds, hints) {
+  var context = {
+    shape,
+    newBounds,
+    minBounds,
+    hints
+  };
+  this._commandStack.execute("shape.resize", context);
+};
+Modeling.prototype.createSpace = function(movingShapes, resizingShapes, delta2, direction, start) {
+  var context = {
+    delta: delta2,
+    direction,
+    movingShapes,
+    resizingShapes,
+    start
+  };
+  this._commandStack.execute("spaceTool", context);
+};
+Modeling.prototype.updateWaypoints = function(connection, newWaypoints, hints) {
+  var context = {
+    connection,
+    newWaypoints,
+    hints: hints || {}
+  };
+  this._commandStack.execute("connection.updateWaypoints", context);
+};
+Modeling.prototype.reconnect = function(connection, source, target, dockingOrPoints, hints) {
+  var context = {
+    connection,
+    newSource: source,
+    newTarget: target,
+    dockingOrPoints,
+    hints: hints || {}
+  };
+  this._commandStack.execute("connection.reconnect", context);
+};
+Modeling.prototype.reconnectStart = function(connection, newSource, dockingOrPoints, hints) {
+  if (!hints) {
+    hints = {};
+  }
+  this.reconnect(connection, newSource, connection.target, dockingOrPoints, assign(hints, {
+    docking: "source"
+  }));
+};
+Modeling.prototype.reconnectEnd = function(connection, newTarget, dockingOrPoints, hints) {
+  if (!hints) {
+    hints = {};
+  }
+  this.reconnect(connection, connection.source, newTarget, dockingOrPoints, assign(hints, {
+    docking: "target"
+  }));
+};
+Modeling.prototype.connect = function(source, target, attrs, hints) {
+  return this.createConnection(source, target, attrs || {}, source.parent, hints);
+};
+Modeling.prototype._create = function(type, attrs) {
+  if (isModelElement(attrs)) {
+    return attrs;
+  } else {
+    return this._elementFactory.create(type, attrs);
+  }
+};
+Modeling.prototype.toggleCollapse = function(shape, hints) {
+  var context = {
+    shape,
+    hints: hints || {}
+  };
+  this._commandStack.execute("shape.toggleCollapse", context);
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/layout/BaseLayouter.js
+function BaseLayouter() {
+}
+BaseLayouter.prototype.layoutConnection = function(connection, hints) {
+  hints = hints || {};
+  return [
+    hints.connectionStart || getMid(hints.source || connection.source),
+    hints.connectionEnd || getMid(hints.target || connection.target)
+  ];
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/modeling/index.js
+var modeling_default = {
+  __depends__: [
+    command_default,
+    change_support_default,
+    selection_default,
+    rules_default
+  ],
+  __init__: ["modeling"],
+  modeling: ["type", Modeling],
+  layouter: ["type", BaseLayouter]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/outline/Outline.js
+var LOW_PRIORITY2 = 500;
+var DEFAULT_PRIORITY2 = 1e3;
+function Outline(eventBus, styles, elementRegistry) {
+  this._eventBus = eventBus;
+  this._elementRegistry = elementRegistry;
+  this._outlineOffset = 5;
+  this._outlineStyle = styles.cls("djs-outline", ["no-fill"]);
+  var self = this;
+  function createElementOutline(element) {
+    if (isRoot(element)) {
+      return;
+    }
+    self.createOutline(element);
+  }
+  eventBus.on("element.hover", function(event2) {
+    createElementOutline(event2.element);
+  });
+  eventBus.on("selection.changed", function(event2) {
+    forEach(event2.newSelection, createElementOutline);
+  });
+  eventBus.on(["shape.changed", "connection.changed"], LOW_PRIORITY2, function(event2) {
+    var element = event2.element, gfx = event2.gfx;
+    var outline = query(".djs-outline", gfx);
+    if (outline) {
+      self.updateOutline(element, outline);
+    }
+  });
+}
+Outline.prototype.createOutline = function(element) {
+  var gfx = this._elementRegistry.getGraphics(element);
+  if (!gfx) {
+    throw new Error("cannot create outline for non-rendered element");
+  }
+  var outline = query(".djs-outline", gfx);
+  if (!outline) {
+    outline = this.getOutline(element) || this._createOutlineGfx();
+    append(gfx, outline);
+    this.updateOutline(element, outline);
+  }
+  return outline;
+};
+Outline.prototype._createOutlineGfx = function() {
+  var outline = create("rect");
+  attr(outline, assign({
+    x: 0,
+    y: 0,
+    rx: 4,
+    width: 100,
+    height: 100
+  }, this._outlineStyle));
+  return outline;
+};
+Outline.prototype.updateOutline = function(element, outline) {
+  if (element.waypoints) {
+    this.updateConnectionOutline(outline, element);
+  } else {
+    this.updateShapeOutline(outline, element);
+  }
+};
+Outline.prototype.updateShapeOutline = function(outline, element) {
+  var updated = false;
+  var providers = this._getProviders();
+  if (providers.length) {
+    forEach(providers, function(provider) {
+      updated = updated || provider.updateOutline(element, outline);
+    });
+  }
+  if (!updated) {
+    attr(outline, {
+      x: -this._outlineOffset,
+      y: -this._outlineOffset,
+      width: element.width + this._outlineOffset * 2,
+      height: element.height + this._outlineOffset * 2
+    });
+  }
+};
+Outline.prototype.updateConnectionOutline = function(outline, connection) {
+  var bbox = getBBox(connection);
+  attr(outline, {
+    x: bbox.x - this._outlineOffset,
+    y: bbox.y - this._outlineOffset,
+    width: bbox.width + this._outlineOffset * 2,
+    height: bbox.height + this._outlineOffset * 2
+  });
+};
+Outline.prototype.registerProvider = function(priority, provider) {
+  if (!provider) {
+    provider = priority;
+    priority = DEFAULT_PRIORITY2;
+  }
+  this._eventBus.on("outline.getProviders", priority, function(event2) {
+    event2.providers.push(provider);
+  });
+};
+Outline.prototype._getProviders = function() {
+  var event2 = this._eventBus.createEvent({
+    type: "outline.getProviders",
+    providers: []
+  });
+  this._eventBus.fire(event2);
+  return event2.providers;
+};
+Outline.prototype.getOutline = function(element) {
+  var outline;
+  var providers = this._getProviders();
+  forEach(providers, function(provider) {
+    if (!isFunction(provider.getOutline)) {
+      return;
+    }
+    outline = outline || provider.getOutline(element);
+  });
+  return outline;
+};
+Outline.$inject = ["eventBus", "styles", "elementRegistry"];
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/outline/MultiSelectionOutline.js
+var SELECTION_OUTLINE_PADDING = 6;
+function MultiSelectionOutline(eventBus, canvas, selection) {
+  this._canvas = canvas;
+  var self = this;
+  eventBus.on("element.changed", function(event2) {
+    if (selection.isSelected(event2.element)) {
+      self._updateMultiSelectionOutline(selection.get());
+    }
+  });
+  eventBus.on("selection.changed", function(event2) {
+    var newSelection = event2.newSelection;
+    self._updateMultiSelectionOutline(newSelection);
+  });
+}
+MultiSelectionOutline.prototype._updateMultiSelectionOutline = function(selection) {
+  var layer = this._canvas.getLayer("selectionOutline");
+  clear(layer);
+  var enabled = selection.length > 1;
+  var container = this._canvas.getContainer();
+  classes(container)[enabled ? "add" : "remove"]("djs-multi-select");
+  if (!enabled) {
+    return;
+  }
+  var bBox = addSelectionOutlinePadding(getBBox(selection));
+  var rect = create("rect");
+  attr(rect, assign({
+    rx: 3
+  }, bBox));
+  classes(rect).add("djs-selection-outline");
+  append(layer, rect);
+};
+MultiSelectionOutline.$inject = ["eventBus", "canvas", "selection"];
+function addSelectionOutlinePadding(bBox) {
+  return {
+    x: bBox.x - SELECTION_OUTLINE_PADDING,
+    y: bBox.y - SELECTION_OUTLINE_PADDING,
+    width: bBox.width + SELECTION_OUTLINE_PADDING * 2,
+    height: bBox.height + SELECTION_OUTLINE_PADDING * 2
+  };
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/outline/index.js
+var outline_default = {
+  __depends__: [
+    selection_default
+  ],
+  __init__: ["outline", "multiSelectionOutline"],
+  outline: ["type", Outline],
+  multiSelectionOutline: ["type", MultiSelectionOutline]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/hover-fix/HoverFix.js
+var HIGH_PRIORITY = 1500;
+function HoverFix(elementRegistry, eventBus, injector) {
+  var self = this;
+  var dragging = injector.get("dragging", false);
+  function ensureHover(event2) {
+    if (event2.hover) {
+      return;
+    }
+    var originalEvent = event2.originalEvent;
+    var gfx = self._findTargetGfx(originalEvent);
+    var element = gfx && elementRegistry.get(gfx);
+    if (gfx && element) {
+      event2.stopPropagation();
+      dragging.hover({ element, gfx });
+      dragging.move(originalEvent);
+    }
+  }
+  if (dragging) {
+    eventBus.on("drag.start", function(event2) {
+      eventBus.once("drag.move", HIGH_PRIORITY, function(event3) {
+        ensureHover(event3);
+      });
+    });
+  }
+  (function() {
+    var hoverGfx;
+    var hover;
+    eventBus.on("element.hover", function(event2) {
+      hoverGfx = event2.gfx;
+      hover = event2.element;
+    });
+    eventBus.on("element.hover", HIGH_PRIORITY, function(event2) {
+      if (hover) {
+        eventBus.fire("element.out", {
+          element: hover,
+          gfx: hoverGfx
+        });
+      }
+    });
+    eventBus.on("element.out", function() {
+      hoverGfx = null;
+      hover = null;
+    });
+  })();
+  this._findTargetGfx = function(event2) {
+    var position, target;
+    if (!(event2 instanceof MouseEvent)) {
+      return;
+    }
+    position = toPoint(event2);
+    target = document.elementFromPoint(position.x, position.y);
+    return getGfx(target);
+  };
+}
+HoverFix.$inject = [
+  "elementRegistry",
+  "eventBus",
+  "injector"
+];
+function getGfx(target) {
+  return closest(target, "svg, .djs-element", true);
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/hover-fix/index.js
+var hover_fix_default = {
+  __init__: [
+    "hoverFix"
+  ],
+  hoverFix: ["type", HoverFix]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/util/Cursor.js
+var CURSOR_CLS_PATTERN = /^djs-cursor-.*$/;
+function set(mode) {
+  var classes3 = classes2(document.body);
+  classes3.removeMatching(CURSOR_CLS_PATTERN);
+  if (mode) {
+    classes3.add("djs-cursor-" + mode);
+  }
+}
+function unset() {
+  set(null);
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/util/ClickTrap.js
+var TRAP_PRIORITY = 5e3;
+function install(eventBus, eventName) {
+  eventName = eventName || "element.click";
+  function trap() {
+    return false;
+  }
+  eventBus.once(eventName, TRAP_PRIORITY, trap);
+  return function() {
+    eventBus.off(eventName, trap);
+  };
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/keyboard/KeyboardUtil.js
+var KEYS_COPY = ["c", "C"];
+var KEYS_PASTE = ["v", "V"];
+var KEYS_DUPLICATE = ["d", "D"];
+var KEYS_CUT = ["x", "X"];
+var KEYS_REDO = ["y", "Y"];
+var KEYS_UNDO = ["z", "Z"];
+function hasModifier(event2) {
+  return event2.ctrlKey || event2.metaKey || event2.shiftKey || event2.altKey;
+}
+function isCmd(event2) {
+  if (event2.altKey) {
+    return false;
+  }
+  return event2.ctrlKey || event2.metaKey;
+}
+function isKey(keys2, event2) {
+  keys2 = isArray2(keys2) ? keys2 : [keys2];
+  return keys2.indexOf(event2.key) !== -1 || keys2.indexOf(event2.code) !== -1 || keys2.indexOf(getPhysicalLetter(event2)) !== -1;
+}
+var NON_LATIN_LETTER = /^(?!\p{Script_Extensions=Latin}|\p{Script=Common})\p{Letter}$/u;
+var NON_LETTER = /^\P{Letter}$/u;
+function getPhysicalLetter(event2) {
+  var key = event2.key, match = /^Key([A-Z])$/.exec(event2.code || "");
+  if (!match || typeof key !== "string") {
+    return null;
+  }
+  var letter = match[1];
+  if (NON_LATIN_LETTER.test(key)) {
+    return event2.shiftKey ? letter : letter.toLowerCase();
+  }
+  if (event2.shiftKey && NON_LETTER.test(key) && event2.keyCode === letter.charCodeAt(0)) {
+    return letter;
+  }
+  return null;
+}
+function isShift(event2) {
+  return event2.shiftKey;
+}
+function isCopy(event2) {
+  return isCmd(event2) && isKey(KEYS_COPY, event2);
+}
+function isPaste(event2) {
+  return isCmd(event2) && isKey(KEYS_PASTE, event2);
+}
+function isDuplicate(event2) {
+  return isCmd(event2) && isKey(KEYS_DUPLICATE, event2);
+}
+function isCut(event2) {
+  return isCmd(event2) && isKey(KEYS_CUT, event2);
+}
+function isUndo(event2) {
+  return isCmd(event2) && !isShift(event2) && isKey(KEYS_UNDO, event2);
+}
+function isRedo(event2) {
+  return isCmd(event2) && (isKey(KEYS_REDO, event2) || isKey(KEYS_UNDO, event2) && isShift(event2));
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/dragging/Dragging.js
+var round4 = Math.round;
+var DRAG_ACTIVE_CLS = "djs-drag-active";
+var LOW_PRIORITY3 = 500;
+function preventDefault(event2) {
+  event2.preventDefault();
+}
+function isTouchEvent(event2) {
+  return typeof TouchEvent !== "undefined" && event2 instanceof TouchEvent;
+}
+function getLength(point) {
+  return Math.sqrt(Math.pow(point.x, 2) + Math.pow(point.y, 2));
+}
+function Dragging(eventBus, canvas, selection, elementRegistry) {
+  var defaultOptions = {
+    threshold: 5,
+    trapClick: true
+  };
+  var context;
+  function toLocalPoint(globalPosition) {
+    var viewbox = canvas.viewbox();
+    var clientRect = canvas._container.getBoundingClientRect();
+    return {
+      x: viewbox.x + (globalPosition.x - clientRect.left) / viewbox.scale,
+      y: viewbox.y + (globalPosition.y - clientRect.top) / viewbox.scale
+    };
+  }
+  function fire(type, dragContext) {
+    dragContext = dragContext || context;
+    var event2 = eventBus.createEvent(
+      assign(
+        {},
+        dragContext.payload,
+        dragContext.data,
+        { isTouch: dragContext.isTouch }
+      )
+    );
+    if (eventBus.fire("drag." + type, event2) === false) {
+      return false;
+    }
+    return eventBus.fire(dragContext.prefix + "." + type, event2);
+  }
+  function restoreSelection(previousSelection) {
+    var existingSelection = previousSelection.filter(function(element) {
+      return elementRegistry.get(element.id);
+    });
+    existingSelection.length && selection.select(existingSelection);
+  }
+  function move2(event2, activate) {
+    var payload = context.payload, displacement = context.displacement;
+    var globalStart = context.globalStart, globalCurrent = toPoint(event2), globalDelta = delta(globalCurrent, globalStart);
+    var localStart = context.localStart, localCurrent = toLocalPoint(globalCurrent), localDelta = delta(localCurrent, localStart);
+    if (!context.active && (activate || getLength(globalDelta) > context.threshold)) {
+      assign(payload, {
+        x: round4(localStart.x + displacement.x),
+        y: round4(localStart.y + displacement.y),
+        dx: 0,
+        dy: 0
+      }, { originalEvent: event2 });
+      if (false === fire("start")) {
+        return cancel();
+      }
+      context.active = true;
+      if (!context.keepSelection) {
+        payload.previousSelection = selection.get();
+        selection.select(null);
+      }
+      if (context.cursor) {
+        set(context.cursor);
+      }
+      canvas.addMarker(canvas.getRootElement(), DRAG_ACTIVE_CLS);
+    }
+    stopPropagation(event2);
+    if (context.active) {
+      assign(payload, {
+        x: round4(localCurrent.x + displacement.x),
+        y: round4(localCurrent.y + displacement.y),
+        dx: round4(localDelta.x),
+        dy: round4(localDelta.y)
+      }, { originalEvent: event2 });
+      fire("move");
+    }
+  }
+  function end(event2) {
+    var previousContext, returnValue = true;
+    if (context.active) {
+      if (event2) {
+        context.payload.originalEvent = event2;
+        stopPropagation(event2);
+      }
+      returnValue = fire("end");
+    }
+    if (returnValue === false) {
+      fire("rejected");
+    }
+    previousContext = cleanup(returnValue !== true);
+    fire("ended", previousContext);
+  }
+  function cancelOnError() {
+    cancel();
+  }
+  function checkCancel(event2) {
+    if (isKey("Escape", event2)) {
+      preventDefault(event2);
+      cancel();
+    }
+  }
+  function trapClickAndEnd(event2) {
+    var untrap;
+    if (context.active) {
+      untrap = install(eventBus);
+      setTimeout(untrap, 400);
+      preventDefault(event2);
+    }
+    end(event2);
+  }
+  function trapTouch(event2) {
+    move2(event2);
+  }
+  function hover(event2) {
+    var payload = context.payload;
+    payload.hoverGfx = event2.gfx;
+    payload.hover = event2.element;
+    fire("hover");
+  }
+  function out(event2) {
+    fire("out");
+    var payload = context.payload;
+    payload.hoverGfx = null;
+    payload.hover = null;
+  }
+  function cancel(restore) {
+    var previousContext;
+    if (!context) {
+      return;
+    }
+    var wasActive = context.active;
+    eventBus.off("error", cancelOnError);
+    try {
+      if (wasActive) {
+        fire("cancel");
+      }
+    } finally {
+      previousContext = cleanup(restore);
+    }
+    if (wasActive) {
+      fire("canceled", previousContext);
+    }
+  }
+  function cleanup(restore) {
+    var previousContext;
+    eventBus.off("error", cancelOnError);
+    try {
+      fire("cleanup");
+    } finally {
+      previousContext = finishCleanup(restore);
+    }
+    return previousContext;
+  }
+  function finishCleanup(restore) {
+    var previousContext, endDrag;
+    unset();
+    if (context.trapClick) {
+      endDrag = trapClickAndEnd;
+    } else {
+      endDrag = end;
+    }
+    event.unbind(document, "mousemove", move2);
+    event.unbind(document, "dragstart", preventDefault);
+    event.unbind(document, "selectstart", preventDefault);
+    event.unbind(document, "mousedown", endDrag, true);
+    event.unbind(document, "mouseup", endDrag, true);
+    event.unbind(document, "keyup", checkCancel);
+    event.unbind(document, "touchstart", trapTouch, true);
+    event.unbind(document, "touchcancel", cancel, true);
+    event.unbind(document, "touchmove", move2, true);
+    event.unbind(document, "touchend", end, true);
+    eventBus.off("element.hover", hover);
+    eventBus.off("element.out", out);
+    canvas.removeMarker(canvas.getRootElement(), DRAG_ACTIVE_CLS);
+    var previousSelection = context.payload.previousSelection;
+    previousContext = context;
+    context = null;
+    if (restore !== false && previousSelection && !selection.get().length) {
+      restoreSelection(previousSelection);
+    }
+    return previousContext;
+  }
+  function init(event2, relativeTo, prefix, options) {
+    if (context) {
+      cancel(false);
+    }
+    if (typeof relativeTo === "string") {
+      options = prefix;
+      prefix = relativeTo;
+      relativeTo = null;
+    }
+    options = assign({}, defaultOptions, options || {});
+    var data = options.data || {}, originalEvent, globalStart, localStart, endDrag, isTouch;
+    if (options.trapClick) {
+      endDrag = trapClickAndEnd;
+    } else {
+      endDrag = end;
+    }
+    if (event2) {
+      originalEvent = getOriginal(event2) || event2;
+      globalStart = toPoint(event2);
+      stopPropagation(event2);
+      if (originalEvent.type === "dragstart") {
+        preventDefault(originalEvent);
+      }
+    } else {
+      originalEvent = null;
+      globalStart = { x: 0, y: 0 };
+    }
+    localStart = toLocalPoint(globalStart);
+    if (!relativeTo) {
+      relativeTo = localStart;
+    }
+    isTouch = isTouchEvent(originalEvent);
+    context = assign({
+      prefix,
+      data,
+      payload: {},
+      globalStart,
+      displacement: delta(relativeTo, localStart),
+      localStart,
+      isTouch
+    }, options);
+    eventBus.once("error", LOW_PRIORITY3, cancelOnError);
+    if (!options.manual) {
+      if (isTouch) {
+        event.bind(document, "touchstart", trapTouch, true);
+        event.bind(document, "touchcancel", cancel, true);
+        event.bind(document, "touchmove", move2, true);
+        event.bind(document, "touchend", end, true);
+      } else {
+        event.bind(document, "mousemove", move2);
+        event.bind(document, "dragstart", preventDefault);
+        event.bind(document, "selectstart", preventDefault);
+        event.bind(document, "mousedown", endDrag, true);
+        event.bind(document, "mouseup", endDrag, true);
+      }
+      event.bind(document, "keyup", checkCancel);
+      eventBus.on("element.hover", hover);
+      eventBus.on("element.out", out);
+    }
+    if (fire("init") === false) {
+      cancel();
+      return false;
+    }
+    if (options.autoActivate) {
+      move2(event2, true);
+    }
+  }
+  eventBus.on("diagram.destroy", cancel);
+  this.init = init;
+  this.move = move2;
+  this.hover = hover;
+  this.out = out;
+  this.end = end;
+  this.cancel = cancel;
+  this.context = function() {
+    return context;
+  };
+  this.setOptions = function(options) {
+    assign(defaultOptions, options);
+  };
+}
+Dragging.$inject = [
+  "eventBus",
+  "canvas",
+  "selection",
+  "elementRegistry"
+];
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/dragging/index.js
+var dragging_default = {
+  __depends__: [
+    hover_fix_default,
+    selection_default
+  ],
+  dragging: ["type", Dragging]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/util/IdGenerator.js
+function IdGenerator(prefix) {
+  this._counter = 0;
+  this._prefix = (prefix ? prefix + "-" : "") + Math.floor(Math.random() * 1e9) + "-";
+}
+IdGenerator.prototype.next = function() {
+  return this._prefix + ++this._counter;
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/preview-support/PreviewSupport.js
+var cloneIds = new IdGenerator("ps");
+var MARKER_TYPES = [
+  "marker-start",
+  "marker-mid",
+  "marker-end"
+];
+var NODES_CAN_HAVE_MARKER = [
+  "circle",
+  "ellipse",
+  "line",
+  "path",
+  "polygon",
+  "polyline",
+  "path",
+  "rect"
+];
+function PreviewSupport(elementRegistry, eventBus, canvas, styles) {
+  this._elementRegistry = elementRegistry;
+  this._canvas = canvas;
+  this._styles = styles;
+}
+PreviewSupport.$inject = [
+  "elementRegistry",
+  "eventBus",
+  "canvas",
+  "styles"
+];
+PreviewSupport.prototype.cleanUp = function() {
+  console.warn("PreviewSupport#cleanUp is deprecated and will be removed in future versions. You do not need to manually clean up previews anymore. cf. https://github.com/bpmn-io/diagram-js/pull/906");
+};
+PreviewSupport.prototype.getGfx = function(element) {
+  return this._elementRegistry.getGraphics(element);
+};
+PreviewSupport.prototype.addDragger = function(element, group, gfx, className = "djs-dragger") {
+  gfx = gfx || this.getGfx(element);
+  var dragger = clone(gfx);
+  this._cloneMarkers(getVisual(dragger), className);
+  attr(dragger, this._styles.cls(className, []));
+  append(group, dragger);
+  attr(dragger, "data-preview-support-element-id", element.id);
+  return dragger;
+};
+PreviewSupport.prototype.addFrame = function(shape, group) {
+  var frame = create("rect", {
+    class: "djs-resize-overlay",
+    width: shape.width,
+    height: shape.height,
+    x: shape.x,
+    y: shape.y
+  });
+  append(group, frame);
+  attr(frame, "data-preview-support-element-id", shape.id);
+  return frame;
+};
+PreviewSupport.prototype._cloneMarkers = function(gfx, className = "djs-dragger", rootGfx = gfx) {
+  var self = this;
+  if (gfx.childNodes) {
+    gfx.childNodes.forEach((childNode) => {
+      self._cloneMarkers(childNode, className, rootGfx);
+    });
+  }
+  if (!canHaveMarker(gfx)) {
+    return;
+  }
+  MARKER_TYPES.forEach(function(markerType) {
+    if (attr(gfx, markerType)) {
+      var marker = getMarker(gfx, markerType, self._canvas.getContainer());
+      marker && self._cloneMarker(rootGfx, gfx, marker, markerType, className);
+    }
+  });
+};
+PreviewSupport.prototype._cloneMarker = function(parentGfx, gfx, marker, markerType, className = "djs-dragger") {
+  var clonedMarkerId = [marker.id, className, cloneIds.next()].join("-");
+  var copiedMarker = query("marker#" + marker.id, parentGfx);
+  parentGfx = parentGfx || this._canvas._svg;
+  var clonedMarker = copiedMarker || clone(marker);
+  clonedMarker.id = clonedMarkerId;
+  classes(clonedMarker).add(className);
+  var defs = query(":scope > defs", parentGfx);
+  if (!defs) {
+    defs = create("defs");
+    append(parentGfx, defs);
+  }
+  append(defs, clonedMarker);
+  var reference = idToReference(clonedMarker.id);
+  attr(gfx, markerType, reference);
+};
+function getMarker(node2, markerType, parentNode) {
+  var id = referenceToId(attr(node2, markerType));
+  return query("marker#" + id, parentNode || document);
+}
+function referenceToId(reference) {
+  return reference.match(/url\(['"]?#([^'"]*)['"]?\)/)[1];
+}
+function idToReference(id) {
+  return "url(#" + id + ")";
+}
+function canHaveMarker(node2) {
+  return NODES_CAN_HAVE_MARKER.indexOf(node2.nodeName) !== -1;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/preview-support/index.js
+var preview_support_default = {
+  __init__: ["previewSupport"],
+  previewSupport: ["type", PreviewSupport]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/move/Move.js
+var LOW_PRIORITY4 = 500;
+var MEDIUM_PRIORITY = 1250;
+var HIGH_PRIORITY2 = 1500;
+var round5 = Math.round;
+function mid(element) {
+  return {
+    x: element.x + round5(element.width / 2),
+    y: element.y + round5(element.height / 2)
+  };
+}
+function MoveEvents(eventBus, dragging, modeling, selection, rules) {
+  function canMove(shapes, delta2, position, target) {
+    return rules.allowed("elements.move", {
+      shapes,
+      delta: delta2,
+      position,
+      target
+    });
+  }
+  eventBus.on("shape.move.start", HIGH_PRIORITY2, function(event2) {
+    var context = event2.context, shape = event2.shape, shapes = selection.get().slice();
+    if (shapes.indexOf(shape) === -1) {
+      shapes = [shape];
+    }
+    shapes = removeNested(shapes);
+    assign(context, {
+      shapes,
+      validatedShapes: shapes,
+      shape
+    });
+  });
+  eventBus.on("shape.move.start", MEDIUM_PRIORITY, function(event2) {
+    var context = event2.context, validatedShapes = context.validatedShapes, canExecute;
+    canExecute = context.canExecute = canMove(validatedShapes);
+    if (!canExecute) {
+      return false;
+    }
+  });
+  eventBus.on("shape.move.move", LOW_PRIORITY4, function(event2) {
+    var context = event2.context, validatedShapes = context.validatedShapes, hover = event2.hover, delta2 = { x: event2.dx, y: event2.dy }, position = { x: event2.x, y: event2.y }, canExecute;
+    canExecute = canMove(validatedShapes, delta2, position, hover);
+    context.delta = delta2;
+    context.canExecute = canExecute;
+    if (canExecute === null) {
+      context.target = null;
+      return;
+    }
+    context.target = hover;
+  });
+  eventBus.on("shape.move.end", function(event2) {
+    var context = event2.context;
+    var delta2 = context.delta, canExecute = context.canExecute, isAttach = canExecute === "attach", shapes = context.shapes;
+    if (canExecute === false) {
+      return false;
+    }
+    delta2.x = round5(delta2.x);
+    delta2.y = round5(delta2.y);
+    if (delta2.x === 0 && delta2.y === 0) {
+      return;
+    }
+    modeling.moveElements(shapes, delta2, context.target, {
+      primaryShape: context.shape,
+      attach: isAttach
+    });
+  });
+  eventBus.on("element.mousedown", function(event2) {
+    if (!isPrimaryButton(event2)) {
+      return;
+    }
+    var originalEvent = getOriginal(event2);
+    if (!originalEvent) {
+      throw new Error("must supply DOM mousedown event");
+    }
+    return start(originalEvent, event2.element);
+  });
+  function start(event2, element, activate, context) {
+    if (isObject(activate)) {
+      context = activate;
+      activate = false;
+    }
+    if (element.waypoints || !element.parent) {
+      return;
+    }
+    if (classes(event2.target).has("djs-hit-no-move")) {
+      return;
+    }
+    var referencePoint = mid(element);
+    var result = dragging.init(event2, referencePoint, "shape.move", {
+      cursor: "grabbing",
+      autoActivate: activate,
+      data: {
+        shape: element,
+        context: context || {}
+      }
+    });
+    if (result !== false) {
+      return true;
+    }
+  }
+  this.start = start;
+}
+MoveEvents.$inject = [
+  "eventBus",
+  "dragging",
+  "modeling",
+  "selection",
+  "rules"
+];
+function removeNested(elements) {
+  var ids2 = groupBy(elements, "id");
+  return filter(elements, function(element) {
+    while (element = element.parent) {
+      if (ids2[element.id]) {
+        return false;
+      }
+    }
+    return true;
+  });
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/move/MovePreview.js
+var LOW_PRIORITY5 = 499;
+var MARKER_DRAGGING = "djs-dragging";
+var MARKER_OK = "drop-ok";
+var MARKER_NOT_OK = "drop-not-ok";
+var MARKER_NEW_PARENT = "new-parent";
+var MARKER_ATTACH = "attach-ok";
+function MovePreview(eventBus, canvas, styles, previewSupport) {
+  function getVisualDragShapes(shapes) {
+    var elements = getAllDraggedElements(shapes);
+    var filteredElements = removeEdges(elements);
+    return filteredElements;
+  }
+  function getAllDraggedElements(shapes) {
+    var allShapes = selfAndAllChildren(shapes);
+    var allConnections = allShapes.flatMap(
+      (shape) => (shape.incoming || []).concat(shape.outgoing || [])
+    );
+    var allElements = allShapes.concat(allConnections);
+    var uniqueElements = [...new Set(allElements)];
+    return uniqueElements;
+  }
+  function setMarker(element, marker) {
+    [MARKER_ATTACH, MARKER_OK, MARKER_NOT_OK, MARKER_NEW_PARENT].forEach(function(m) {
+      if (m === marker) {
+        canvas.addMarker(element, m);
+      } else {
+        canvas.removeMarker(element, m);
+      }
+    });
+  }
+  function makeDraggable(context, element, addMarker) {
+    previewSupport.addDragger(element, context.dragGroup);
+    if (addMarker) {
+      canvas.addMarker(element, MARKER_DRAGGING);
+    }
+    if (context.allDraggedElements) {
+      context.allDraggedElements.push(element);
+    } else {
+      context.allDraggedElements = [element];
+    }
+  }
+  eventBus.on("shape.move.start", LOW_PRIORITY5, function(event2) {
+    var context = event2.context, dragShapes = context.shapes, allDraggedElements = context.allDraggedElements;
+    var visuallyDraggedShapes = getVisualDragShapes(dragShapes);
+    if (!context.dragGroup) {
+      var dragGroup = create("g");
+      attr(dragGroup, styles.cls("djs-drag-group", ["no-events"]));
+      var activeLayer = canvas.getActiveLayer();
+      append(activeLayer, dragGroup);
+      context.dragGroup = dragGroup;
+    }
+    visuallyDraggedShapes.forEach(function(shape) {
+      previewSupport.addDragger(shape, context.dragGroup);
+    });
+    if (!allDraggedElements) {
+      allDraggedElements = getAllDraggedElements(dragShapes);
+    } else {
+      allDraggedElements = flatten([
+        allDraggedElements,
+        getAllDraggedElements(dragShapes)
+      ]);
+    }
+    forEach(allDraggedElements, function(e2) {
+      canvas.addMarker(e2, MARKER_DRAGGING);
+    });
+    context.allDraggedElements = allDraggedElements;
+    context.differentParents = haveDifferentParents(dragShapes);
+  });
+  eventBus.on("shape.move.move", LOW_PRIORITY5, function(event2) {
+    var context = event2.context, dragGroup = context.dragGroup, target = context.target, parent = context.shape.parent, canExecute = context.canExecute;
+    if (target) {
+      if (canExecute === "attach") {
+        setMarker(target, MARKER_ATTACH);
+      } else if (context.canExecute && parent && target.id !== parent.id) {
+        setMarker(target, MARKER_NEW_PARENT);
+      } else {
+        setMarker(target, context.canExecute ? MARKER_OK : MARKER_NOT_OK);
+      }
+    }
+    translate(dragGroup, event2.dx, event2.dy);
+  });
+  eventBus.on(["shape.move.out", "shape.move.cleanup"], function(event2) {
+    var context = event2.context, target = context.target;
+    if (target) {
+      setMarker(target, null);
+    }
+  });
+  eventBus.on("shape.move.cleanup", function(event2) {
+    var context = event2.context, allDraggedElements = context.allDraggedElements, dragGroup = context.dragGroup;
+    forEach(allDraggedElements, function(e2) {
+      canvas.removeMarker(e2, MARKER_DRAGGING);
+    });
+    if (dragGroup) {
+      remove(dragGroup);
+    }
+  });
+  this.makeDraggable = makeDraggable;
+}
+MovePreview.$inject = [
+  "eventBus",
+  "canvas",
+  "styles",
+  "previewSupport"
+];
+function removeEdges(elements) {
+  var elementIds = /* @__PURE__ */ new Set();
+  elements.forEach(function(element) {
+    elementIds.add(element.id);
+  });
+  var filteredElements = filter(elements, function(element) {
+    if (!isConnection(element)) {
+      return true;
+    } else {
+      return elementIds.has(element.source.id) && elementIds.has(element.target.id);
+    }
+  });
+  return filteredElements;
+}
+function haveDifferentParents(elements) {
+  return size(groupBy(elements, function(e2) {
+    return e2.parent && e2.parent.id;
+  })) !== 1;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/move/index.js
+var move_default = {
+  __depends__: [
+    interaction_events_default,
+    selection_default,
+    outline_default,
+    rules_default,
+    dragging_default,
+    preview_support_default
+  ],
+  __init__: [
+    "move",
+    "movePreview"
+  ],
+  move: ["type", MoveEvents],
+  movePreview: ["type", MovePreview]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/connect/Connect.js
+function Connect(eventBus, dragging, modeling, rules) {
+  function canConnect(source, target) {
+    return rules.allowed("connection.create", {
+      source,
+      target
+    });
+  }
+  function canConnectReverse(source, target) {
+    return canConnect(target, source);
+  }
+  eventBus.on("connect.hover", function(event2) {
+    var context = event2.context, start = context.start, hover = event2.hover, canExecute;
+    context.hover = hover;
+    canExecute = context.canExecute = canConnect(start, hover);
+    if (isNil(canExecute)) {
+      return;
+    }
+    if (canExecute !== false) {
+      context.source = start;
+      context.target = hover;
+      return;
+    }
+    canExecute = context.canExecute = canConnectReverse(start, hover);
+    if (isNil(canExecute)) {
+      return;
+    }
+    if (canExecute !== false) {
+      context.source = hover;
+      context.target = start;
+    }
+  });
+  eventBus.on(["connect.out", "connect.cleanup"], function(event2) {
+    var context = event2.context;
+    context.hover = null;
+    context.source = null;
+    context.target = null;
+    context.canExecute = false;
+  });
+  eventBus.on("connect.end", function(event2) {
+    var context = event2.context, canExecute = context.canExecute, connectionStart = context.connectionStart, connectionEnd = {
+      x: event2.x,
+      y: event2.y
+    }, source = context.source, target = context.target;
+    if (!canExecute) {
+      return false;
+    }
+    var attrs = null, hints = {
+      connectionStart: isReverse(context) ? connectionEnd : connectionStart,
+      connectionEnd: isReverse(context) ? connectionStart : connectionEnd
+    };
+    if (isObject(canExecute)) {
+      attrs = canExecute;
+    }
+    context.connection = modeling.connect(source, target, attrs, hints);
+  });
+  this.start = function(event2, start, connectionStart, autoActivate) {
+    if (!isObject(connectionStart)) {
+      autoActivate = connectionStart;
+      connectionStart = getMid(start);
+    }
+    dragging.init(event2, "connect", {
+      autoActivate,
+      data: {
+        shape: start,
+        context: {
+          start,
+          connectionStart
+        }
+      }
+    });
+  };
+}
+Connect.$inject = [
+  "eventBus",
+  "dragging",
+  "modeling",
+  "rules"
+];
+function isReverse(context) {
+  var hover = context.hover, source = context.source, target = context.target;
+  return hover && source && hover === source && source !== target;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/connect/ConnectPreview.js
+var HIGH_PRIORITY3 = 1100;
+var LOW_PRIORITY6 = 900;
+var MARKER_OK2 = "connect-ok";
+var MARKER_NOT_OK2 = "connect-not-ok";
+function ConnectPreview(injector, eventBus, canvas) {
+  var connectionPreview = injector.get("connectionPreview", false);
+  connectionPreview && eventBus.on("connect.move", function(event2) {
+    var context = event2.context, canConnect = context.canExecute, hover = context.hover, source = context.source, start = context.start, startPosition = context.startPosition, target = context.target, connectionStart = context.connectionStart || startPosition, connectionEnd = context.connectionEnd || {
+      x: event2.x,
+      y: event2.y
+    }, previewStart = connectionStart, previewEnd = connectionEnd;
+    if (isReverse(context)) {
+      previewStart = connectionEnd;
+      previewEnd = connectionStart;
+    }
+    connectionPreview.drawPreview(context, canConnect, {
+      source: source || start,
+      target: target || hover,
+      connectionStart: previewStart,
+      connectionEnd: previewEnd
+    });
+  });
+  eventBus.on("connect.hover", LOW_PRIORITY6, function(event2) {
+    var context = event2.context, hover = event2.hover, canExecute = context.canExecute;
+    if (canExecute === null) {
+      return;
+    }
+    canvas.addMarker(hover, canExecute ? MARKER_OK2 : MARKER_NOT_OK2);
+  });
+  eventBus.on([
+    "connect.out",
+    "connect.cleanup"
+  ], HIGH_PRIORITY3, function(event2) {
+    var hover = event2.hover;
+    if (hover) {
+      canvas.removeMarker(hover, MARKER_OK2);
+      canvas.removeMarker(hover, MARKER_NOT_OK2);
+    }
+  });
+  connectionPreview && eventBus.on("connect.cleanup", function(event2) {
+    connectionPreview.cleanUp(event2.context);
+  });
+}
+ConnectPreview.$inject = [
+  "injector",
+  "eventBus",
+  "canvas"
+];
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/connect/index.js
+var connect_default = {
+  __depends__: [
+    selection_default,
+    rules_default,
+    dragging_default
+  ],
+  __init__: [
+    "connectPreview"
+  ],
+  connect: ["type", Connect],
+  connectPreview: ["type", ConnectPreview]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/create/Create.js
+var MARKER_OK3 = "drop-ok";
+var MARKER_NOT_OK3 = "drop-not-ok";
+var MARKER_ATTACH2 = "attach-ok";
+var MARKER_NEW_PARENT2 = "new-parent";
+var PREFIX = "create";
+var HIGH_PRIORITY4 = 2e3;
+function Create(canvas, dragging, eventBus, modeling, rules) {
+  function canCreate(elements, target, position, source, hints) {
+    if (!target) {
+      return false;
+    }
+    elements = filter(elements, function(element) {
+      var labelTarget = element.labelTarget;
+      return !element.parent && !(isLabel(element) && elements.indexOf(labelTarget) !== -1);
+    });
+    var shape = find(elements, function(element) {
+      return !isConnection(element);
+    });
+    var attach = false, connect = false, create3 = false;
+    if (isSingleShape(elements)) {
+      attach = rules.allowed("shape.attach", {
+        position,
+        shape,
+        target
+      });
+    }
+    if (!attach) {
+      if (isSingleShape(elements)) {
+        create3 = rules.allowed("shape.create", {
+          position,
+          shape,
+          source,
+          target
+        });
+      } else {
+        create3 = rules.allowed("elements.create", {
+          elements,
+          position,
+          target
+        });
+      }
+    }
+    var connectionTarget = hints.connectionTarget;
+    if (create3 || attach) {
+      if (shape && source) {
+        connect = rules.allowed("connection.create", {
+          source: connectionTarget === source ? shape : source,
+          target: connectionTarget === source ? source : shape,
+          hints: {
+            targetParent: target,
+            targetAttach: attach
+          }
+        });
+      }
+      return {
+        attach,
+        connect
+      };
+    }
+    if (create3 === null || attach === null) {
+      return null;
+    }
+    return false;
+  }
+  function setMarker(element, marker) {
+    [MARKER_ATTACH2, MARKER_OK3, MARKER_NOT_OK3, MARKER_NEW_PARENT2].forEach(function(m) {
+      if (m === marker) {
+        canvas.addMarker(element, m);
+      } else {
+        canvas.removeMarker(element, m);
+      }
+    });
+  }
+  eventBus.on(["create.move", "create.hover"], function(event2) {
+    var context = event2.context, elements = context.elements, hover = event2.hover, source = context.source, hints = context.hints || {};
+    if (!hover) {
+      context.canExecute = false;
+      context.target = null;
+      return;
+    }
+    ensureConstraints(event2);
+    var position = {
+      x: event2.x,
+      y: event2.y
+    };
+    var canExecute = context.canExecute = hover && canCreate(elements, hover, position, source, hints);
+    if (hover && canExecute !== null) {
+      context.target = hover;
+      if (canExecute && canExecute.attach) {
+        setMarker(hover, MARKER_ATTACH2);
+      } else {
+        setMarker(hover, canExecute ? MARKER_NEW_PARENT2 : MARKER_NOT_OK3);
+      }
+    }
+  });
+  eventBus.on(["create.end", "create.out", "create.cleanup"], function(event2) {
+    var hover = event2.hover;
+    if (hover) {
+      setMarker(hover, null);
+    }
+  });
+  eventBus.on("create.end", function(event2) {
+    var context = event2.context, source = context.source, shape = context.shape, elements = context.elements, target = context.target, canExecute = context.canExecute, attach = canExecute && canExecute.attach, connect = canExecute && canExecute.connect, hints = context.hints || {};
+    if (canExecute === false || !target) {
+      return false;
+    }
+    ensureConstraints(event2);
+    var position = {
+      x: event2.x,
+      y: event2.y
+    };
+    if (connect) {
+      shape = modeling.appendShape(source, shape, position, target, {
+        attach,
+        connection: connect === true ? {} : connect,
+        connectionTarget: hints.connectionTarget
+      });
+    } else {
+      elements = modeling.createElements(elements, position, target, assign({}, hints, {
+        attach
+      }));
+      shape = find(elements, function(element) {
+        return !isConnection(element);
+      });
+    }
+    assign(context, {
+      elements,
+      shape
+    });
+    assign(event2, {
+      elements,
+      shape
+    });
+  });
+  function cancel() {
+    var context = dragging.context();
+    if (context && context.prefix === PREFIX) {
+      dragging.cancel();
+    }
+  }
+  eventBus.on("create.init", function() {
+    eventBus.on("elements.changed", cancel);
+    eventBus.once(["create.cancel", "create.end"], HIGH_PRIORITY4, function() {
+      eventBus.off("elements.changed", cancel);
+    });
+  });
+  this.start = function(event2, elements, context) {
+    if (!isArray2(elements)) {
+      elements = [elements];
+    }
+    var shape = find(elements, function(element) {
+      return !isConnection(element);
+    });
+    if (!shape) {
+      return;
+    }
+    context = assign({
+      elements,
+      hints: {},
+      shape
+    }, context || {});
+    forEach(elements, function(element) {
+      if (!isNumber(element.x)) {
+        element.x = 0;
+      }
+      if (!isNumber(element.y)) {
+        element.y = 0;
+      }
+    });
+    var visibleElements = filter(elements, function(element) {
+      return !element.hidden;
+    });
+    var bbox = getBBox(visibleElements);
+    forEach(elements, function(element) {
+      if (isConnection(element)) {
+        element.waypoints = map(element.waypoints, function(waypoint) {
+          return {
+            x: waypoint.x - bbox.x - bbox.width / 2,
+            y: waypoint.y - bbox.y - bbox.height / 2
+          };
+        });
+      }
+      assign(element, {
+        x: element.x - bbox.x - bbox.width / 2,
+        y: element.y - bbox.y - bbox.height / 2
+      });
+    });
+    dragging.init(event2, PREFIX, {
+      cursor: "grabbing",
+      autoActivate: true,
+      data: {
+        shape,
+        elements,
+        context
+      }
+    });
+  };
+}
+Create.$inject = [
+  "canvas",
+  "dragging",
+  "eventBus",
+  "modeling",
+  "rules"
+];
+function ensureConstraints(event2) {
+  var context = event2.context, createConstraints = context.createConstraints;
+  if (!createConstraints) {
+    return;
+  }
+  if (createConstraints.left) {
+    event2.x = Math.max(event2.x, createConstraints.left);
+  }
+  if (createConstraints.right) {
+    event2.x = Math.min(event2.x, createConstraints.right);
+  }
+  if (createConstraints.top) {
+    event2.y = Math.max(event2.y, createConstraints.top);
+  }
+  if (createConstraints.bottom) {
+    event2.y = Math.min(event2.y, createConstraints.bottom);
+  }
+}
+function isSingleShape(elements) {
+  return elements && elements.length === 1 && !isConnection(elements[0]);
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/create/CreatePreview.js
+var LOW_PRIORITY7 = 750;
+function CreatePreview(canvas, eventBus, graphicsFactory, previewSupport, styles) {
+  function createDragGroup(elements) {
+    var dragGroup = create("g");
+    attr(dragGroup, styles.cls("djs-drag-group", ["no-events"]));
+    var childrenGfx = create("g");
+    elements.forEach(function(element) {
+      var gfx;
+      if (element.hidden) {
+        return;
+      }
+      if (element.waypoints) {
+        gfx = graphicsFactory._createContainer("connection", childrenGfx);
+        graphicsFactory.drawConnection(getVisual(gfx), element);
+      } else {
+        gfx = graphicsFactory._createContainer("shape", childrenGfx);
+        graphicsFactory.drawShape(getVisual(gfx), element);
+        translate(gfx, element.x, element.y);
+      }
+      previewSupport.addDragger(element, dragGroup, gfx);
+    });
+    return dragGroup;
+  }
+  eventBus.on("create.move", LOW_PRIORITY7, function(event2) {
+    var hover = event2.hover, context = event2.context, elements = context.elements, dragGroup = context.dragGroup;
+    if (!dragGroup) {
+      dragGroup = context.dragGroup = createDragGroup(elements);
+    }
+    var activeLayer;
+    if (hover) {
+      if (!dragGroup.parentNode) {
+        activeLayer = canvas.getActiveLayer();
+        append(activeLayer, dragGroup);
+      }
+      translate(dragGroup, event2.x, event2.y);
+    } else {
+      remove(dragGroup);
+    }
+  });
+  eventBus.on("create.cleanup", function(event2) {
+    var context = event2.context, dragGroup = context.dragGroup;
+    if (dragGroup) {
+      remove(dragGroup);
+    }
+  });
+}
+CreatePreview.$inject = [
+  "canvas",
+  "eventBus",
+  "graphicsFactory",
+  "previewSupport",
+  "styles"
+];
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/create/index.js
+var create_default = {
+  __depends__: [
+    dragging_default,
+    preview_support_default,
+    rules_default,
+    selection_default
+  ],
+  __init__: [
+    "create",
+    "createPreview"
+  ],
+  create: ["type", Create],
+  createPreview: ["type", CreatePreview]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/util/LineIntersection.js
+var round6 = Math.round;
+var max = Math.max;
+function circlePath(center2, r) {
+  var x = center2.x, y = center2.y;
+  return [
+    ["M", x, y],
+    ["m", 0, -r],
+    ["a", r, r, 0, 1, 1, 0, 2 * r],
+    ["a", r, r, 0, 1, 1, 0, -2 * r],
+    ["z"]
+  ];
+}
+function linePath(points) {
+  var segments = [];
+  points.forEach(function(p, idx) {
+    segments.push([idx === 0 ? "M" : "L", p.x, p.y]);
+  });
+  return segments;
+}
+var INTERSECTION_THRESHOLD = 10;
+function getBendpointIntersection(waypoints, reference) {
+  var i, w;
+  for (i = 0; w = waypoints[i]; i++) {
+    if (pointDistance(w, reference) <= INTERSECTION_THRESHOLD) {
+      return {
+        point: waypoints[i],
+        bendpoint: true,
+        index: i
+      };
+    }
+  }
+  return null;
+}
+function getPathIntersection(waypoints, reference) {
+  var intersections = findPathIntersections(circlePath(reference, INTERSECTION_THRESHOLD), linePath(waypoints));
+  var a = intersections[0], b = intersections[intersections.length - 1], idx;
+  if (!a) {
+    return null;
+  }
+  if (a !== b) {
+    if (a.segment2 !== b.segment2) {
+      idx = max(a.segment2, b.segment2) - 1;
+      return {
+        point: waypoints[idx],
+        bendpoint: true,
+        index: idx
+      };
+    }
+    return {
+      point: {
+        x: round6(a.x + b.x) / 2,
+        y: round6(a.y + b.y) / 2
+      },
+      index: a.segment2
+    };
+  }
+  return {
+    point: {
+      x: round6(a.x),
+      y: round6(a.y)
+    },
+    index: a.segment2
+  };
+}
+function getApproxIntersection(waypoints, reference) {
+  return getBendpointIntersection(waypoints, reference) || getPathIntersection(waypoints, reference);
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/bendpoints/GeometricUtil.js
+function vectorLength2(vector) {
+  return Math.sqrt(Math.pow(vector.x, 2) + Math.pow(vector.y, 2));
+}
+function solveLambaSystem(a, b, c) {
+  var system = [
+    { n: a[0] - c[0], lambda: b[0] },
+    { n: a[1] - c[1], lambda: b[1] }
+  ];
+  var n = system[0].n * b[0] + system[1].n * b[1], l = system[0].lambda * b[0] + system[1].lambda * b[1];
+  return -n / l;
+}
+function perpendicularFoot(point, line) {
+  var a = line[0], b = line[1];
+  var bd = { x: b.x - a.x, y: b.y - a.y };
+  var r = solveLambaSystem([a.x, a.y], [bd.x, bd.y], [point.x, point.y]);
+  return { x: a.x + r * bd.x, y: a.y + r * bd.y };
+}
+function getDistancePointLine(point, line) {
+  var pfPoint = perpendicularFoot(point, line);
+  var connectionVector = {
+    x: pfPoint.x - point.x,
+    y: pfPoint.y - point.y
+  };
+  return vectorLength2(connectionVector);
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/bendpoints/BendpointUtil.js
+var BENDPOINT_CLS = "djs-bendpoint";
+var SEGMENT_DRAGGER_CLS = "djs-segment-dragger";
+function toCanvasCoordinates(canvas, event2) {
+  var position = toPoint(event2), clientRect = canvas._container.getBoundingClientRect(), offset;
+  offset = {
+    x: clientRect.left,
+    y: clientRect.top
+  };
+  var viewbox = canvas.viewbox();
+  return {
+    x: viewbox.x + (position.x - offset.x) / viewbox.scale,
+    y: viewbox.y + (position.y - offset.y) / viewbox.scale
+  };
+}
+function getConnectionIntersection(canvas, waypoints, event2) {
+  var localPosition = toCanvasCoordinates(canvas, event2), intersection = getApproxIntersection(waypoints, localPosition);
+  return intersection;
+}
+function addBendpoint(parentGfx, cls) {
+  var groupGfx = create("g");
+  classes(groupGfx).add(BENDPOINT_CLS);
+  append(parentGfx, groupGfx);
+  var visual = create("circle");
+  attr(visual, {
+    cx: 0,
+    cy: 0,
+    r: 4
+  });
+  classes(visual).add("djs-visual");
+  append(groupGfx, visual);
+  var hit = create("circle");
+  attr(hit, {
+    cx: 0,
+    cy: 0,
+    r: 10
+  });
+  classes(hit).add("djs-hit");
+  append(groupGfx, hit);
+  if (cls) {
+    classes(groupGfx).add(cls);
+  }
+  return groupGfx;
+}
+function createParallelDragger(parentGfx, segmentStart, segmentEnd, alignment) {
+  var draggerGfx = create("g");
+  append(parentGfx, draggerGfx);
+  var width = 18, height = 6, padding = 11, hitWidth = calculateHitWidth(segmentStart, segmentEnd, alignment), hitHeight = height + padding;
+  var visual = create("rect");
+  attr(visual, {
+    x: -width / 2,
+    y: -height / 2,
+    rx: 3,
+    width,
+    height
+  });
+  classes(visual).add("djs-visual");
+  append(draggerGfx, visual);
+  var hit = create("rect");
+  attr(hit, {
+    x: -hitWidth / 2,
+    y: -hitHeight / 2,
+    width: hitWidth,
+    height: hitHeight
+  });
+  classes(hit).add("djs-hit");
+  append(draggerGfx, hit);
+  rotate(draggerGfx, alignment === "v" ? 90 : 0, 0, 0);
+  return draggerGfx;
+}
+function addSegmentDragger(parentGfx, segmentStart, segmentEnd) {
+  var groupGfx = create("g"), mid3 = getMidPoint(segmentStart, segmentEnd), alignment = pointsAligned(segmentStart, segmentEnd);
+  append(parentGfx, groupGfx);
+  createParallelDragger(groupGfx, segmentStart, segmentEnd, alignment);
+  classes(groupGfx).add(SEGMENT_DRAGGER_CLS);
+  classes(groupGfx).add(alignment === "h" ? "horizontal" : "vertical");
+  translate(groupGfx, mid3.x, mid3.y);
+  return groupGfx;
+}
+function calculateSegmentMoveRegion(segmentLength) {
+  return Math.abs(Math.round(segmentLength * 2 / 3));
+}
+function getClosestPointOnConnection(position, connection) {
+  var segment = getClosestSegment(position, connection);
+  return perpendicularFoot(position, segment);
+}
+function calculateHitWidth(segmentStart, segmentEnd, alignment) {
+  var segmentLengthXAxis = segmentEnd.x - segmentStart.x, segmentLengthYAxis = segmentEnd.y - segmentStart.y;
+  return alignment === "h" ? calculateSegmentMoveRegion(segmentLengthXAxis) : calculateSegmentMoveRegion(segmentLengthYAxis);
+}
+function getClosestSegment(position, connection) {
+  var waypoints = connection.waypoints;
+  var minDistance = Infinity, segmentIndex;
+  for (var i = 0; i < waypoints.length - 1; i++) {
+    var start = waypoints[i], end = waypoints[i + 1], distance2 = getDistancePointLine(position, [start, end]);
+    if (distance2 < minDistance) {
+      minDistance = distance2;
+      segmentIndex = i;
+    }
+  }
+  return [waypoints[segmentIndex], waypoints[segmentIndex + 1]];
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/util/EscapeUtil.js
+function escapeCSS(str) {
+  return CSS.escape(str);
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/bendpoints/Bendpoints.js
+function Bendpoints(eventBus, canvas, interactionEvents, bendpointMove, connectionSegmentMove) {
+  function isIntersectionMiddle(intersection, waypoints, treshold) {
+    var idx = intersection.index, p = intersection.point, p0, p1, mid3, aligned, xDelta, yDelta;
+    if (idx <= 0 || intersection.bendpoint) {
+      return false;
+    }
+    p0 = waypoints[idx - 1];
+    p1 = waypoints[idx];
+    mid3 = getMidPoint(p0, p1), aligned = pointsAligned(p0, p1);
+    xDelta = Math.abs(p.x - mid3.x);
+    yDelta = Math.abs(p.y - mid3.y);
+    return aligned && xDelta <= treshold && yDelta <= treshold;
+  }
+  function calculateIntersectionThreshold(connection, intersection) {
+    var waypoints = connection.waypoints, relevantSegment, alignment, segmentLength, threshold;
+    if (intersection.index <= 0 || intersection.bendpoint) {
+      return null;
+    }
+    relevantSegment = {
+      start: waypoints[intersection.index - 1],
+      end: waypoints[intersection.index]
+    };
+    alignment = pointsAligned(relevantSegment.start, relevantSegment.end);
+    if (!alignment) {
+      return null;
+    }
+    if (alignment === "h") {
+      segmentLength = relevantSegment.end.x - relevantSegment.start.x;
+    } else {
+      segmentLength = relevantSegment.end.y - relevantSegment.start.y;
+    }
+    threshold = calculateSegmentMoveRegion(segmentLength) / 2;
+    return threshold;
+  }
+  function activateBendpointMove(event2, connection) {
+    var waypoints = connection.waypoints, intersection = getConnectionIntersection(canvas, waypoints, event2), threshold;
+    if (!intersection) {
+      return;
+    }
+    threshold = calculateIntersectionThreshold(connection, intersection);
+    var result;
+    if (isIntersectionMiddle(intersection, waypoints, threshold)) {
+      result = connectionSegmentMove.start(event2, connection, intersection.index);
+    } else {
+      result = bendpointMove.start(event2, connection, intersection.index, !intersection.bendpoint);
+    }
+    if (result !== false) {
+      return true;
+    }
+  }
+  function bindInteractionEvents(node2, eventName, element) {
+    event.bind(node2, eventName, function(event2) {
+      interactionEvents.triggerMouseEvent(eventName, event2, element);
+      event2.stopPropagation();
+    });
+  }
+  function getBendpointsContainer(element, create3) {
+    var layer = canvas.getLayer("overlays"), gfx = query('.djs-bendpoints[data-element-id="' + escapeCSS(element.id) + '"]', layer);
+    if (!gfx && create3) {
+      gfx = create("g");
+      attr(gfx, { "data-element-id": element.id });
+      classes(gfx).add("djs-bendpoints");
+      append(layer, gfx);
+      bindInteractionEvents(gfx, "mousedown", element);
+      bindInteractionEvents(gfx, "click", element);
+      bindInteractionEvents(gfx, "dblclick", element);
+    }
+    return gfx;
+  }
+  function getSegmentDragger(idx, parentGfx) {
+    return query(
+      '.djs-segment-dragger[data-segment-idx="' + idx + '"]',
+      parentGfx
+    );
+  }
+  function createBendpoints(gfx, connection) {
+    connection.waypoints.forEach(function(p, idx) {
+      var bendpoint = addBendpoint(gfx);
+      append(gfx, bendpoint);
+      translate(bendpoint, p.x, p.y);
+    });
+    addBendpoint(gfx, "floating");
+  }
+  function createSegmentDraggers(gfx, connection) {
+    var waypoints = connection.waypoints;
+    var segmentStart, segmentEnd, segmentDraggerGfx;
+    for (var i = 1; i < waypoints.length; i++) {
+      segmentStart = waypoints[i - 1];
+      segmentEnd = waypoints[i];
+      if (pointsAligned(segmentStart, segmentEnd)) {
+        segmentDraggerGfx = addSegmentDragger(gfx, segmentStart, segmentEnd);
+        attr(segmentDraggerGfx, { "data-segment-idx": i });
+        bindInteractionEvents(segmentDraggerGfx, "mousemove", connection);
+      }
+    }
+  }
+  function clearBendpoints(gfx) {
+    forEach(all("." + BENDPOINT_CLS, gfx), function(node2) {
+      remove(node2);
+    });
+  }
+  function clearSegmentDraggers(gfx) {
+    forEach(all("." + SEGMENT_DRAGGER_CLS, gfx), function(node2) {
+      remove(node2);
+    });
+  }
+  function addHandles(connection) {
+    var gfx = getBendpointsContainer(connection);
+    if (!gfx) {
+      gfx = getBendpointsContainer(connection, true);
+      createBendpoints(gfx, connection);
+      createSegmentDraggers(gfx, connection);
+    }
+    return gfx;
+  }
+  function updateHandles(connection) {
+    var gfx = getBendpointsContainer(connection);
+    if (gfx) {
+      clearSegmentDraggers(gfx);
+      clearBendpoints(gfx);
+      createSegmentDraggers(gfx, connection);
+      createBendpoints(gfx, connection);
+    }
+  }
+  function updateFloatingBendpointPosition(parentGfx, intersection) {
+    var floating = query(".floating", parentGfx), point = intersection.point;
+    if (!floating) {
+      return;
+    }
+    translate(floating, point.x, point.y);
+    classes(floating).add("positioned");
+  }
+  function updateSegmentDraggerPosition(parentGfx, intersection, waypoints) {
+    var draggerGfx = getSegmentDragger(intersection.index, parentGfx), segmentStart = waypoints[intersection.index - 1], segmentEnd = waypoints[intersection.index], point = intersection.point, mid3 = getMidPoint(segmentStart, segmentEnd), alignment = pointsAligned(segmentStart, segmentEnd), draggerVisual, relativePosition;
+    if (!draggerGfx) {
+      return;
+    }
+    draggerVisual = getDraggerVisual(draggerGfx);
+    relativePosition = {
+      x: point.x - mid3.x,
+      y: point.y - mid3.y
+    };
+    if (alignment === "v") {
+      relativePosition = {
+        x: relativePosition.y,
+        y: relativePosition.x
+      };
+    }
+    translate(draggerVisual, relativePosition.x, relativePosition.y);
+  }
+  eventBus.on("connection.changed", function(event2) {
+    updateHandles(event2.element);
+  });
+  eventBus.on("connection.remove", function(event2) {
+    var gfx = getBendpointsContainer(event2.element);
+    if (gfx) {
+      remove(gfx);
+    }
+  });
+  eventBus.on("element.marker.update", function(event2) {
+    var element = event2.element, bendpointsGfx;
+    if (!element.waypoints) {
+      return;
+    }
+    bendpointsGfx = addHandles(element);
+    if (event2.add) {
+      classes(bendpointsGfx).add(event2.marker);
+    } else {
+      classes(bendpointsGfx).remove(event2.marker);
+    }
+  });
+  eventBus.on("element.mousemove", function(event2) {
+    var element = event2.element, waypoints = element.waypoints, bendpointsGfx, intersection;
+    if (waypoints) {
+      bendpointsGfx = getBendpointsContainer(element, true);
+      intersection = getConnectionIntersection(canvas, waypoints, event2.originalEvent);
+      if (!intersection) {
+        return;
+      }
+      updateFloatingBendpointPosition(bendpointsGfx, intersection);
+      if (!intersection.bendpoint) {
+        updateSegmentDraggerPosition(bendpointsGfx, intersection, waypoints);
+      }
+    }
+  });
+  eventBus.on("element.mousedown", function(event2) {
+    if (!isPrimaryButton(event2)) {
+      return;
+    }
+    var originalEvent = event2.originalEvent, element = event2.element;
+    if (!element.waypoints) {
+      return;
+    }
+    return activateBendpointMove(originalEvent, element);
+  });
+  eventBus.on("selection.changed", function(event2) {
+    var newSelection = event2.newSelection, primary = newSelection[0];
+    if (primary && primary.waypoints) {
+      addHandles(primary);
+    }
+  });
+  eventBus.on("element.hover", function(event2) {
+    var element = event2.element;
+    if (element.waypoints) {
+      addHandles(element);
+    }
+  });
+  eventBus.on("element.out", function(event2) {
+    var element = event2.element;
+    if (!element.waypoints) {
+      return;
+    }
+    var bendpointsGfx = getBendpointsContainer(element);
+    if (!bendpointsGfx) {
+      return;
+    }
+    var floating = query(".floating", bendpointsGfx);
+    if (floating) {
+      classes(floating).remove("positioned");
+    }
+  });
+  eventBus.on("element.updateId", function(context) {
+    var element = context.element, newId = context.newId;
+    if (element.waypoints) {
+      var bendpointContainer = getBendpointsContainer(element);
+      if (bendpointContainer) {
+        attr(bendpointContainer, { "data-element-id": newId });
+      }
+    }
+  });
+  this.addHandles = addHandles;
+  this.updateHandles = updateHandles;
+  this.getBendpointsContainer = getBendpointsContainer;
+  this.getSegmentDragger = getSegmentDragger;
+}
+Bendpoints.$inject = [
+  "eventBus",
+  "canvas",
+  "interactionEvents",
+  "bendpointMove",
+  "connectionSegmentMove"
+];
+function getDraggerVisual(draggerGfx) {
+  return query(".djs-visual", draggerGfx);
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/bendpoints/BendpointMove.js
+var round7 = Math.round;
+var RECONNECT_START = "reconnectStart";
+var RECONNECT_END = "reconnectEnd";
+var UPDATE_WAYPOINTS = "updateWaypoints";
+function BendpointMove(injector, eventBus, canvas, dragging, rules, modeling) {
+  this._injector = injector;
+  this.start = function(event2, connection, bendpointIndex, insert) {
+    var gfx = canvas.getGraphics(connection), source = connection.source, target = connection.target, waypoints = connection.waypoints, type;
+    if (!insert && bendpointIndex === 0) {
+      type = RECONNECT_START;
+    } else if (!insert && bendpointIndex === waypoints.length - 1) {
+      type = RECONNECT_END;
+    } else {
+      type = UPDATE_WAYPOINTS;
+    }
+    var command = type === UPDATE_WAYPOINTS ? "connection.updateWaypoints" : "connection.reconnect";
+    var allowed = rules.allowed(command, {
+      connection,
+      source,
+      target
+    });
+    if (allowed === false) {
+      allowed = rules.allowed(command, {
+        connection,
+        source: target,
+        target: source
+      });
+    }
+    if (allowed === false) {
+      return;
+    }
+    return dragging.init(event2, "bendpoint.move", {
+      data: {
+        connection,
+        connectionGfx: gfx,
+        context: {
+          allowed,
+          bendpointIndex,
+          connection,
+          source,
+          target,
+          insert,
+          type
+        }
+      }
+    });
+  };
+  eventBus.on("bendpoint.move.hover", function(event2) {
+    var context = event2.context, connection = context.connection, source = connection.source, target = connection.target, hover = event2.hover, type = context.type;
+    context.hover = hover;
+    var allowed;
+    if (!hover) {
+      return;
+    }
+    var command = type === UPDATE_WAYPOINTS ? "connection.updateWaypoints" : "connection.reconnect";
+    allowed = context.allowed = rules.allowed(command, {
+      connection,
+      source: type === RECONNECT_START ? hover : source,
+      target: type === RECONNECT_END ? hover : target
+    });
+    if (allowed) {
+      context.source = type === RECONNECT_START ? hover : source;
+      context.target = type === RECONNECT_END ? hover : target;
+      return;
+    }
+    if (allowed === false) {
+      allowed = context.allowed = rules.allowed(command, {
+        connection,
+        source: type === RECONNECT_END ? hover : target,
+        target: type === RECONNECT_START ? hover : source
+      });
+    }
+    if (allowed) {
+      context.source = type === RECONNECT_END ? hover : target;
+      context.target = type === RECONNECT_START ? hover : source;
+    }
+  });
+  eventBus.on(["bendpoint.move.out", "bendpoint.move.cleanup"], function(event2) {
+    var context = event2.context, type = context.type;
+    context.hover = null;
+    context.source = null;
+    context.target = null;
+    if (type !== UPDATE_WAYPOINTS) {
+      context.allowed = false;
+    }
+  });
+  eventBus.on("bendpoint.move.end", function(event2) {
+    var context = event2.context, allowed = context.allowed, bendpointIndex = context.bendpointIndex, connection = context.connection, insert = context.insert, newWaypoints = connection.waypoints.slice(), source = context.source, target = context.target, type = context.type, hints = context.hints || {};
+    var docking = {
+      x: round7(event2.x),
+      y: round7(event2.y)
+    };
+    if (!allowed) {
+      return false;
+    }
+    if (type === UPDATE_WAYPOINTS) {
+      if (insert) {
+        newWaypoints.splice(bendpointIndex, 0, docking);
+      } else {
+        newWaypoints[bendpointIndex] = docking;
+      }
+      hints.bendpointMove = {
+        insert,
+        bendpointIndex
+      };
+      newWaypoints = this.cropWaypoints(connection, newWaypoints);
+      modeling.updateWaypoints(connection, filterRedundantWaypoints(newWaypoints), hints);
+    } else {
+      if (type === RECONNECT_START) {
+        hints.docking = "source";
+        if (isReverse2(context)) {
+          hints.docking = "target";
+          hints.newWaypoints = newWaypoints.reverse();
+        }
+      } else if (type === RECONNECT_END) {
+        hints.docking = "target";
+        if (isReverse2(context)) {
+          hints.docking = "source";
+          hints.newWaypoints = newWaypoints.reverse();
+        }
+      }
+      modeling.reconnect(connection, source, target, docking, hints);
+    }
+  }, this);
+}
+BendpointMove.$inject = [
+  "injector",
+  "eventBus",
+  "canvas",
+  "dragging",
+  "rules",
+  "modeling"
+];
+BendpointMove.prototype.cropWaypoints = function(connection, newWaypoints) {
+  var connectionDocking = this._injector.get("connectionDocking", false);
+  if (!connectionDocking) {
+    return newWaypoints;
+  }
+  var waypoints = connection.waypoints;
+  connection.waypoints = newWaypoints;
+  connection.waypoints = connectionDocking.getCroppedWaypoints(connection);
+  newWaypoints = connection.waypoints;
+  connection.waypoints = waypoints;
+  return newWaypoints;
+};
+function isReverse2(context) {
+  var hover = context.hover, source = context.source, target = context.target, type = context.type;
+  if (type === RECONNECT_START) {
+    return hover && target && hover === target && source !== target;
+  }
+  if (type === RECONNECT_END) {
+    return hover && source && hover === source && source !== target;
+  }
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/bendpoints/BendpointMovePreview.js
+var RECONNECT_START2 = "reconnectStart";
+var RECONNECT_END2 = "reconnectEnd";
+var UPDATE_WAYPOINTS2 = "updateWaypoints";
+var MARKER_OK4 = "connect-ok";
+var MARKER_NOT_OK4 = "connect-not-ok";
+var MARKER_CONNECT_HOVER = "connect-hover";
+var MARKER_CONNECT_UPDATING = "djs-updating";
+var MARKER_DRAGGER = "djs-dragging";
+var HIGH_PRIORITY5 = 1100;
+function BendpointMovePreview(bendpointMove, injector, eventBus, canvas) {
+  this._injector = injector;
+  var connectionPreview = injector.get("connectionPreview", false);
+  eventBus.on("bendpoint.move.start", function(event2) {
+    var context = event2.context, bendpointIndex = context.bendpointIndex, connection = context.connection, insert = context.insert, waypoints = connection.waypoints, newWaypoints = waypoints.slice();
+    context.waypoints = waypoints;
+    if (insert) {
+      newWaypoints.splice(bendpointIndex, 0, { x: event2.x, y: event2.y });
+    }
+    connection.waypoints = newWaypoints;
+    var draggerGfx = context.draggerGfx = addBendpoint(canvas.getLayer("overlays"));
+    classes(draggerGfx).add("djs-dragging");
+    canvas.addMarker(connection, MARKER_DRAGGER);
+    canvas.addMarker(connection, MARKER_CONNECT_UPDATING);
+  });
+  eventBus.on("bendpoint.move.hover", function(event2) {
+    var context = event2.context, allowed = context.allowed, hover = context.hover, type = context.type;
+    if (hover) {
+      canvas.addMarker(hover, MARKER_CONNECT_HOVER);
+      if (type === UPDATE_WAYPOINTS2) {
+        return;
+      }
+      if (allowed) {
+        canvas.removeMarker(hover, MARKER_NOT_OK4);
+        canvas.addMarker(hover, MARKER_OK4);
+      } else if (allowed === false) {
+        canvas.removeMarker(hover, MARKER_OK4);
+        canvas.addMarker(hover, MARKER_NOT_OK4);
+      }
+    }
+  });
+  eventBus.on([
+    "bendpoint.move.out",
+    "bendpoint.move.cleanup"
+  ], HIGH_PRIORITY5, function(event2) {
+    var context = event2.context, hover = context.hover, target = context.target;
+    if (hover) {
+      canvas.removeMarker(hover, MARKER_CONNECT_HOVER);
+      canvas.removeMarker(hover, target ? MARKER_OK4 : MARKER_NOT_OK4);
+    }
+  });
+  eventBus.on("bendpoint.move.move", function(event2) {
+    var context = event2.context, allowed = context.allowed, bendpointIndex = context.bendpointIndex, draggerGfx = context.draggerGfx, hover = context.hover, type = context.type, connection = context.connection, source = connection.source, target = connection.target, newWaypoints = connection.waypoints.slice(), bendpoint = { x: event2.x, y: event2.y }, hints = context.hints || {}, drawPreviewHints = {};
+    if (connectionPreview) {
+      if (hints.connectionStart) {
+        drawPreviewHints.connectionStart = hints.connectionStart;
+      }
+      if (hints.connectionEnd) {
+        drawPreviewHints.connectionEnd = hints.connectionEnd;
+      }
+      if (type === RECONNECT_START2) {
+        if (isReverse2(context)) {
+          drawPreviewHints.connectionEnd = drawPreviewHints.connectionEnd || bendpoint;
+          drawPreviewHints.source = target;
+          drawPreviewHints.target = hover || source;
+          newWaypoints = newWaypoints.reverse();
+        } else {
+          drawPreviewHints.connectionStart = drawPreviewHints.connectionStart || bendpoint;
+          drawPreviewHints.source = hover || source;
+          drawPreviewHints.target = target;
+        }
+      } else if (type === RECONNECT_END2) {
+        if (isReverse2(context)) {
+          drawPreviewHints.connectionStart = drawPreviewHints.connectionStart || bendpoint;
+          drawPreviewHints.source = hover || target;
+          drawPreviewHints.target = source;
+          newWaypoints = newWaypoints.reverse();
+        } else {
+          drawPreviewHints.connectionEnd = drawPreviewHints.connectionEnd || bendpoint;
+          drawPreviewHints.source = source;
+          drawPreviewHints.target = hover || target;
+        }
+      } else {
+        drawPreviewHints.noCropping = true;
+        drawPreviewHints.noLayout = true;
+        newWaypoints[bendpointIndex] = bendpoint;
+      }
+      if (type === UPDATE_WAYPOINTS2) {
+        newWaypoints = bendpointMove.cropWaypoints(connection, newWaypoints);
+      }
+      drawPreviewHints.waypoints = newWaypoints;
+      connectionPreview.drawPreview(context, allowed, drawPreviewHints);
+    }
+    translate(draggerGfx, event2.x, event2.y);
+  }, this);
+  eventBus.on([
+    "bendpoint.move.end",
+    "bendpoint.move.cancel"
+  ], HIGH_PRIORITY5, function(event2) {
+    var context = event2.context, connection = context.connection, draggerGfx = context.draggerGfx, hover = context.hover, target = context.target, waypoints = context.waypoints;
+    connection.waypoints = waypoints;
+    remove(draggerGfx);
+    canvas.removeMarker(connection, MARKER_CONNECT_UPDATING);
+    canvas.removeMarker(connection, MARKER_DRAGGER);
+    if (hover) {
+      canvas.removeMarker(hover, MARKER_OK4);
+      canvas.removeMarker(hover, target ? MARKER_OK4 : MARKER_NOT_OK4);
+    }
+    if (connectionPreview) {
+      connectionPreview.cleanUp(context);
+    }
+  });
+}
+BendpointMovePreview.$inject = [
+  "bendpointMove",
+  "injector",
+  "eventBus",
+  "canvas"
+];
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/bendpoints/ConnectionSegmentMove.js
+var MARKER_CONNECT_HOVER2 = "connect-hover";
+var MARKER_CONNECT_UPDATING2 = "djs-updating";
+function axisAdd(point, axis, delta2) {
+  return axisSet(point, axis, point[axis] + delta2);
+}
+function axisSet(point, axis, value) {
+  return {
+    x: axis === "x" ? value : point.x,
+    y: axis === "y" ? value : point.y
+  };
+}
+function axisFenced(position, segmentStart, segmentEnd, axis) {
+  var maxValue = Math.max(segmentStart[axis], segmentEnd[axis]), minValue = Math.min(segmentStart[axis], segmentEnd[axis]);
+  var padding = 20;
+  var fencedValue = Math.min(Math.max(minValue + padding, position[axis]), maxValue - padding);
+  return axisSet(segmentStart, axis, fencedValue);
+}
+function flipAxis(axis) {
+  return axis === "x" ? "y" : "x";
+}
+function getDocking2(point, referenceElement, moveAxis) {
+  var referenceMid, inverseAxis;
+  if (point.original) {
+    return point.original;
+  } else {
+    referenceMid = getMid(referenceElement);
+    inverseAxis = flipAxis(moveAxis);
+    return axisSet(point, inverseAxis, referenceMid[inverseAxis]);
+  }
+}
+function ConnectionSegmentMove(injector, eventBus, canvas, dragging, graphicsFactory, modeling) {
+  var connectionDocking = injector.get("connectionDocking", false);
+  this.start = function(event2, connection, idx) {
+    var context, gfx = canvas.getGraphics(connection), segmentStartIndex = idx - 1, segmentEndIndex = idx, waypoints = connection.waypoints, segmentStart = waypoints[segmentStartIndex], segmentEnd = waypoints[segmentEndIndex], intersection = getConnectionIntersection(canvas, waypoints, event2), direction, axis, dragPosition;
+    direction = pointsAligned(segmentStart, segmentEnd);
+    if (!direction) {
+      return;
+    }
+    axis = direction === "v" ? "x" : "y";
+    if (segmentStartIndex === 0) {
+      segmentStart = getDocking2(segmentStart, connection.source, axis);
+    }
+    if (segmentEndIndex === waypoints.length - 1) {
+      segmentEnd = getDocking2(segmentEnd, connection.target, axis);
+    }
+    if (intersection) {
+      dragPosition = intersection.point;
+    } else {
+      dragPosition = {
+        x: (segmentStart.x + segmentEnd.x) / 2,
+        y: (segmentStart.y + segmentEnd.y) / 2
+      };
+    }
+    context = {
+      connection,
+      segmentStartIndex,
+      segmentEndIndex,
+      segmentStart,
+      segmentEnd,
+      axis,
+      dragPosition
+    };
+    return dragging.init(event2, dragPosition, "connectionSegment.move", {
+      cursor: axis === "x" ? "resize-ew" : "resize-ns",
+      data: {
+        connection,
+        connectionGfx: gfx,
+        context
+      }
+    });
+  };
+  function cropConnection(connection, newWaypoints) {
+    if (!connectionDocking) {
+      return newWaypoints;
+    }
+    var oldWaypoints = connection.waypoints, croppedWaypoints;
+    connection.waypoints = newWaypoints;
+    croppedWaypoints = connectionDocking.getCroppedWaypoints(connection);
+    connection.waypoints = oldWaypoints;
+    return croppedWaypoints;
+  }
+  function redrawConnection(data) {
+    graphicsFactory.update("connection", data.connection, data.connectionGfx);
+  }
+  function updateDragger(context, segmentOffset, event2) {
+    var newWaypoints = context.newWaypoints, segmentStartIndex = context.segmentStartIndex + segmentOffset, segmentStart = newWaypoints[segmentStartIndex], segmentEndIndex = context.segmentEndIndex + segmentOffset, segmentEnd = newWaypoints[segmentEndIndex], axis = flipAxis(context.axis);
+    var draggerPosition = axisFenced(event2, segmentStart, segmentEnd, axis);
+    translate(context.draggerGfx, draggerPosition.x, draggerPosition.y);
+  }
+  function filterRedundantWaypoints2(waypoints, segmentStartIndex) {
+    var segmentOffset = 0;
+    var filteredWaypoints = waypoints.filter(function(r, idx) {
+      if (pointsOnLine(waypoints[idx - 1], waypoints[idx + 1], r)) {
+        segmentOffset = idx <= segmentStartIndex ? segmentOffset - 1 : segmentOffset;
+        return false;
+      }
+      return true;
+    });
+    return {
+      waypoints: filteredWaypoints,
+      segmentOffset
+    };
+  }
+  eventBus.on("connectionSegment.move.start", function(event2) {
+    var context = event2.context, connection = event2.connection, layer = canvas.getLayer("overlays");
+    context.originalWaypoints = connection.waypoints.slice();
+    context.draggerGfx = addSegmentDragger(layer, context.segmentStart, context.segmentEnd);
+    classes(context.draggerGfx).add("djs-dragging");
+    canvas.addMarker(connection, MARKER_CONNECT_UPDATING2);
+  });
+  eventBus.on("connectionSegment.move.move", function(event2) {
+    var context = event2.context, connection = context.connection, segmentStartIndex = context.segmentStartIndex, segmentEndIndex = context.segmentEndIndex, segmentStart = context.segmentStart, segmentEnd = context.segmentEnd, axis = context.axis;
+    var newWaypoints = context.originalWaypoints.slice(), newSegmentStart = axisAdd(segmentStart, axis, event2["d" + axis]), newSegmentEnd = axisAdd(segmentEnd, axis, event2["d" + axis]);
+    var waypointCount = newWaypoints.length, segmentOffset = 0;
+    newWaypoints[segmentStartIndex] = newSegmentStart;
+    newWaypoints[segmentEndIndex] = newSegmentEnd;
+    var sourceToSegmentOrientation, targetToSegmentOrientation;
+    if (segmentStartIndex < 2) {
+      sourceToSegmentOrientation = getOrientation(connection.source, newSegmentStart);
+      if (segmentStartIndex === 1) {
+        if (sourceToSegmentOrientation === "intersect") {
+          newWaypoints.shift();
+          newWaypoints[0] = newSegmentStart;
+          segmentOffset--;
+        }
+      } else {
+        if (sourceToSegmentOrientation !== "intersect") {
+          newWaypoints.unshift(segmentStart);
+          segmentOffset++;
+        }
+      }
+    }
+    if (segmentEndIndex > waypointCount - 3) {
+      targetToSegmentOrientation = getOrientation(connection.target, newSegmentEnd);
+      if (segmentEndIndex === waypointCount - 2) {
+        if (targetToSegmentOrientation === "intersect") {
+          newWaypoints.pop();
+          newWaypoints[newWaypoints.length - 1] = newSegmentEnd;
+        }
+      } else {
+        if (targetToSegmentOrientation !== "intersect") {
+          newWaypoints.push(segmentEnd);
+        }
+      }
+    }
+    context.newWaypoints = connection.waypoints = cropConnection(connection, newWaypoints);
+    updateDragger(context, segmentOffset, event2);
+    context.newSegmentStartIndex = segmentStartIndex + segmentOffset;
+    redrawConnection(event2);
+  });
+  eventBus.on("connectionSegment.move.hover", function(event2) {
+    event2.context.hover = event2.hover;
+    canvas.addMarker(event2.hover, MARKER_CONNECT_HOVER2);
+  });
+  eventBus.on([
+    "connectionSegment.move.out",
+    "connectionSegment.move.cleanup"
+  ], function(event2) {
+    var hover = event2.context.hover;
+    if (hover) {
+      canvas.removeMarker(hover, MARKER_CONNECT_HOVER2);
+    }
+  });
+  eventBus.on("connectionSegment.move.cleanup", function(event2) {
+    var context = event2.context, connection = context.connection;
+    if (context.draggerGfx) {
+      remove(context.draggerGfx);
+    }
+    canvas.removeMarker(connection, MARKER_CONNECT_UPDATING2);
+  });
+  eventBus.on([
+    "connectionSegment.move.cancel",
+    "connectionSegment.move.end"
+  ], function(event2) {
+    var context = event2.context, connection = context.connection;
+    connection.waypoints = context.originalWaypoints;
+    redrawConnection(event2);
+  });
+  eventBus.on("connectionSegment.move.end", function(event2) {
+    var context = event2.context, connection = context.connection, newWaypoints = context.newWaypoints, newSegmentStartIndex = context.newSegmentStartIndex;
+    newWaypoints = newWaypoints.map(function(p) {
+      return {
+        original: p.original,
+        x: Math.round(p.x),
+        y: Math.round(p.y)
+      };
+    });
+    var filtered = filterRedundantWaypoints2(newWaypoints, newSegmentStartIndex);
+    var filteredWaypoints = filtered.waypoints, croppedWaypoints = cropConnection(connection, filteredWaypoints), segmentOffset = filtered.segmentOffset;
+    var hints = {
+      segmentMove: {
+        segmentStartIndex: context.segmentStartIndex,
+        newSegmentStartIndex: newSegmentStartIndex + segmentOffset
+      }
+    };
+    modeling.updateWaypoints(connection, croppedWaypoints, hints);
+  });
+}
+ConnectionSegmentMove.$inject = [
+  "injector",
+  "eventBus",
+  "canvas",
+  "dragging",
+  "graphicsFactory",
+  "modeling"
+];
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/snapping/SnapUtil.js
+var abs2 = Math.abs;
+var round8 = Math.round;
+function snapTo(value, values2, tolerance) {
+  tolerance = tolerance === void 0 ? 10 : tolerance;
+  var idx, snapValue;
+  for (idx = 0; idx < values2.length; idx++) {
+    snapValue = values2[idx];
+    if (abs2(snapValue - value) <= tolerance) {
+      return snapValue;
+    }
+  }
+}
+function topLeft(bounds) {
+  return {
+    x: bounds.x,
+    y: bounds.y
+  };
+}
+function bottomRight(bounds) {
+  return {
+    x: bounds.x + bounds.width,
+    y: bounds.y + bounds.height
+  };
+}
+function mid2(bounds, defaultValue) {
+  if (!bounds || isNaN(bounds.x) || isNaN(bounds.y)) {
+    return defaultValue;
+  }
+  return {
+    x: round8(bounds.x + bounds.width / 2),
+    y: round8(bounds.y + bounds.height / 2)
+  };
+}
+function isSnapped(event2, axis) {
+  var snapped = event2.snapped;
+  if (!snapped) {
+    return false;
+  }
+  if (typeof axis === "string") {
+    return snapped[axis];
+  }
+  return snapped.x && snapped.y;
+}
+function setSnapped(event2, axis, value) {
+  if (typeof axis !== "string") {
+    throw new Error("axis must be in [x, y]");
+  }
+  if (typeof value !== "number" && value !== false) {
+    throw new Error("value must be Number or false");
+  }
+  var delta2, previousValue = event2[axis];
+  var snapped = event2.snapped = event2.snapped || {};
+  if (value === false) {
+    snapped[axis] = false;
+  } else {
+    snapped[axis] = true;
+    delta2 = value - previousValue;
+    event2[axis] += delta2;
+    event2["d" + axis] += delta2;
+  }
+  return previousValue;
+}
+function getChildren2(parent) {
+  return parent.children || [];
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/bendpoints/BendpointSnapping.js
+var abs3 = Math.abs;
+var round9 = Math.round;
+var TOLERANCE = 10;
+function BendpointSnapping(eventBus) {
+  function snapTo2(values2, value) {
+    if (isArray2(values2)) {
+      var i = values2.length;
+      while (i--) if (abs3(values2[i] - value) <= TOLERANCE) {
+        return values2[i];
+      }
+    } else {
+      values2 = +values2;
+      var rem = value % values2;
+      if (rem < TOLERANCE) {
+        return value - rem;
+      }
+      if (rem > values2 - TOLERANCE) {
+        return value - rem + values2;
+      }
+    }
+    return value;
+  }
+  function getSnapPoint(element, event2) {
+    if (element.waypoints) {
+      return getClosestPointOnConnection(event2, element);
+    }
+    if (element.width) {
+      return {
+        x: round9(element.width / 2 + element.x),
+        y: round9(element.height / 2 + element.y)
+      };
+    }
+  }
+  function getConnectionSegmentSnaps(event2) {
+    var context = event2.context, snapPoints = context.snapPoints, connection = context.connection, waypoints = connection.waypoints, segmentStart = context.segmentStart, segmentStartIndex = context.segmentStartIndex, segmentEnd = context.segmentEnd, segmentEndIndex = context.segmentEndIndex, axis = context.axis;
+    if (snapPoints) {
+      return snapPoints;
+    }
+    var referenceWaypoints = [
+      waypoints[segmentStartIndex - 1],
+      segmentStart,
+      segmentEnd,
+      waypoints[segmentEndIndex + 1]
+    ];
+    if (segmentStartIndex < 2) {
+      referenceWaypoints.unshift(getSnapPoint(connection.source, event2));
+    }
+    if (segmentEndIndex > waypoints.length - 3) {
+      referenceWaypoints.unshift(getSnapPoint(connection.target, event2));
+    }
+    context.snapPoints = snapPoints = { horizontal: [], vertical: [] };
+    forEach(referenceWaypoints, function(p) {
+      if (p) {
+        p = p.original || p;
+        if (axis === "y") {
+          snapPoints.horizontal.push(p.y);
+        }
+        if (axis === "x") {
+          snapPoints.vertical.push(p.x);
+        }
+      }
+    });
+    return snapPoints;
+  }
+  eventBus.on("connectionSegment.move.move", 1500, function(event2) {
+    var snapPoints = getConnectionSegmentSnaps(event2), x = event2.x, y = event2.y, sx, sy;
+    if (!snapPoints) {
+      return;
+    }
+    sx = snapTo2(snapPoints.vertical, x);
+    sy = snapTo2(snapPoints.horizontal, y);
+    var cx = x - sx, cy = y - sy;
+    assign(event2, {
+      dx: event2.dx - cx,
+      dy: event2.dy - cy,
+      x: sx,
+      y: sy
+    });
+    if (cx || snapPoints.vertical.indexOf(x) !== -1) {
+      setSnapped(event2, "x", sx);
+    }
+    if (cy || snapPoints.horizontal.indexOf(y) !== -1) {
+      setSnapped(event2, "y", sy);
+    }
+  });
+  function getBendpointSnaps(context) {
+    var snapPoints = context.snapPoints, waypoints = context.connection.waypoints, bendpointIndex = context.bendpointIndex;
+    if (snapPoints) {
+      return snapPoints;
+    }
+    var referenceWaypoints = [waypoints[bendpointIndex - 1], waypoints[bendpointIndex + 1]];
+    context.snapPoints = snapPoints = { horizontal: [], vertical: [] };
+    forEach(referenceWaypoints, function(p) {
+      if (p) {
+        p = p.original || p;
+        snapPoints.horizontal.push(p.y);
+        snapPoints.vertical.push(p.x);
+      }
+    });
+    return snapPoints;
+  }
+  eventBus.on([
+    "connect.hover",
+    "connect.move",
+    "connect.end"
+  ], 1500, function(event2) {
+    var context = event2.context, hover = context.hover, hoverMid = hover && getSnapPoint(hover, event2);
+    if (!isConnection(hover) || !hoverMid || !hoverMid.x || !hoverMid.y) {
+      return;
+    }
+    setSnapped(event2, "x", hoverMid.x);
+    setSnapped(event2, "y", hoverMid.y);
+  });
+  eventBus.on(["bendpoint.move.move", "bendpoint.move.end"], 1500, function(event2) {
+    var context = event2.context, snapPoints = getBendpointSnaps(context), hover = context.hover, hoverMid = hover && getSnapPoint(hover, event2), x = event2.x, y = event2.y, sx, sy;
+    if (!snapPoints) {
+      return;
+    }
+    sx = snapTo2(hoverMid ? snapPoints.vertical.concat([hoverMid.x]) : snapPoints.vertical, x);
+    sy = snapTo2(hoverMid ? snapPoints.horizontal.concat([hoverMid.y]) : snapPoints.horizontal, y);
+    var cx = x - sx, cy = y - sy;
+    assign(event2, {
+      dx: event2.dx - cx,
+      dy: event2.dy - cy,
+      x: event2.x - cx,
+      y: event2.y - cy
+    });
+    if (cx || snapPoints.vertical.indexOf(x) !== -1) {
+      setSnapped(event2, "x", sx);
+    }
+    if (cy || snapPoints.horizontal.indexOf(y) !== -1) {
+      setSnapped(event2, "y", sy);
+    }
+  });
+}
+BendpointSnapping.$inject = ["eventBus"];
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/bendpoints/index.js
+var bendpoints_default = {
+  __depends__: [
+    dragging_default,
+    rules_default
+  ],
+  __init__: ["bendpoints", "bendpointSnapping", "bendpointMovePreview"],
+  bendpoints: ["type", Bendpoints],
+  bendpointMove: ["type", BendpointMove],
+  bendpointMovePreview: ["type", BendpointMovePreview],
+  connectionSegmentMove: ["type", ConnectionSegmentMove],
+  bendpointSnapping: ["type", BendpointSnapping]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/resize/ResizeUtil.js
+var max2 = Math.max;
+var min = Math.min;
+var DEFAULT_CHILD_BOX_PADDING = 20;
+function resizeBounds2(bounds, direction, delta2) {
+  var dx = delta2.x, dy = delta2.y;
+  var newBounds = {
+    x: bounds.x,
+    y: bounds.y,
+    width: bounds.width,
+    height: bounds.height
+  };
+  if (direction.indexOf("n") !== -1) {
+    newBounds.y = bounds.y + dy;
+    newBounds.height = bounds.height - dy;
+  } else if (direction.indexOf("s") !== -1) {
+    newBounds.height = bounds.height + dy;
+  }
+  if (direction.indexOf("e") !== -1) {
+    newBounds.width = bounds.width + dx;
+  } else if (direction.indexOf("w") !== -1) {
+    newBounds.x = bounds.x + dx;
+    newBounds.width = bounds.width - dx;
+  }
+  return newBounds;
+}
+function applyConstraints(attr3, trbl, resizeConstraints) {
+  var value = trbl[attr3], minValue = resizeConstraints.min && resizeConstraints.min[attr3], maxValue = resizeConstraints.max && resizeConstraints.max[attr3];
+  if (isNumber(minValue)) {
+    value = (/top|left/.test(attr3) ? min : max2)(value, minValue);
+  }
+  if (isNumber(maxValue)) {
+    value = (/top|left/.test(attr3) ? max2 : min)(value, maxValue);
+  }
+  return value;
+}
+function ensureConstraints2(currentBounds, resizeConstraints) {
+  if (!resizeConstraints) {
+    return currentBounds;
+  }
+  var currentTrbl = asTRBL(currentBounds);
+  return asBounds({
+    top: applyConstraints("top", currentTrbl, resizeConstraints),
+    right: applyConstraints("right", currentTrbl, resizeConstraints),
+    bottom: applyConstraints("bottom", currentTrbl, resizeConstraints),
+    left: applyConstraints("left", currentTrbl, resizeConstraints)
+  });
+}
+function getMinResizeBounds(direction, currentBounds, minDimensions, childrenBounds) {
+  var currentBox = asTRBL(currentBounds);
+  var minBox = {
+    top: /n/.test(direction) ? currentBox.bottom - minDimensions.height : currentBox.top,
+    left: /w/.test(direction) ? currentBox.right - minDimensions.width : currentBox.left,
+    bottom: /s/.test(direction) ? currentBox.top + minDimensions.height : currentBox.bottom,
+    right: /e/.test(direction) ? currentBox.left + minDimensions.width : currentBox.right
+  };
+  var childrenBox = childrenBounds ? asTRBL(childrenBounds) : minBox;
+  var combinedBox = {
+    top: min(minBox.top, childrenBox.top),
+    left: min(minBox.left, childrenBox.left),
+    bottom: max2(minBox.bottom, childrenBox.bottom),
+    right: max2(minBox.right, childrenBox.right)
+  };
+  return asBounds(combinedBox);
+}
+function asPadding(mayBePadding, defaultValue) {
+  if (typeof mayBePadding !== "undefined") {
+    return mayBePadding;
+  } else {
+    return DEFAULT_CHILD_BOX_PADDING;
+  }
+}
+function addPadding(bbox, padding) {
+  var left, right, top, bottom;
+  if (typeof padding === "object") {
+    left = asPadding(padding.left);
+    right = asPadding(padding.right);
+    top = asPadding(padding.top);
+    bottom = asPadding(padding.bottom);
+  } else {
+    left = right = top = bottom = asPadding(padding);
+  }
+  return {
+    x: bbox.x - left,
+    y: bbox.y - top,
+    width: bbox.width + left + right,
+    height: bbox.height + top + bottom
+  };
+}
+function isBBoxChild(element) {
+  if (element.waypoints) {
+    return false;
+  }
+  if (element.type === "label") {
+    return false;
+  }
+  return true;
+}
+function computeChildrenBBox(shapeOrChildren, padding) {
+  var elements;
+  if (shapeOrChildren.length === void 0) {
+    elements = filter(shapeOrChildren.children, isBBoxChild);
+  } else {
+    elements = shapeOrChildren;
+  }
+  if (elements.length) {
+    return addPadding(getBBox(elements), padding);
+  }
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/resize/Resize.js
+var DEFAULT_MIN_WIDTH = 10;
+function Resize(eventBus, rules, modeling, dragging) {
+  this._dragging = dragging;
+  this._rules = rules;
+  var self = this;
+  function handleMove(context, delta2) {
+    var shape = context.shape, direction = context.direction, resizeConstraints = context.resizeConstraints, newBounds;
+    context.delta = delta2;
+    newBounds = resizeBounds2(shape, direction, delta2);
+    context.newBounds = ensureConstraints2(newBounds, resizeConstraints);
+    context.canExecute = self.canResize(context);
+  }
+  function handleStart(context) {
+    var resizeConstraints = context.resizeConstraints, minBounds = context.minBounds;
+    if (resizeConstraints !== void 0) {
+      return;
+    }
+    if (minBounds === void 0) {
+      minBounds = self.computeMinResizeBox(context);
+    }
+    context.resizeConstraints = {
+      min: asTRBL(minBounds)
+    };
+  }
+  function handleEnd(context) {
+    var shape = context.shape, canExecute = context.canExecute, newBounds = context.newBounds;
+    if (canExecute) {
+      newBounds = roundBounds(newBounds);
+      if (!boundsChanged(shape, newBounds)) {
+        return;
+      }
+      modeling.resizeShape(shape, newBounds);
+    }
+  }
+  eventBus.on("resize.start", function(event2) {
+    handleStart(event2.context);
+  });
+  eventBus.on("resize.move", function(event2) {
+    var delta2 = {
+      x: event2.dx,
+      y: event2.dy
+    };
+    handleMove(event2.context, delta2);
+  });
+  eventBus.on("resize.end", function(event2) {
+    handleEnd(event2.context);
+  });
+}
+Resize.prototype.canResize = function(context) {
+  var rules = this._rules;
+  var ctx = pick(context, ["newBounds", "shape", "delta", "direction"]);
+  return rules.allowed("shape.resize", ctx);
+};
+Resize.prototype.activate = function(event2, shape, contextOrDirection) {
+  var dragging = this._dragging, context, direction;
+  if (typeof contextOrDirection === "string") {
+    contextOrDirection = {
+      direction: contextOrDirection
+    };
+  }
+  context = assign({ shape }, contextOrDirection);
+  direction = context.direction;
+  if (!direction) {
+    throw new Error("must provide a direction (n|w|s|e|nw|se|ne|sw)");
+  }
+  dragging.init(event2, getReferencePoint(shape, direction), "resize", {
+    autoActivate: true,
+    cursor: getCursor(direction),
+    data: {
+      shape,
+      context
+    }
+  });
+};
+Resize.prototype.computeMinResizeBox = function(context) {
+  var shape = context.shape, direction = context.direction, minDimensions, childrenBounds;
+  minDimensions = context.minDimensions || {
+    width: DEFAULT_MIN_WIDTH,
+    height: DEFAULT_MIN_WIDTH
+  };
+  childrenBounds = computeChildrenBBox(shape, context.childrenBoxPadding);
+  return getMinResizeBounds(direction, shape, minDimensions, childrenBounds);
+};
+Resize.$inject = [
+  "eventBus",
+  "rules",
+  "modeling",
+  "dragging"
+];
+function boundsChanged(shape, newBounds) {
+  return shape.x !== newBounds.x || shape.y !== newBounds.y || shape.width !== newBounds.width || shape.height !== newBounds.height;
+}
+function getReferencePoint(shape, direction) {
+  var mid3 = getMid(shape), trbl = asTRBL(shape);
+  var referencePoint = {
+    x: mid3.x,
+    y: mid3.y
+  };
+  if (direction.indexOf("n") !== -1) {
+    referencePoint.y = trbl.top;
+  } else if (direction.indexOf("s") !== -1) {
+    referencePoint.y = trbl.bottom;
+  }
+  if (direction.indexOf("e") !== -1) {
+    referencePoint.x = trbl.right;
+  } else if (direction.indexOf("w") !== -1) {
+    referencePoint.x = trbl.left;
+  }
+  return referencePoint;
+}
+function getCursor(direction) {
+  var prefix = "resize-";
+  if (direction === "n" || direction === "s") {
+    return prefix + "ns";
+  } else if (direction === "e" || direction === "w") {
+    return prefix + "ew";
+  } else if (direction === "nw" || direction === "se") {
+    return prefix + "nwse";
+  } else {
+    return prefix + "nesw";
+  }
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/resize/ResizePreview.js
+var MARKER_RESIZING = "djs-resizing";
+var MARKER_RESIZE_NOT_OK = "resize-not-ok";
+var LOW_PRIORITY8 = 500;
+function ResizePreview(eventBus, canvas, previewSupport) {
+  function updateFrame(context) {
+    var shape = context.shape, bounds = context.newBounds, frame = context.frame;
+    if (!frame) {
+      frame = context.frame = previewSupport.addFrame(shape, canvas.getActiveLayer());
+      canvas.addMarker(shape, MARKER_RESIZING);
+    }
+    if (bounds.width > 5) {
+      attr(frame, { x: bounds.x, width: bounds.width });
+    }
+    if (bounds.height > 5) {
+      attr(frame, { y: bounds.y, height: bounds.height });
+    }
+    if (context.canExecute) {
+      classes(frame).remove(MARKER_RESIZE_NOT_OK);
+    } else {
+      classes(frame).add(MARKER_RESIZE_NOT_OK);
+    }
+  }
+  function removeFrame(context) {
+    var shape = context.shape, frame = context.frame;
+    if (frame) {
+      remove(context.frame);
+    }
+    canvas.removeMarker(shape, MARKER_RESIZING);
+  }
+  eventBus.on("resize.move", LOW_PRIORITY8, function(event2) {
+    updateFrame(event2.context);
+  });
+  eventBus.on("resize.cleanup", function(event2) {
+    removeFrame(event2.context);
+  });
+}
+ResizePreview.$inject = [
+  "eventBus",
+  "canvas",
+  "previewSupport"
+];
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/resize/ResizeHandles.js
+var HANDLE_OFFSET = -6;
+var HANDLE_SIZE = 8;
+var HANDLE_HIT_SIZE = 20;
+var CLS_RESIZER = "djs-resizer";
+var directions = ["n", "w", "s", "e", "nw", "ne", "se", "sw"];
+function ResizeHandles(eventBus, canvas, selection, resize) {
+  this._resize = resize;
+  this._canvas = canvas;
+  var self = this;
+  eventBus.on("selection.changed", function(e2) {
+    var newSelection = e2.newSelection;
+    self.removeResizers();
+    if (newSelection.length === 1) {
+      forEach(newSelection, bind(self.addResizer, self));
+    }
+  });
+  eventBus.on("shape.changed", function(e2) {
+    var shape = e2.element;
+    if (selection.isSelected(shape)) {
+      self.removeResizers();
+      self.addResizer(shape);
+    }
+  });
+}
+ResizeHandles.prototype.makeDraggable = function(element, gfx, direction) {
+  var resize = this._resize;
+  function startResize(event2) {
+    if (isPrimaryButton(event2)) {
+      resize.activate(event2, element, direction);
+    }
+  }
+  event.bind(gfx, "mousedown", startResize);
+  event.bind(gfx, "touchstart", startResize);
+};
+ResizeHandles.prototype._createResizer = function(element, x, y, direction) {
+  var resizersParent = this._getResizersParent();
+  var offset = getHandleOffset(direction);
+  var group = create("g");
+  classes(group).add(CLS_RESIZER);
+  classes(group).add(CLS_RESIZER + "-" + element.id);
+  classes(group).add(CLS_RESIZER + "-" + direction);
+  append(resizersParent, group);
+  var visual = create("rect");
+  attr(visual, {
+    x: -HANDLE_SIZE / 2 + offset.x,
+    y: -HANDLE_SIZE / 2 + offset.y,
+    rx: 2,
+    width: HANDLE_SIZE,
+    height: HANDLE_SIZE
+  });
+  classes(visual).add(CLS_RESIZER + "-visual");
+  append(group, visual);
+  var hit = create("rect");
+  attr(hit, {
+    x: -HANDLE_HIT_SIZE / 2 + offset.x,
+    y: -HANDLE_HIT_SIZE / 2 + offset.y,
+    width: HANDLE_HIT_SIZE,
+    height: HANDLE_HIT_SIZE
+  });
+  classes(hit).add(CLS_RESIZER + "-hit");
+  append(group, hit);
+  transform2(group, x, y);
+  return group;
+};
+ResizeHandles.prototype.createResizer = function(element, direction) {
+  var point = getReferencePoint(element, direction);
+  var resizer = this._createResizer(element, point.x, point.y, direction);
+  this.makeDraggable(element, resizer, direction);
+};
+ResizeHandles.prototype.addResizer = function(element) {
+  var self = this;
+  if (isConnection(element)) {
+    return;
+  }
+  forEach(directions, function(direction) {
+    if (self._resize.canResize({ shape: element, direction })) {
+      self.createResizer(element, direction);
+    }
+  });
+};
+ResizeHandles.prototype.removeResizers = function() {
+  var resizersParent = this._getResizersParent();
+  clear(resizersParent);
+};
+ResizeHandles.prototype._getResizersParent = function() {
+  return this._canvas.getLayer("resizers");
+};
+ResizeHandles.$inject = [
+  "eventBus",
+  "canvas",
+  "selection",
+  "resize"
+];
+function getHandleOffset(direction) {
+  var offset = {
+    x: 0,
+    y: 0
+  };
+  if (direction.indexOf("e") !== -1) {
+    offset.x = -HANDLE_OFFSET;
+  } else if (direction.indexOf("w") !== -1) {
+    offset.x = HANDLE_OFFSET;
+  }
+  if (direction.indexOf("s") !== -1) {
+    offset.y = -HANDLE_OFFSET;
+  } else if (direction.indexOf("n") !== -1) {
+    offset.y = HANDLE_OFFSET;
+  }
+  return offset;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/resize/index.js
+var resize_default = {
+  __depends__: [
+    rules_default,
+    dragging_default,
+    preview_support_default
+  ],
+  __init__: [
+    "resize",
+    "resizePreview",
+    "resizeHandles"
+  ],
+  resize: ["type", Resize],
+  resizePreview: ["type", ResizePreview],
+  resizeHandles: ["type", ResizeHandles]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/snapping/SnapContext.js
+function SnapContext() {
+  this._targets = {};
+  this._snapOrigins = {};
+  this._snapLocations = [];
+  this._defaultSnaps = {};
+}
+SnapContext.prototype.getSnapOrigin = function(snapLocation) {
+  return this._snapOrigins[snapLocation];
+};
+SnapContext.prototype.setSnapOrigin = function(snapLocation, snapOrigin) {
+  this._snapOrigins[snapLocation] = snapOrigin;
+  if (this._snapLocations.indexOf(snapLocation) === -1) {
+    this._snapLocations.push(snapLocation);
+  }
+};
+SnapContext.prototype.addDefaultSnap = function(snapLocation, point) {
+  var snapValues = this._defaultSnaps[snapLocation];
+  if (!snapValues) {
+    snapValues = this._defaultSnaps[snapLocation] = [];
+  }
+  snapValues.push(point);
+};
+SnapContext.prototype.getSnapLocations = function() {
+  return this._snapLocations;
+};
+SnapContext.prototype.setSnapLocations = function(snapLocations) {
+  this._snapLocations = snapLocations;
+};
+SnapContext.prototype.pointsForTarget = function(target) {
+  var targetId = target.id || target;
+  var snapPoints = this._targets[targetId];
+  if (!snapPoints) {
+    snapPoints = this._targets[targetId] = new SnapPoints();
+    snapPoints.initDefaults(this._defaultSnaps);
+  }
+  return snapPoints;
+};
+function SnapPoints() {
+  this._snapValues = {};
+}
+SnapPoints.prototype.add = function(snapLocation, point) {
+  var snapValues = this._snapValues[snapLocation];
+  if (!snapValues) {
+    snapValues = this._snapValues[snapLocation] = { x: [], y: [] };
+  }
+  if (snapValues.x.indexOf(point.x) === -1) {
+    snapValues.x.push(point.x);
+  }
+  if (snapValues.y.indexOf(point.y) === -1) {
+    snapValues.y.push(point.y);
+  }
+};
+SnapPoints.prototype.snap = function(point, snapLocation, axis, tolerance) {
+  var snappingValues = this._snapValues[snapLocation];
+  return snappingValues && snapTo(point[axis], snappingValues[axis], tolerance);
+};
+SnapPoints.prototype.initDefaults = function(defaultSnaps) {
+  var self = this;
+  forEach(defaultSnaps || {}, function(snapPoints, snapLocation) {
+    forEach(snapPoints, function(point) {
+      self.add(snapLocation, point);
+    });
+  });
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/snapping/CreateMoveSnapping.js
+var HIGHER_PRIORITY = 1250;
+function CreateMoveSnapping(elementRegistry, eventBus, snapping) {
+  var self = this;
+  this._elementRegistry = elementRegistry;
+  eventBus.on([
+    "create.start",
+    "shape.move.start"
+  ], function(event2) {
+    self.initSnap(event2);
+  });
+  eventBus.on([
+    "create.move",
+    "create.end",
+    "shape.move.move",
+    "shape.move.end"
+  ], HIGHER_PRIORITY, function(event2) {
+    var context = event2.context, shape = context.shape, snapContext = context.snapContext, target = context.target;
+    if (event2.originalEvent && isCmd(event2.originalEvent)) {
+      return;
+    }
+    if (isSnapped(event2) || !target) {
+      return;
+    }
+    var snapPoints = snapContext.pointsForTarget(target);
+    if (!snapPoints.initialized) {
+      snapPoints = self.addSnapTargetPoints(snapPoints, shape, target);
+      snapPoints.initialized = true;
+    }
+    snapping.snap(event2, snapPoints);
+  });
+  eventBus.on([
+    "create.cleanup",
+    "shape.move.cleanup"
+  ], function() {
+    snapping.hide();
+  });
+}
+CreateMoveSnapping.$inject = [
+  "elementRegistry",
+  "eventBus",
+  "snapping"
+];
+CreateMoveSnapping.prototype.initSnap = function(event2) {
+  var elementRegistry = this._elementRegistry;
+  var context = event2.context, shape = context.shape, snapContext = context.snapContext;
+  if (!snapContext) {
+    snapContext = context.snapContext = new SnapContext();
+  }
+  var shapeMid;
+  if (elementRegistry.get(shape.id)) {
+    shapeMid = mid2(shape, event2);
+  } else {
+    shapeMid = {
+      x: event2.x + mid2(shape).x,
+      y: event2.y + mid2(shape).y
+    };
+  }
+  var shapeTopLeft = {
+    x: shapeMid.x - shape.width / 2,
+    y: shapeMid.y - shape.height / 2
+  }, shapeBottomRight = {
+    x: shapeMid.x + shape.width / 2,
+    y: shapeMid.y + shape.height / 2
+  };
+  snapContext.setSnapOrigin("mid", {
+    x: shapeMid.x - event2.x,
+    y: shapeMid.y - event2.y
+  });
+  if (isLabel(shape)) {
+    return snapContext;
+  }
+  snapContext.setSnapOrigin("top-left", {
+    x: shapeTopLeft.x - event2.x,
+    y: shapeTopLeft.y - event2.y
+  });
+  snapContext.setSnapOrigin("bottom-right", {
+    x: shapeBottomRight.x - event2.x,
+    y: shapeBottomRight.y - event2.y
+  });
+  return snapContext;
+};
+CreateMoveSnapping.prototype.addSnapTargetPoints = function(snapPoints, shape, target) {
+  var snapTargets = this.getSnapTargets(shape, target);
+  forEach(snapTargets, function(snapTarget) {
+    if (isLabel(snapTarget)) {
+      if (isLabel(shape)) {
+        snapPoints.add("mid", mid2(snapTarget));
+      }
+      return;
+    }
+    if (isConnection(snapTarget)) {
+      if (snapTarget.waypoints.length < 3) {
+        return;
+      }
+      var waypoints = snapTarget.waypoints.slice(1, -1);
+      forEach(waypoints, function(waypoint) {
+        snapPoints.add("mid", waypoint);
+      });
+      return;
+    }
+    snapPoints.add("mid", mid2(snapTarget));
+  });
+  if (!isNumber(shape.x) || !isNumber(shape.y)) {
+    return snapPoints;
+  }
+  if (this._elementRegistry.get(shape.id)) {
+    snapPoints.add("mid", mid2(shape));
+  }
+  return snapPoints;
+};
+CreateMoveSnapping.prototype.getSnapTargets = function(shape, target) {
+  return getChildren2(target).filter(function(child) {
+    return !isHidden(child);
+  });
+};
+function isHidden(element) {
+  return !!element.hidden;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/snapping/ResizeSnapping.js
+var HIGHER_PRIORITY2 = 1250;
+function ResizeSnapping(eventBus, snapping) {
+  var self = this;
+  eventBus.on(["resize.start"], function(event2) {
+    self.initSnap(event2);
+  });
+  eventBus.on([
+    "resize.move",
+    "resize.end"
+  ], HIGHER_PRIORITY2, function(event2) {
+    var context = event2.context, shape = context.shape, parent = shape.parent, direction = context.direction, snapContext = context.snapContext;
+    if (event2.originalEvent && isCmd(event2.originalEvent)) {
+      return;
+    }
+    if (isSnapped(event2)) {
+      return;
+    }
+    var snapPoints = snapContext.pointsForTarget(parent);
+    if (!snapPoints.initialized) {
+      snapPoints = self.addSnapTargetPoints(snapPoints, shape, parent, direction);
+      snapPoints.initialized = true;
+    }
+    if (isHorizontal(direction)) {
+      setSnapped(event2, "x", event2.x);
+    }
+    if (isVertical(direction)) {
+      setSnapped(event2, "y", event2.y);
+    }
+    snapping.snap(event2, snapPoints);
+  });
+  eventBus.on(["resize.cleanup"], function() {
+    snapping.hide();
+  });
+}
+ResizeSnapping.prototype.initSnap = function(event2) {
+  var context = event2.context, shape = context.shape, direction = context.direction, snapContext = context.snapContext;
+  if (!snapContext) {
+    snapContext = context.snapContext = new SnapContext();
+  }
+  var snapOrigin = getSnapOrigin(shape, direction);
+  snapContext.setSnapOrigin("corner", {
+    x: snapOrigin.x - event2.x,
+    y: snapOrigin.y - event2.y
+  });
+  return snapContext;
+};
+ResizeSnapping.prototype.addSnapTargetPoints = function(snapPoints, shape, target, direction) {
+  var snapTargets = this.getSnapTargets(shape, target);
+  forEach(snapTargets, function(snapTarget) {
+    snapPoints.add("corner", bottomRight(snapTarget));
+    snapPoints.add("corner", topLeft(snapTarget));
+  });
+  snapPoints.add("corner", getSnapOrigin(shape, direction));
+  return snapPoints;
+};
+ResizeSnapping.$inject = [
+  "eventBus",
+  "snapping"
+];
+ResizeSnapping.prototype.getSnapTargets = function(shape, target) {
+  return getChildren2(target).filter(function(child) {
+    return !isAttached(child, shape) && !isConnection(child) && !isHidden2(child) && !isLabel(child);
+  });
+};
+function getSnapOrigin(shape, direction) {
+  var mid3 = getMid(shape), trbl = asTRBL(shape);
+  var snapOrigin = {
+    x: mid3.x,
+    y: mid3.y
+  };
+  if (direction.indexOf("n") !== -1) {
+    snapOrigin.y = trbl.top;
+  } else if (direction.indexOf("s") !== -1) {
+    snapOrigin.y = trbl.bottom;
+  }
+  if (direction.indexOf("e") !== -1) {
+    snapOrigin.x = trbl.right;
+  } else if (direction.indexOf("w") !== -1) {
+    snapOrigin.x = trbl.left;
+  }
+  return snapOrigin;
+}
+function isAttached(element, host) {
+  return element.host === host;
+}
+function isHidden2(element) {
+  return !!element.hidden;
+}
+function isHorizontal(direction) {
+  return direction === "n" || direction === "s";
+}
+function isVertical(direction) {
+  return direction === "e" || direction === "w";
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/snapping/Snapping.js
+var SNAP_TOLERANCE = 7;
+var SNAP_LINE_HIDE_DELAY = 1e3;
+function Snapping(canvas) {
+  this._canvas = canvas;
+  this._asyncHide = debounce(bind(this.hide, this), SNAP_LINE_HIDE_DELAY);
+}
+Snapping.$inject = ["canvas"];
+Snapping.prototype.snap = function(event2, snapPoints) {
+  var context = event2.context, snapContext = context.snapContext, snapLocations = snapContext.getSnapLocations();
+  var snapping = {
+    x: isSnapped(event2, "x"),
+    y: isSnapped(event2, "y")
+  };
+  forEach(snapLocations, function(location) {
+    var snapOrigin = snapContext.getSnapOrigin(location);
+    var snapCurrent = {
+      x: event2.x + snapOrigin.x,
+      y: event2.y + snapOrigin.y
+    };
+    forEach(["x", "y"], function(axis) {
+      var locationSnapping;
+      if (!snapping[axis]) {
+        locationSnapping = snapPoints.snap(snapCurrent, location, axis, SNAP_TOLERANCE);
+        if (locationSnapping !== void 0) {
+          snapping[axis] = {
+            value: locationSnapping,
+            originValue: locationSnapping - snapOrigin[axis]
+          };
+        }
+      }
+    });
+    if (snapping.x && snapping.y) {
+      return false;
+    }
+  });
+  this.showSnapLine("vertical", snapping.x && snapping.x.value);
+  this.showSnapLine("horizontal", snapping.y && snapping.y.value);
+  forEach(["x", "y"], function(axis) {
+    var axisSnapping = snapping[axis];
+    if (isObject(axisSnapping)) {
+      setSnapped(event2, axis, axisSnapping.originValue);
+    }
+  });
+};
+Snapping.prototype._createLine = function(orientation) {
+  var root = this._canvas.getLayer("snap");
+  var line = create("path");
+  attr(line, { d: "M0,0 L0,0" });
+  classes(line).add("djs-snap-line");
+  append(root, line);
+  return {
+    update: function(position) {
+      if (!isNumber(position)) {
+        attr(line, { display: "none" });
+      } else {
+        if (orientation === "horizontal") {
+          attr(line, {
+            d: "M-100000," + position + " L+100000," + position,
+            display: ""
+          });
+        } else {
+          attr(line, {
+            d: "M " + position + ",-100000 L " + position + ", +100000",
+            display: ""
+          });
+        }
+      }
+    }
+  };
+};
+Snapping.prototype._createSnapLines = function() {
+  this._snapLines = {
+    horizontal: this._createLine("horizontal"),
+    vertical: this._createLine("vertical")
+  };
+};
+Snapping.prototype.showSnapLine = function(orientation, position) {
+  var line = this.getSnapLine(orientation);
+  if (line) {
+    line.update(position);
+  }
+  this._asyncHide();
+};
+Snapping.prototype.getSnapLine = function(orientation) {
+  if (!this._snapLines) {
+    this._createSnapLines();
+  }
+  return this._snapLines[orientation];
+};
+Snapping.prototype.hide = function() {
+  forEach(this._snapLines, function(snapLine) {
+    snapLine.update();
+  });
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/snapping/index.js
+var snapping_default = {
+  __init__: [
+    "createMoveSnapping",
+    "resizeSnapping",
+    "snapping"
+  ],
+  createMoveSnapping: ["type", CreateMoveSnapping],
+  resizeSnapping: ["type", ResizeSnapping],
+  snapping: ["type", Snapping]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/command/CommandInterceptor.js
+var DEFAULT_PRIORITY3 = 1e3;
+function CommandInterceptor(eventBus) {
+  this._eventBus = eventBus;
+}
+CommandInterceptor.$inject = ["eventBus"];
+function unwrapEvent(fn, that) {
+  return function(event2) {
+    return fn.call(that || null, event2.context, event2.command, event2);
+  };
+}
+CommandInterceptor.prototype.on = function(events, hook, priority, handlerFn, unwrap, that) {
+  if (isFunction(hook) || isNumber(hook)) {
+    that = unwrap;
+    unwrap = handlerFn;
+    handlerFn = priority;
+    priority = hook;
+    hook = null;
+  }
+  if (isFunction(priority)) {
+    that = unwrap;
+    unwrap = handlerFn;
+    handlerFn = priority;
+    priority = DEFAULT_PRIORITY3;
+  }
+  if (isObject(unwrap)) {
+    that = unwrap;
+    unwrap = false;
+  }
+  if (!isFunction(handlerFn)) {
+    throw new Error("handlerFn must be a function");
+  }
+  if (!isArray2(events)) {
+    events = [events];
+  }
+  var eventBus = this._eventBus;
+  forEach(events, function(event2) {
+    var fullEvent = ["commandStack", event2, hook].filter(function(e2) {
+      return e2;
+    }).join(".");
+    eventBus.on(fullEvent, priority, unwrap ? unwrapEvent(handlerFn, that) : handlerFn, that);
+  });
+};
+CommandInterceptor.prototype.canExecute = createHook("canExecute");
+CommandInterceptor.prototype.preExecute = createHook("preExecute");
+CommandInterceptor.prototype.preExecuted = createHook("preExecuted");
+CommandInterceptor.prototype.execute = createHook("execute");
+CommandInterceptor.prototype.executed = createHook("executed");
+CommandInterceptor.prototype.postExecute = createHook("postExecute");
+CommandInterceptor.prototype.postExecuted = createHook("postExecuted");
+CommandInterceptor.prototype.revert = createHook("revert");
+CommandInterceptor.prototype.reverted = createHook("reverted");
+function createHook(hook) {
+  const hookFn = function(events, priority, handlerFn, unwrap, that) {
+    if (isFunction(events) || isNumber(events)) {
+      that = unwrap;
+      unwrap = handlerFn;
+      handlerFn = priority;
+      priority = events;
+      events = null;
+    }
+    this.on(events, hook, priority, handlerFn, unwrap, that);
+  };
+  return hookFn;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/grid-snapping/behavior/ResizeBehavior.js
+function ResizeBehavior(eventBus, gridSnapping) {
+  CommandInterceptor.call(this, eventBus);
+  this._gridSnapping = gridSnapping;
+  var self = this;
+  this.preExecute("shape.resize", function(event2) {
+    var context = event2.context, hints = context.hints || {}, autoResize = hints.autoResize;
+    if (!autoResize) {
+      return;
+    }
+    var shape = context.shape, newBounds = context.newBounds;
+    if (isString(autoResize)) {
+      context.newBounds = self.snapComplex(newBounds, autoResize);
+    } else {
+      context.newBounds = self.snapSimple(shape, newBounds);
+    }
+  });
+}
+ResizeBehavior.$inject = [
+  "eventBus",
+  "gridSnapping",
+  "modeling"
+];
+e(ResizeBehavior, CommandInterceptor);
+ResizeBehavior.prototype.snapSimple = function(shape, newBounds) {
+  var gridSnapping = this._gridSnapping;
+  newBounds.width = gridSnapping.snapValue(newBounds.width, {
+    min: newBounds.width
+  });
+  newBounds.height = gridSnapping.snapValue(newBounds.height, {
+    min: newBounds.height
+  });
+  newBounds.x = shape.x + shape.width / 2 - newBounds.width / 2;
+  newBounds.y = shape.y + shape.height / 2 - newBounds.height / 2;
+  return newBounds;
+};
+ResizeBehavior.prototype.snapComplex = function(newBounds, directions2) {
+  if (/w|e/.test(directions2)) {
+    newBounds = this.snapHorizontally(newBounds, directions2);
+  }
+  if (/n|s/.test(directions2)) {
+    newBounds = this.snapVertically(newBounds, directions2);
+  }
+  return newBounds;
+};
+ResizeBehavior.prototype.snapHorizontally = function(newBounds, directions2) {
+  var gridSnapping = this._gridSnapping, west = /w/.test(directions2), east = /e/.test(directions2);
+  var snappedNewBounds = {};
+  snappedNewBounds.width = gridSnapping.snapValue(newBounds.width, {
+    min: newBounds.width
+  });
+  if (east) {
+    if (west) {
+      snappedNewBounds.x = gridSnapping.snapValue(newBounds.x, {
+        max: newBounds.x
+      });
+      snappedNewBounds.width += gridSnapping.snapValue(newBounds.x - snappedNewBounds.x, {
+        min: newBounds.x - snappedNewBounds.x
+      });
+    } else {
+      newBounds.x = newBounds.x + newBounds.width - snappedNewBounds.width;
+    }
+  }
+  assign(newBounds, snappedNewBounds);
+  return newBounds;
+};
+ResizeBehavior.prototype.snapVertically = function(newBounds, directions2) {
+  var gridSnapping = this._gridSnapping, north = /n/.test(directions2), south = /s/.test(directions2);
+  var snappedNewBounds = {};
+  snappedNewBounds.height = gridSnapping.snapValue(newBounds.height, {
+    min: newBounds.height
+  });
+  if (north) {
+    if (south) {
+      snappedNewBounds.y = gridSnapping.snapValue(newBounds.y, {
+        max: newBounds.y
+      });
+      snappedNewBounds.height += gridSnapping.snapValue(newBounds.y - snappedNewBounds.y, {
+        min: newBounds.y - snappedNewBounds.y
+      });
+    } else {
+      newBounds.y = newBounds.y + newBounds.height - snappedNewBounds.height;
+    }
+  }
+  assign(newBounds, snappedNewBounds);
+  return newBounds;
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/grid-snapping/behavior/SpaceToolBehavior.js
+var HIGH_PRIORITY6 = 2e3;
+function SpaceToolBehavior(eventBus, gridSnapping) {
+  eventBus.on([
+    "spaceTool.move",
+    "spaceTool.end"
+  ], HIGH_PRIORITY6, function(event2) {
+    var context = event2.context;
+    if (!context.initialized) {
+      return;
+    }
+    var axis = context.axis;
+    var snapped;
+    if (axis === "x") {
+      snapped = gridSnapping.snapValue(event2.dx);
+      event2.x = event2.x + snapped - event2.dx;
+      event2.dx = snapped;
+    } else {
+      snapped = gridSnapping.snapValue(event2.dy);
+      event2.y = event2.y + snapped - event2.dy;
+      event2.dy = snapped;
+    }
+  });
+}
+SpaceToolBehavior.$inject = [
+  "eventBus",
+  "gridSnapping"
+];
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/grid-snapping/behavior/index.js
+var behavior_default = {
+  __init__: [
+    "gridSnappingResizeBehavior",
+    "gridSnappingSpaceToolBehavior"
+  ],
+  gridSnappingResizeBehavior: ["type", ResizeBehavior],
+  gridSnappingSpaceToolBehavior: ["type", SpaceToolBehavior]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/grid-snapping/GridUtil.js
+var SPACING = 10;
+function quantize(value, quantum, fn) {
+  if (!fn) {
+    fn = "round";
+  }
+  return Math[fn](value / quantum) * quantum;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/grid-snapping/GridSnapping.js
+var LOWER_PRIORITY = 1200;
+var LOW_PRIORITY9 = 800;
+function GridSnapping(elementRegistry, eventBus, config) {
+  var active = !config || config.active !== false;
+  this._eventBus = eventBus;
+  var self = this;
+  eventBus.on("diagram.init", LOW_PRIORITY9, function() {
+    self.setActive(active);
+  });
+  eventBus.on([
+    "create.move",
+    "create.end",
+    "bendpoint.move.move",
+    "bendpoint.move.end",
+    "connect.move",
+    "connect.end",
+    "connectionSegment.move.move",
+    "connectionSegment.move.end",
+    "resize.move",
+    "resize.end",
+    "shape.move.move",
+    "shape.move.end"
+  ], LOWER_PRIORITY, function(event2) {
+    var originalEvent = event2.originalEvent;
+    if (!self.active || originalEvent && isCmd(originalEvent)) {
+      return;
+    }
+    var context = event2.context, gridSnappingContext = context.gridSnappingContext;
+    if (!gridSnappingContext) {
+      gridSnappingContext = context.gridSnappingContext = {};
+    }
+    ["x", "y"].forEach(function(axis) {
+      var options = {};
+      var snapOffset = getSnapOffset(event2, axis, elementRegistry);
+      if (snapOffset) {
+        options.offset = snapOffset;
+      }
+      var snapConstraints = getSnapConstraints(event2, axis);
+      if (snapConstraints) {
+        assign(options, snapConstraints);
+      }
+      if (!isSnapped(event2, axis)) {
+        self.snapEvent(event2, axis, options);
+      }
+    });
+  });
+}
+GridSnapping.prototype.snapEvent = function(event2, axis, options) {
+  var snappedValue = this.snapValue(event2[axis], options);
+  setSnapped(event2, axis, snappedValue);
+};
+GridSnapping.prototype.getGridSpacing = function() {
+  return SPACING;
+};
+GridSnapping.prototype.snapValue = function(value, options) {
+  var offset = 0;
+  if (options && options.offset) {
+    offset = options.offset;
+  }
+  value += offset;
+  value = quantize(value, SPACING);
+  var min2, max3;
+  if (options && options.min) {
+    min2 = options.min;
+    if (isNumber(min2)) {
+      min2 = quantize(min2 + offset, SPACING, "ceil");
+      value = Math.max(value, min2);
+    }
+  }
+  if (options && options.max) {
+    max3 = options.max;
+    if (isNumber(max3)) {
+      max3 = quantize(max3 + offset, SPACING, "floor");
+      value = Math.min(value, max3);
+    }
+  }
+  value -= offset;
+  return value;
+};
+GridSnapping.prototype.isActive = function() {
+  return this.active;
+};
+GridSnapping.prototype.setActive = function(active) {
+  this.active = active;
+  this._eventBus.fire("gridSnapping.toggle", { active });
+};
+GridSnapping.prototype.toggleActive = function() {
+  this.setActive(!this.active);
+};
+GridSnapping.$inject = [
+  "elementRegistry",
+  "eventBus",
+  "config.gridSnapping"
+];
+function getSnapConstraints(event2, axis) {
+  var context = event2.context, createConstraints = context.createConstraints, resizeConstraints = context.resizeConstraints || {}, gridSnappingContext = context.gridSnappingContext, snapConstraints = gridSnappingContext.snapConstraints;
+  if (snapConstraints && snapConstraints[axis]) {
+    return snapConstraints[axis];
+  }
+  if (!snapConstraints) {
+    snapConstraints = gridSnappingContext.snapConstraints = {};
+  }
+  if (!snapConstraints[axis]) {
+    snapConstraints[axis] = {};
+  }
+  var direction = context.direction;
+  if (createConstraints) {
+    if (isHorizontal2(axis)) {
+      snapConstraints.x.min = createConstraints.left;
+      snapConstraints.x.max = createConstraints.right;
+    } else {
+      snapConstraints.y.min = createConstraints.top;
+      snapConstraints.y.max = createConstraints.bottom;
+    }
+  }
+  var minResizeConstraints = resizeConstraints.min, maxResizeConstraints = resizeConstraints.max;
+  if (minResizeConstraints) {
+    if (isHorizontal2(axis)) {
+      if (isWest(direction)) {
+        snapConstraints.x.max = minResizeConstraints.left;
+      } else {
+        snapConstraints.x.min = minResizeConstraints.right;
+      }
+    } else {
+      if (isNorth(direction)) {
+        snapConstraints.y.max = minResizeConstraints.top;
+      } else {
+        snapConstraints.y.min = minResizeConstraints.bottom;
+      }
+    }
+  }
+  if (maxResizeConstraints) {
+    if (isHorizontal2(axis)) {
+      if (isWest(direction)) {
+        snapConstraints.x.min = maxResizeConstraints.left;
+      } else {
+        snapConstraints.x.max = maxResizeConstraints.right;
+      }
+    } else {
+      if (isNorth(direction)) {
+        snapConstraints.y.min = maxResizeConstraints.top;
+      } else {
+        snapConstraints.y.max = maxResizeConstraints.bottom;
+      }
+    }
+  }
+  return snapConstraints[axis];
+}
+function getSnapOffset(event2, axis, elementRegistry) {
+  var context = event2.context, shape = event2.shape, gridSnappingContext = context.gridSnappingContext, snapLocation = gridSnappingContext.snapLocation, snapOffset = gridSnappingContext.snapOffset;
+  if (snapOffset && isNumber(snapOffset[axis])) {
+    return snapOffset[axis];
+  }
+  if (!snapOffset) {
+    snapOffset = gridSnappingContext.snapOffset = {};
+  }
+  if (!isNumber(snapOffset[axis])) {
+    snapOffset[axis] = 0;
+  }
+  if (!shape) {
+    return snapOffset[axis];
+  }
+  if (!elementRegistry.get(shape.id)) {
+    if (isHorizontal2(axis)) {
+      snapOffset[axis] += shape[axis] + shape.width / 2;
+    } else {
+      snapOffset[axis] += shape[axis] + shape.height / 2;
+    }
+  }
+  if (!snapLocation) {
+    return snapOffset[axis];
+  }
+  if (axis === "x") {
+    if (/left/.test(snapLocation)) {
+      snapOffset[axis] -= shape.width / 2;
+    } else if (/right/.test(snapLocation)) {
+      snapOffset[axis] += shape.width / 2;
+    }
+  } else {
+    if (/top/.test(snapLocation)) {
+      snapOffset[axis] -= shape.height / 2;
+    } else if (/bottom/.test(snapLocation)) {
+      snapOffset[axis] += shape.height / 2;
+    }
+  }
+  return snapOffset[axis];
+}
+function isHorizontal2(axis) {
+  return axis === "x";
+}
+function isNorth(direction) {
+  return direction.indexOf("n") !== -1;
+}
+function isWest(direction) {
+  return direction.indexOf("w") !== -1;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/grid-snapping/index.js
+var grid_snapping_default = {
+  __depends__: [behavior_default],
+  __init__: ["gridSnapping"],
+  gridSnapping: ["type", GridSnapping]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/keyboard/Keyboard.js
+var KEYDOWN_EVENT = "keyboard.keydown";
+var KEYUP_EVENT = "keyboard.keyup";
+var DEFAULT_PRIORITY4 = 1e3;
+var compatMessage = "Keyboard binding is now implicit; explicit binding to an element got removed. For more information, see https://github.com/bpmn-io/diagram-js/issues/661";
+function Keyboard(config, eventBus) {
+  var self = this;
+  this._config = config = config || {};
+  this._eventBus = eventBus;
+  this._keydownHandler = this._keydownHandler.bind(this);
+  this._keyupHandler = this._keyupHandler.bind(this);
+  eventBus.on("diagram.destroy", function() {
+    self._fire("destroy");
+    self.unbind();
+  });
+  if (config.bindTo) {
+    console.error("unsupported configuration <keyboard.bindTo>", new Error(compatMessage));
+  }
+  var bind3 = config && config.bind !== false;
+  eventBus.on("canvas.init", function(event2) {
+    self._target = event2.svg;
+    if (bind3) {
+      self.bind();
+    }
+    self._fire("init");
+  });
+}
+Keyboard.$inject = [
+  "config.keyboard",
+  "eventBus"
+];
+Keyboard.prototype._keydownHandler = function(event2) {
+  this._keyHandler(event2, KEYDOWN_EVENT);
+};
+Keyboard.prototype._keyupHandler = function(event2) {
+  this._keyHandler(event2, KEYUP_EVENT);
+};
+Keyboard.prototype._keyHandler = function(event2, type) {
+  var eventBusResult;
+  if (this._isEventIgnored(event2)) {
+    return;
+  }
+  var context = {
+    keyEvent: event2
+  };
+  eventBusResult = this._eventBus.fire(type || KEYDOWN_EVENT, context);
+  if (eventBusResult) {
+    event2.preventDefault();
+  }
+};
+Keyboard.prototype._isEventIgnored = function(event2) {
+  return false;
+};
+Keyboard.prototype.bind = function(node2) {
+  if (node2) {
+    console.error("unsupported argument <node>", new Error(compatMessage));
+  }
+  this.unbind();
+  node2 = this._node = this._target;
+  event.bind(node2, "keydown", this._keydownHandler);
+  event.bind(node2, "keyup", this._keyupHandler);
+  this._fire("bind");
+};
+Keyboard.prototype.getBinding = function() {
+  return this._node;
+};
+Keyboard.prototype.unbind = function() {
+  var node2 = this._node;
+  if (node2) {
+    this._fire("unbind");
+    event.unbind(node2, "keydown", this._keydownHandler);
+    event.unbind(node2, "keyup", this._keyupHandler);
+  }
+  this._node = null;
+};
+Keyboard.prototype._fire = function(event2) {
+  this._eventBus.fire("keyboard." + event2, { node: this._node });
+};
+Keyboard.prototype.addListener = function(priority, listener, type) {
+  if (isFunction(priority)) {
+    type = listener;
+    listener = priority;
+    priority = DEFAULT_PRIORITY4;
+  }
+  this._eventBus.on(type || KEYDOWN_EVENT, priority, listener);
+};
+Keyboard.prototype.removeListener = function(listener, type) {
+  this._eventBus.off(type || KEYDOWN_EVENT, listener);
+};
+Keyboard.prototype.hasModifier = hasModifier;
+Keyboard.prototype.isCmd = isCmd;
+Keyboard.prototype.isShift = isShift;
+Keyboard.prototype.isKey = isKey;
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/keyboard/KeyboardBindings.js
+var LOW_PRIORITY10 = 500;
+function KeyboardBindings(eventBus, keyboard) {
+  var self = this;
+  eventBus.on("editorActions.init", LOW_PRIORITY10, function(event2) {
+    var editorActions = event2.editorActions;
+    self.registerBindings(keyboard, editorActions);
+  });
+}
+KeyboardBindings.$inject = [
+  "eventBus",
+  "keyboard"
+];
+KeyboardBindings.prototype.registerBindings = function(keyboard, editorActions) {
+  function addListener(action, fn) {
+    if (editorActions.isRegistered(action)) {
+      keyboard.addListener(fn);
+    }
+  }
+  addListener("undo", function(context) {
+    var event2 = context.keyEvent;
+    if (isUndo(event2)) {
+      editorActions.trigger("undo");
+      return true;
+    }
+  });
+  addListener("redo", function(context) {
+    var event2 = context.keyEvent;
+    if (isRedo(event2)) {
+      editorActions.trigger("redo");
+      return true;
+    }
+  });
+  addListener("copy", function(context) {
+    var event2 = context.keyEvent;
+    if (isCopy(event2)) {
+      editorActions.trigger("copy");
+      return true;
+    }
+  });
+  addListener("paste", function(context) {
+    var event2 = context.keyEvent;
+    if (isPaste(event2)) {
+      editorActions.trigger("paste");
+      return true;
+    }
+  });
+  addListener("duplicate", function(context) {
+    var event2 = context.keyEvent;
+    if (isDuplicate(event2)) {
+      editorActions.trigger("duplicate");
+      return true;
+    }
+  });
+  addListener("cut", function(context) {
+    var event2 = context.keyEvent;
+    if (isCut(event2)) {
+      editorActions.trigger("cut");
+      return true;
+    }
+  });
+  addListener("stepZoom", function(context) {
+    var event2 = context.keyEvent;
+    if (isKey(["+", "="], event2) && isCmd(event2)) {
+      editorActions.trigger("stepZoom", { value: 1 });
+      return true;
+    }
+  });
+  addListener("stepZoom", function(context) {
+    var event2 = context.keyEvent;
+    if (isKey("-", event2) && isCmd(event2)) {
+      editorActions.trigger("stepZoom", { value: -1 });
+      return true;
+    }
+  });
+  addListener("zoom", function(context) {
+    var event2 = context.keyEvent;
+    if (isKey("0", event2) && isCmd(event2)) {
+      editorActions.trigger("zoom", { value: 1 });
+      return true;
+    }
+  });
+  addListener("removeSelection", function(context) {
+    var event2 = context.keyEvent;
+    if (isKey(["Backspace", "Delete"], event2)) {
+      editorActions.trigger("removeSelection");
+      return true;
+    }
+  });
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/keyboard/index.js
+var keyboard_default = {
+  __init__: ["keyboard", "keyboardBindings"],
+  keyboard: ["type", Keyboard],
+  keyboardBindings: ["type", KeyboardBindings]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/keyboard-move-selection/KeyboardMoveSelection.js
+var DEFAULT_CONFIG = {
+  moveSpeed: 1,
+  moveSpeedAccelerated: 10
+};
+var HIGHER_PRIORITY3 = 1500;
+var LEFT = "left";
+var UP = "up";
+var RIGHT = "right";
+var DOWN = "down";
+var KEY_TO_DIRECTION = {
+  ArrowLeft: LEFT,
+  ArrowUp: UP,
+  ArrowRight: RIGHT,
+  ArrowDown: DOWN
+};
+var DIRECTIONS_DELTA = {
+  left: function(speed) {
+    return {
+      x: -speed,
+      y: 0
+    };
+  },
+  up: function(speed) {
+    return {
+      x: 0,
+      y: -speed
+    };
+  },
+  right: function(speed) {
+    return {
+      x: speed,
+      y: 0
+    };
+  },
+  down: function(speed) {
+    return {
+      x: 0,
+      y: speed
+    };
+  }
+};
+function KeyboardMoveSelection(config, keyboard, modeling, rules, selection) {
+  var self = this;
+  this._config = assign({}, DEFAULT_CONFIG, config || {});
+  keyboard.addListener(HIGHER_PRIORITY3, function(event2) {
+    var keyEvent = event2.keyEvent;
+    var direction = KEY_TO_DIRECTION[keyEvent.key];
+    if (!direction) {
+      return;
+    }
+    if (keyboard.isCmd(keyEvent)) {
+      return;
+    }
+    var accelerated = keyboard.isShift(keyEvent);
+    self.moveSelection(direction, accelerated);
+    return true;
+  });
+  this.moveSelection = function(direction, accelerated) {
+    var selectedElements = selection.get();
+    if (!selectedElements.length) {
+      return;
+    }
+    var speed = this._config[accelerated ? "moveSpeedAccelerated" : "moveSpeed"];
+    var delta2 = DIRECTIONS_DELTA[direction](speed);
+    var canMove = rules.allowed("elements.move", {
+      shapes: selectedElements,
+      hints: {
+        keyboardMove: true
+      }
+    });
+    if (canMove) {
+      modeling.moveElements(selectedElements, delta2);
+    }
+  };
+}
+KeyboardMoveSelection.$inject = [
+  "config.keyboardMoveSelection",
+  "keyboard",
+  "modeling",
+  "rules",
+  "selection"
+];
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/keyboard-move-selection/index.js
+var keyboard_move_selection_default = {
+  __depends__: [
+    keyboard_default,
+    selection_default
+  ],
+  __init__: [
+    "keyboardMoveSelection"
+  ],
+  keyboardMoveSelection: ["type", KeyboardMoveSelection]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/overlays/Overlays.js
+var ids = new IdGenerator("ov");
+var LOW_PRIORITY11 = 500;
+function Overlays(config, eventBus, canvas, elementRegistry) {
+  this._eventBus = eventBus;
+  this._canvas = canvas;
+  this._elementRegistry = elementRegistry;
+  this._ids = ids;
+  this._overlayDefaults = assign({
+    // no show constraints
+    show: null,
+    // always scale
+    scale: true
+  }, config && config.defaults);
+  this._overlays = {};
+  this._overlayContainers = [];
+  this._overlayRoot = createRoot(canvas.getContainer());
+  this._init();
+}
+Overlays.$inject = [
+  "config.overlays",
+  "eventBus",
+  "canvas",
+  "elementRegistry"
+];
+Overlays.prototype.get = function(search) {
+  if (isString(search)) {
+    search = { id: search };
+  }
+  if (isString(search.element)) {
+    search.element = this._elementRegistry.get(search.element);
+  }
+  if (search.element) {
+    var container = this._getOverlayContainer(search.element, true);
+    if (container) {
+      return search.type ? filter(container.overlays, matchPattern({ type: search.type })) : container.overlays.slice();
+    } else {
+      return [];
+    }
+  } else if (search.type) {
+    return filter(this._overlays, matchPattern({ type: search.type }));
+  } else {
+    return search.id ? this._overlays[search.id] : null;
+  }
+};
+Overlays.prototype.add = function(element, type, overlay) {
+  if (isObject(type)) {
+    overlay = type;
+    type = null;
+  }
+  if (!element.id) {
+    element = this._elementRegistry.get(element);
+  }
+  if (!overlay.position) {
+    throw new Error("must specifiy overlay position");
+  }
+  if (!overlay.html) {
+    throw new Error("must specifiy overlay html");
+  }
+  if (!element) {
+    throw new Error("invalid element specified");
+  }
+  var id = this._ids.next();
+  overlay = assign({}, this._overlayDefaults, overlay, {
+    id,
+    type,
+    element,
+    html: overlay.html
+  });
+  this._addOverlay(overlay);
+  return id;
+};
+Overlays.prototype.remove = function(filter2) {
+  var overlays = this.get(filter2) || [];
+  if (!isArray2(overlays)) {
+    overlays = [overlays];
+  }
+  var self = this;
+  forEach(overlays, function(overlay) {
+    var container = self._getOverlayContainer(overlay.element, true);
+    if (overlay) {
+      remove2(overlay.html);
+      remove2(overlay.htmlContainer);
+      delete overlay.htmlContainer;
+      delete overlay.element;
+      delete self._overlays[overlay.id];
+    }
+    if (container) {
+      var idx = container.overlays.indexOf(overlay);
+      if (idx !== -1) {
+        container.overlays.splice(idx, 1);
+      }
+    }
+  });
+};
+Overlays.prototype.isShown = function() {
+  return this._overlayRoot.style.display !== "none";
+};
+Overlays.prototype.show = function() {
+  setVisible(this._overlayRoot);
+};
+Overlays.prototype.hide = function() {
+  setVisible(this._overlayRoot, false);
+};
+Overlays.prototype.clear = function() {
+  this._overlays = {};
+  this._overlayContainers = [];
+  clear2(this._overlayRoot);
+};
+Overlays.prototype._updateOverlayContainer = function(container) {
+  var element = container.element, html = container.html;
+  var x = element.x, y = element.y;
+  if (element.waypoints) {
+    var bbox = getBBox(element);
+    x = bbox.x;
+    y = bbox.y;
+  }
+  setPosition(html, x, y);
+  attr2(container.html, "data-container-id", element.id);
+};
+Overlays.prototype._updateOverlay = function(overlay) {
+  var position = overlay.position, htmlContainer = overlay.htmlContainer, element = overlay.element;
+  var left = position.left, top = position.top;
+  if (position.right !== void 0) {
+    var width;
+    if (element.waypoints) {
+      width = getBBox(element).width;
+    } else {
+      width = element.width;
+    }
+    left = position.right * -1 + width;
+  }
+  if (position.bottom !== void 0) {
+    var height;
+    if (element.waypoints) {
+      height = getBBox(element).height;
+    } else {
+      height = element.height;
+    }
+    top = position.bottom * -1 + height;
+  }
+  setPosition(htmlContainer, left || 0, top || 0);
+  this._updateOverlayVisibilty(overlay, this._canvas.viewbox());
+};
+Overlays.prototype._createOverlayContainer = function(element) {
+  var html = domify('<div class="djs-overlays" />');
+  assign2(html, { position: "absolute" });
+  this._overlayRoot.appendChild(html);
+  var container = {
+    html,
+    element,
+    overlays: []
+  };
+  this._updateOverlayContainer(container);
+  this._overlayContainers.push(container);
+  return container;
+};
+Overlays.prototype._updateRoot = function(viewbox) {
+  var scale = viewbox.scale || 1;
+  var matrix = "matrix(" + [
+    scale,
+    0,
+    0,
+    scale,
+    -1 * viewbox.x * scale,
+    -1 * viewbox.y * scale
+  ].join(",") + ")";
+  setTransform(this._overlayRoot, matrix);
+};
+Overlays.prototype._getOverlayContainer = function(element, raw) {
+  var container = find(this._overlayContainers, function(c) {
+    return c.element === element;
+  });
+  if (!container && !raw) {
+    return this._createOverlayContainer(element);
+  }
+  return container;
+};
+Overlays.prototype._addOverlay = function(overlay) {
+  var id = overlay.id, element = overlay.element, html = overlay.html, htmlContainer, overlayContainer;
+  if (html.get && html.constructor.prototype.jquery) {
+    html = html.get(0);
+  }
+  if (isString(html)) {
+    html = domify(html);
+  }
+  overlayContainer = this._getOverlayContainer(element);
+  htmlContainer = domify('<div class="djs-overlay" data-overlay-id="' + id + '">');
+  assign2(htmlContainer, { position: "absolute" });
+  htmlContainer.appendChild(html);
+  if (overlay.type) {
+    classes2(htmlContainer).add("djs-overlay-" + overlay.type);
+  }
+  var elementRoot = this._canvas.findRoot(element);
+  var activeRoot = this._canvas.getRootElement();
+  setVisible(htmlContainer, elementRoot === activeRoot);
+  overlay.htmlContainer = htmlContainer;
+  overlayContainer.overlays.push(overlay);
+  overlayContainer.html.appendChild(htmlContainer);
+  this._overlays[id] = overlay;
+  this._updateOverlay(overlay);
+  this._updateOverlayVisibilty(overlay, this._canvas.viewbox());
+};
+Overlays.prototype._updateOverlayVisibilty = function(overlay, viewbox) {
+  var show = overlay.show, rootElement = this._canvas.findRoot(overlay.element), minZoom = show && show.minZoom, maxZoom = show && show.maxZoom, htmlContainer = overlay.htmlContainer, activeRootElement = this._canvas.getRootElement(), visible = true;
+  if (rootElement !== activeRootElement) {
+    visible = false;
+  } else if (show) {
+    if (isDefined(minZoom) && minZoom > viewbox.scale || isDefined(maxZoom) && maxZoom < viewbox.scale) {
+      visible = false;
+    }
+  }
+  setVisible(htmlContainer, visible);
+  this._updateOverlayScale(overlay, viewbox);
+};
+Overlays.prototype._updateOverlayScale = function(overlay, viewbox) {
+  var shouldScale = overlay.scale, minScale, maxScale, htmlContainer = overlay.htmlContainer;
+  var scale, transform3 = "";
+  if (shouldScale !== true) {
+    if (shouldScale === false) {
+      minScale = 1;
+      maxScale = 1;
+    } else {
+      minScale = shouldScale.min;
+      maxScale = shouldScale.max;
+    }
+    if (isDefined(minScale) && viewbox.scale < minScale) {
+      scale = (1 / viewbox.scale || 1) * minScale;
+    }
+    if (isDefined(maxScale) && viewbox.scale > maxScale) {
+      scale = (1 / viewbox.scale || 1) * maxScale;
+    }
+  }
+  if (isDefined(scale)) {
+    transform3 = "scale(" + scale + "," + scale + ")";
+  }
+  setTransform(htmlContainer, transform3);
+};
+Overlays.prototype._updateOverlaysVisibilty = function(viewbox) {
+  var self = this;
+  forEach(this._overlays, function(overlay) {
+    self._updateOverlayVisibilty(overlay, viewbox);
+  });
+};
+Overlays.prototype._init = function() {
+  var eventBus = this._eventBus;
+  var self = this;
+  function updateViewbox(viewbox) {
+    self._updateRoot(viewbox);
+    self._updateOverlaysVisibilty(viewbox);
+    self.show();
+  }
+  eventBus.on("canvas.viewbox.changing", function(event2) {
+    self.hide();
+  });
+  eventBus.on("canvas.viewbox.changed", function(event2) {
+    updateViewbox(event2.viewbox);
+  });
+  eventBus.on(["shape.remove", "connection.remove"], function(e2) {
+    var element = e2.element;
+    var overlays = self.get({ element });
+    forEach(overlays, function(o) {
+      self.remove(o.id);
+    });
+    var container = self._getOverlayContainer(element);
+    if (container) {
+      remove2(container.html);
+      var i = self._overlayContainers.indexOf(container);
+      if (i !== -1) {
+        self._overlayContainers.splice(i, 1);
+      }
+    }
+  });
+  eventBus.on("element.changed", LOW_PRIORITY11, function(e2) {
+    var element = e2.element;
+    var container = self._getOverlayContainer(element, true);
+    if (container) {
+      forEach(container.overlays, function(overlay) {
+        self._updateOverlay(overlay);
+      });
+      self._updateOverlayContainer(container);
+    }
+  });
+  eventBus.on("element.marker.update", function(e2) {
+    var container = self._getOverlayContainer(e2.element, true);
+    if (container) {
+      classes2(container.html)[e2.add ? "add" : "remove"](e2.marker);
+    }
+  });
+  eventBus.on("root.set", function() {
+    self._updateOverlaysVisibilty(self._canvas.viewbox());
+  });
+  eventBus.on("diagram.clear", this.clear, this);
+};
+function createRoot(parentNode) {
+  var root = domify(
+    '<div class="djs-overlay-container" />'
+  );
+  assign2(root, {
+    position: "absolute",
+    width: 0,
+    height: 0
+  });
+  parentNode.insertBefore(root, parentNode.firstChild);
+  return root;
+}
+function setPosition(el, x, y) {
+  assign2(el, { left: x + "px", top: y + "px" });
+}
+function setVisible(el, visible) {
+  el.style.display = visible === false ? "none" : "";
+}
+function setTransform(el, transform3) {
+  el.style["transform-origin"] = "top left";
+  ["", "-ms-", "-webkit-"].forEach(function(prefix) {
+    el.style[prefix + "transform"] = transform3;
+  });
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/overlays/index.js
+var overlays_default = {
+  __init__: ["overlays"],
+  overlays: ["type", Overlays]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/scheduler/Scheduler.js
+var Ids = new IdGenerator();
+function Scheduler(eventBus) {
+  this._scheduled = {};
+  eventBus.on("diagram.destroy", () => {
+    Object.keys(this._scheduled).forEach((id) => {
+      this.cancel(id);
+    });
+  });
+}
+Scheduler.$inject = ["eventBus"];
+Scheduler.prototype.schedule = function(taskFn, id = Ids.next()) {
+  this.cancel(id);
+  const newScheduled = this._schedule(taskFn, id);
+  this._scheduled[id] = newScheduled;
+  return newScheduled.promise;
+};
+Scheduler.prototype._schedule = function(taskFn, id) {
+  const deferred = defer();
+  const executionId = setTimeout(() => {
+    try {
+      this._scheduled[id] = null;
+      try {
+        deferred.resolve(taskFn());
+      } catch (error) {
+        deferred.reject(error);
+      }
+    } catch (error) {
+      console.error("Scheduler#_schedule execution failed", error);
+    }
+  });
+  return {
+    executionId,
+    promise: deferred.promise
+  };
+};
+Scheduler.prototype.cancel = function(id) {
+  const scheduled = this._scheduled[id];
+  if (scheduled) {
+    this._cancel(scheduled);
+    this._scheduled[id] = null;
+  }
+};
+Scheduler.prototype._cancel = function(scheduled) {
+  clearTimeout(scheduled.executionId);
+};
+function defer() {
+  const deferred = {};
+  deferred.promise = new Promise((resolve, reject) => {
+    deferred.resolve = resolve;
+    deferred.reject = reject;
+  });
+  return deferred;
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/scheduler/index.js
+var scheduler_default = {
+  scheduler: ["type", Scheduler]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/context-pad/ContextPad.js
+var MARKER_HIDDEN = "djs-element-hidden";
+var entrySelector = ".entry";
+var DEFAULT_PRIORITY5 = 1e3;
+var CONTEXT_PAD_MARGIN = 8;
+var HOVER_DELAY = 300;
+function ContextPad(canvas, elementRegistry, eventBus, scheduler) {
+  this._canvas = canvas;
+  this._elementRegistry = elementRegistry;
+  this._eventBus = eventBus;
+  this._scheduler = scheduler;
+  this._current = null;
+  this._init();
+}
+ContextPad.$inject = [
+  "canvas",
+  "elementRegistry",
+  "eventBus",
+  "scheduler"
+];
+ContextPad.prototype._init = function() {
+  var self = this;
+  this._eventBus.on("selection.changed", function(event2) {
+    var selection = event2.newSelection;
+    var target = selection.length ? selection.length === 1 ? selection[0] : selection : null;
+    if (target) {
+      self.open(target, true);
+    } else {
+      self.close();
+    }
+  });
+  this._eventBus.on("elements.changed", function(event2) {
+    var elements = event2.elements, current = self._current;
+    if (!current) {
+      return;
+    }
+    var target = current.target;
+    var targets = isArray2(target) ? target : [target];
+    var targetsChanged = targets.filter(function(element) {
+      return elements.includes(element);
+    });
+    if (targetsChanged.length) {
+      self.close();
+      var targetsNew = targets.filter(function(element) {
+        return self._elementRegistry.get(element.id);
+      });
+      if (targetsNew.length) {
+        self._updateAndOpen(targetsNew.length > 1 ? targetsNew : targetsNew[0]);
+      }
+    }
+  });
+  this._eventBus.on("canvas.viewbox.changed", function() {
+    self._updatePosition();
+  });
+  this._eventBus.on("element.marker.update", function(event2) {
+    if (!self.isOpen()) {
+      return;
+    }
+    var element = event2.element;
+    var current = self._current;
+    var targets = isArray2(current.target) ? current.target : [current.target];
+    if (!targets.includes(element)) {
+      return;
+    }
+    self._updateVisibility();
+  });
+  this._container = this._createContainer();
+};
+ContextPad.prototype._createContainer = function() {
+  var container = domify('<div class="djs-context-pad-parent"></div>');
+  this._canvas.getContainer().appendChild(container);
+  return container;
+};
+ContextPad.prototype.registerProvider = function(priority, provider) {
+  if (!provider) {
+    provider = priority;
+    priority = DEFAULT_PRIORITY5;
+  }
+  this._eventBus.on("contextPad.getProviders", priority, function(event2) {
+    event2.providers.push(provider);
+  });
+};
+ContextPad.prototype.getEntries = function(target) {
+  var providers = this._getProviders();
+  var provideFn = isArray2(target) ? "getMultiElementContextPadEntries" : "getContextPadEntries";
+  var entries = {};
+  forEach(providers, function(provider) {
+    if (!isFunction(provider[provideFn])) {
+      return;
+    }
+    var entriesOrUpdater = provider[provideFn](target);
+    if (isFunction(entriesOrUpdater)) {
+      entries = entriesOrUpdater(entries);
+    } else {
+      forEach(entriesOrUpdater, function(entry, id) {
+        entries[id] = entry;
+      });
+    }
+  });
+  return entries;
+};
+ContextPad.prototype.trigger = function(action, event2, autoActivate) {
+  var self = this;
+  var entry, originalEvent, button = event2.delegateTarget || event2.target;
+  if (!button) {
+    return event2.preventDefault();
+  }
+  entry = attr2(button, "data-action");
+  originalEvent = event2.originalEvent || event2;
+  if (action === "mouseover") {
+    this._timeout = setTimeout(function() {
+      self._mouseout = self.triggerEntry(entry, "hover", originalEvent, autoActivate);
+    }, HOVER_DELAY);
+    return;
+  } else if (action === "mouseout") {
+    clearTimeout(this._timeout);
+    if (this._mouseout) {
+      this._mouseout();
+      this._mouseout = null;
+    }
+    return;
+  }
+  return this.triggerEntry(entry, action, originalEvent, autoActivate);
+};
+ContextPad.prototype.triggerEntry = function(entryId, action, event2, autoActivate) {
+  if (!this.isShown()) {
+    return;
+  }
+  var target = this._current.target, entries = this._current.entries;
+  var entry = entries[entryId];
+  if (!entry) {
+    return;
+  }
+  var handler = entry.action;
+  if (this._eventBus.fire("contextPad.trigger", { entry, event: event2 }) === false) {
+    return;
+  }
+  if (isFunction(handler)) {
+    if (action === "click") {
+      return handler(event2, target, autoActivate);
+    }
+  } else {
+    if (handler[action]) {
+      return handler[action](event2, target, autoActivate);
+    }
+  }
+  event2.preventDefault();
+};
+ContextPad.prototype.open = function(target, force) {
+  if (!force && this.isOpen(target)) {
+    return;
+  }
+  var allowed = this._eventBus.fire("contextPad.open.allowed", { target });
+  if (allowed === false) {
+    return;
+  }
+  this.close();
+  this._updateAndOpen(target);
+};
+ContextPad.prototype._getProviders = function() {
+  var event2 = this._eventBus.createEvent({
+    type: "contextPad.getProviders",
+    providers: []
+  });
+  this._eventBus.fire(event2);
+  return event2.providers;
+};
+ContextPad.prototype._updateAndOpen = function(target) {
+  var entries = this.getEntries(target), html = this._createHtml(target), image;
+  forEach(entries, function(entry, id) {
+    var grouping = entry.group || "default", control = domify(entry.html || '<div class="entry" draggable="true"></div>'), container;
+    attr2(control, "data-action", id);
+    container = query("[data-group=" + escapeCSS(grouping) + "]", html);
+    if (!container) {
+      container = domify('<div class="group"></div>');
+      attr2(container, "data-group", grouping);
+      html.appendChild(container);
+    }
+    container.appendChild(control);
+    if (entry.className) {
+      addClasses(control, entry.className);
+    }
+    if (entry.title) {
+      attr2(control, "title", entry.title);
+    }
+    if (entry.imageUrl) {
+      image = domify("<img>");
+      attr2(image, "src", entry.imageUrl);
+      image.style.width = "100%";
+      image.style.height = "100%";
+      control.appendChild(image);
+    }
+  });
+  classes2(html).add("open");
+  this._current = {
+    entries,
+    html,
+    target
+  };
+  this._updatePosition();
+  this._updateVisibility();
+  this._eventBus.fire("contextPad.open", { current: this._current });
+};
+ContextPad.prototype._createHtml = function(target) {
+  var self = this;
+  var html = domify('<div class="djs-context-pad"></div>');
+  delegate.bind(html, entrySelector, "click", function(event2) {
+    self.trigger("click", event2);
+  });
+  delegate.bind(html, entrySelector, "dragstart", function(event2) {
+    self.trigger("dragstart", event2);
+  });
+  delegate.bind(html, entrySelector, "mouseover", function(event2) {
+    self.trigger("mouseover", event2);
+  });
+  delegate.bind(html, entrySelector, "mouseout", function(event2) {
+    self.trigger("mouseout", event2);
+  });
+  event.bind(html, "mousedown", function(event2) {
+    event2.stopPropagation();
+  });
+  this._container.appendChild(html);
+  this._eventBus.fire("contextPad.create", {
+    target,
+    pad: html
+  });
+  return html;
+};
+ContextPad.prototype.getPad = function(target) {
+  console.warn(new Error("ContextPad#getPad is deprecated and will be removed in future library versions, cf. https://github.com/bpmn-io/diagram-js/pull/888"));
+  let html;
+  if (this.isOpen() && targetsEqual(this._current.target, target)) {
+    html = this._current.html;
+  } else {
+    html = this._createHtml(target);
+  }
+  return { html };
+};
+ContextPad.prototype.close = function() {
+  if (!this.isOpen()) {
+    return;
+  }
+  clearTimeout(this._timeout);
+  this._container.innerHTML = "";
+  this._eventBus.fire("contextPad.close", { current: this._current });
+  this._current = null;
+};
+ContextPad.prototype.isOpen = function(target) {
+  var current = this._current;
+  if (!current) {
+    return false;
+  }
+  if (!target) {
+    return true;
+  }
+  var currentTarget = current.target;
+  if (isArray2(target) !== isArray2(currentTarget)) {
+    return false;
+  }
+  if (isArray2(target)) {
+    return target.length === currentTarget.length && every(target, function(element) {
+      return currentTarget.includes(element);
+    });
+  } else {
+    return currentTarget === target;
+  }
+};
+ContextPad.prototype.isShown = function() {
+  return this.isOpen() && classes2(this._current.html).has("open");
+};
+ContextPad.prototype.show = function() {
+  if (!this.isOpen()) {
+    return;
+  }
+  classes2(this._current.html).add("open");
+  this._updatePosition();
+  this._eventBus.fire("contextPad.show", { current: this._current });
+};
+ContextPad.prototype.hide = function() {
+  if (!this.isOpen()) {
+    return;
+  }
+  classes2(this._current.html).remove("open");
+  this._eventBus.fire("contextPad.hide", { current: this._current });
+};
+ContextPad.prototype._getPosition = function(target) {
+  if (!isArray2(target) && isConnection(target)) {
+    var viewbox = this._canvas.viewbox();
+    var lastWaypoint = getLastWaypoint(target);
+    var x = lastWaypoint.x * viewbox.scale - viewbox.x * viewbox.scale, y = lastWaypoint.y * viewbox.scale - viewbox.y * viewbox.scale;
+    return {
+      left: x + CONTEXT_PAD_MARGIN * this._canvas.zoom(),
+      top: y
+    };
+  }
+  var container = this._canvas.getContainer();
+  var containerBounds = container.getBoundingClientRect();
+  var targetBounds = this._getTargetBounds(target);
+  return {
+    left: targetBounds.right - containerBounds.left + CONTEXT_PAD_MARGIN * this._canvas.zoom(),
+    top: targetBounds.top - containerBounds.top
+  };
+};
+ContextPad.prototype._updatePosition = function() {
+  const updateFn = () => {
+    if (!this.isOpen()) {
+      return;
+    }
+    var html = this._current.html;
+    var position = this._getPosition(this._current.target);
+    if ("x" in position && "y" in position) {
+      html.style.left = position.x + "px";
+      html.style.top = position.y + "px";
+    } else {
+      [
+        "top",
+        "right",
+        "bottom",
+        "left"
+      ].forEach(function(key) {
+        if (key in position) {
+          html.style[key] = position[key] + "px";
+        }
+      });
+    }
+  };
+  this._scheduler.schedule(updateFn, "ContextPad#_updatePosition");
+};
+ContextPad.prototype._updateVisibility = function() {
+  const updateFn = () => {
+    if (!this.isOpen()) {
+      return;
+    }
+    var self = this;
+    var target = this._current.target;
+    var targets = isArray2(target) ? target : [target];
+    var isHidden3 = targets.some(function(target2) {
+      return self._canvas.hasMarker(target2, MARKER_HIDDEN);
+    });
+    if (isHidden3) {
+      self.hide();
+    } else {
+      self.show();
+    }
+  };
+  this._scheduler.schedule(updateFn, "ContextPad#_updateVisibility");
+};
+ContextPad.prototype._getTargetBounds = function(target) {
+  var self = this;
+  var elements = isArray2(target) ? target : [target];
+  var elementsGfx = elements.map(function(element) {
+    return self._canvas.getGraphics(element);
+  });
+  return elementsGfx.reduce(function(bounds, elementGfx) {
+    const elementBounds = elementGfx.getBoundingClientRect();
+    bounds.top = Math.min(bounds.top, elementBounds.top);
+    bounds.right = Math.max(bounds.right, elementBounds.right);
+    bounds.bottom = Math.max(bounds.bottom, elementBounds.bottom);
+    bounds.left = Math.min(bounds.left, elementBounds.left);
+    bounds.x = bounds.left;
+    bounds.y = bounds.top;
+    bounds.width = bounds.right - bounds.left;
+    bounds.height = bounds.bottom - bounds.top;
+    return bounds;
+  }, {
+    top: Infinity,
+    right: -Infinity,
+    bottom: -Infinity,
+    left: Infinity
+  });
+};
+function addClasses(element, classNames) {
+  var classes3 = classes2(element);
+  classNames = isArray2(classNames) ? classNames : classNames.split(/\s+/g);
+  classNames.forEach(function(cls) {
+    classes3.add(cls);
+  });
+}
+function getLastWaypoint(connection) {
+  return connection.waypoints[connection.waypoints.length - 1];
+}
+function targetsEqual(target, otherTarget) {
+  target = isArray2(target) ? target : [target];
+  otherTarget = isArray2(otherTarget) ? otherTarget : [otherTarget];
+  return target.length === otherTarget.length && every(target, function(element) {
+    return otherTarget.includes(element);
+  });
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/context-pad/index.js
+var context_pad_default = {
+  __depends__: [
+    interaction_events_default,
+    scheduler_default,
+    overlays_default
+  ],
+  contextPad: ["type", ContextPad]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/util/Math.js
+function log10(x) {
+  return Math.log(x) / Math.log(10);
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/navigation/zoomscroll/ZoomUtil.js
+function getStepSize(range, steps) {
+  var minLinearRange = log10(range.min), maxLinearRange = log10(range.max);
+  var absoluteLinearRange = Math.abs(minLinearRange) + Math.abs(maxLinearRange);
+  return absoluteLinearRange / steps;
+}
+function cap(range, scale) {
+  return Math.max(range.min, Math.min(range.max, scale));
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/navigation/zoomscroll/ZoomScroll.js
+var sign = Math.sign || function(n) {
+  return n >= 0 ? 1 : -1;
+};
+var RANGE = { min: 0.2, max: 4 };
+var NUM_STEPS = 10;
+var DELTA_THRESHOLD = 0.1;
+var DEFAULT_SCALE = 0.75;
+function ZoomScroll(config, eventBus, canvas) {
+  config = config || {};
+  this._enabled = false;
+  this._canvas = canvas;
+  this._container = canvas._container;
+  this._handleWheel = bind(this._handleWheel, this);
+  this._totalDelta = 0;
+  this._scale = config.scale || DEFAULT_SCALE;
+  var self = this;
+  eventBus.on("canvas.mouseover", function() {
+    self._init(config.enabled !== false);
+  });
+  eventBus.on("canvas.mouseout", function() {
+    self._init(false);
+  });
+}
+ZoomScroll.$inject = [
+  "config.zoomScroll",
+  "eventBus",
+  "canvas"
+];
+ZoomScroll.prototype.scroll = function scroll(delta2) {
+  this._canvas.scroll(delta2);
+};
+ZoomScroll.prototype.reset = function reset() {
+  this._canvas.zoom("fit-viewport");
+};
+ZoomScroll.prototype.zoom = function zoom(delta2, position) {
+  var stepSize = getStepSize(RANGE, NUM_STEPS * 2);
+  this._totalDelta += delta2;
+  if (Math.abs(this._totalDelta) > DELTA_THRESHOLD) {
+    this._zoom(delta2, position, stepSize);
+    this._totalDelta = 0;
+  }
+};
+ZoomScroll.prototype._handleWheel = function handleWheel(event2) {
+  if (!this._enabled) {
+    return;
+  }
+  var element = this._container;
+  event2.preventDefault();
+  var isZoom = event2.ctrlKey || isMac() && event2.metaKey;
+  var isHorizontalScroll = event2.shiftKey;
+  var factor = -1 * this._scale, delta2;
+  if (isZoom) {
+    factor *= event2.deltaMode === 0 ? 0.02 : 0.32;
+  } else {
+    factor *= event2.deltaMode === 0 ? 1 : 16;
+  }
+  if (isZoom) {
+    var elementRect = element.getBoundingClientRect();
+    var offset = {
+      x: event2.clientX - elementRect.left,
+      y: event2.clientY - elementRect.top
+    };
+    delta2 = Math.sqrt(
+      Math.pow(event2.deltaY, 2) + Math.pow(event2.deltaX, 2)
+    ) * sign(event2.deltaY) * factor;
+    this.zoom(delta2, offset);
+  } else {
+    if (isHorizontalScroll) {
+      delta2 = {
+        dx: factor * event2.deltaY,
+        dy: 0
+      };
+    } else {
+      delta2 = {
+        dx: factor * event2.deltaX,
+        dy: factor * event2.deltaY
+      };
+    }
+    this.scroll(delta2);
+  }
+};
+ZoomScroll.prototype.stepZoom = function stepZoom(delta2, position) {
+  var stepSize = getStepSize(RANGE, NUM_STEPS);
+  this._zoom(delta2, position, stepSize);
+};
+ZoomScroll.prototype._zoom = function(delta2, position, stepSize) {
+  var canvas = this._canvas;
+  var direction = delta2 > 0 ? 1 : -1;
+  var currentLinearZoomLevel = log10(canvas.zoom());
+  var newLinearZoomLevel = Math.round(currentLinearZoomLevel / stepSize) * stepSize;
+  newLinearZoomLevel += stepSize * direction;
+  var newLogZoomLevel = Math.pow(10, newLinearZoomLevel);
+  canvas.zoom(cap(RANGE, newLogZoomLevel), position);
+};
+ZoomScroll.prototype.toggle = function toggle(newEnabled) {
+  var element = this._container;
+  var handleWheel2 = this._handleWheel;
+  var oldEnabled = this._enabled;
+  if (typeof newEnabled === "undefined") {
+    newEnabled = !oldEnabled;
+  }
+  if (oldEnabled !== newEnabled) {
+    event[newEnabled ? "bind" : "unbind"](element, "wheel", handleWheel2, false);
+  }
+  this._enabled = newEnabled;
+  return newEnabled;
+};
+ZoomScroll.prototype._init = function(newEnabled) {
+  this.toggle(newEnabled);
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/navigation/zoomscroll/index.js
+var zoomscroll_default = {
+  __init__: ["zoomScroll"],
+  zoomScroll: ["type", ZoomScroll]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/navigation/movecanvas/MoveCanvas.js
+var THRESHOLD = 15;
+function MoveCanvas(eventBus, canvas) {
+  var context;
+  function handleMousedown(event2) {
+    return handleStart(event2.originalEvent);
+  }
+  eventBus.on("canvas.focus.changed", function(event2) {
+    if (event2.focused) {
+      eventBus.on("element.mousedown", 500, handleMousedown);
+    } else {
+      eventBus.off("element.mousedown", handleMousedown);
+    }
+  });
+  eventBus.on("diagram.destroy", function() {
+    if (context) {
+      handleEnd();
+    }
+  });
+  function handleMove(event2) {
+    var start = context.start, button = context.button, position = toPoint(event2), delta2 = delta(position, start);
+    if (!context.dragging && length(delta2) > THRESHOLD) {
+      context.dragging = true;
+      if (button === 0) {
+        install(eventBus);
+      }
+      set("grab");
+    }
+    if (context.dragging) {
+      var lastPosition = context.last || context.start;
+      delta2 = delta(position, lastPosition);
+      canvas.scroll({
+        dx: delta2.x,
+        dy: delta2.y
+      });
+      context.last = position;
+    }
+    event2.preventDefault();
+  }
+  function handleEnd(event2) {
+    event.unbind(document, "mousemove", handleMove);
+    event.unbind(document, "mouseup", handleEnd);
+    context = null;
+    unset();
+  }
+  function handleStart(event2) {
+    if (closest(event2.target, ".djs-draggable")) {
+      return;
+    }
+    var button = event2.button;
+    if (button >= 2 || event2.ctrlKey || event2.shiftKey || event2.altKey) {
+      return;
+    }
+    context = {
+      button,
+      start: toPoint(event2)
+    };
+    event.bind(document, "mousemove", handleMove);
+    event.bind(document, "mouseup", handleEnd);
+    return true;
+  }
+  this.isActive = function() {
+    return !!context;
+  };
+}
+MoveCanvas.$inject = [
+  "eventBus",
+  "canvas"
+];
+function length(point) {
+  return Math.sqrt(Math.pow(point.x, 2) + Math.pow(point.y, 2));
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/navigation/movecanvas/index.js
+var movecanvas_default = {
+  __init__: ["moveCanvas"],
+  moveCanvas: ["type", MoveCanvas]
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/features/rules/RuleProvider.js
+function RuleProvider(eventBus) {
+  CommandInterceptor.call(this, eventBus);
+  this.init();
+}
+RuleProvider.$inject = ["eventBus"];
+e(RuleProvider, CommandInterceptor);
+RuleProvider.prototype.addRule = function(actions, priority, fn) {
+  var self = this;
+  if (typeof actions === "string") {
+    actions = [actions];
+  }
+  actions.forEach(function(action) {
+    self.canExecute(action, priority, function(context, action2, event2) {
+      return fn(context);
+    }, true);
+  });
+};
+RuleProvider.prototype.init = function() {
+};
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/node_modules/diagram-js/lib/layout/ManhattanLayout.js
+var MIN_SEGMENT_LENGTH = 20;
+var POINT_ORIENTATION_PADDING = 5;
+var round10 = Math.round;
+var INTERSECTION_THRESHOLD2 = 20;
+var ORIENTATION_THRESHOLD = {
+  "h:h": 20,
+  "v:v": 20,
+  "h:v": -10,
+  "v:h": -10
+};
+function needsTurn(orientation, startDirection) {
+  return !{
+    t: /top/,
+    r: /right/,
+    b: /bottom/,
+    l: /left/,
+    h: /./,
+    v: /./
+  }[startDirection].test(orientation);
+}
+function canLayoutStraight(direction, targetOrientation) {
+  return {
+    t: /top/,
+    r: /right/,
+    b: /bottom/,
+    l: /left/,
+    h: /left|right/,
+    v: /top|bottom/
+  }[direction].test(targetOrientation);
+}
+function getSegmentBendpoints(a, b, directions2) {
+  var orientation = getOrientation(b, a, POINT_ORIENTATION_PADDING);
+  var startDirection = directions2.split(":")[0];
+  var xmid = round10((b.x - a.x) / 2 + a.x), ymid = round10((b.y - a.y) / 2 + a.y);
+  var segmentEnd, segmentDirections;
+  var layoutStraight = canLayoutStraight(startDirection, orientation), layoutHorizontal = /h|r|l/.test(startDirection), layoutTurn = false;
+  var turnNextDirections = false;
+  if (layoutStraight) {
+    segmentEnd = layoutHorizontal ? { x: xmid, y: a.y } : { x: a.x, y: ymid };
+    segmentDirections = layoutHorizontal ? "h:h" : "v:v";
+  } else {
+    layoutTurn = needsTurn(orientation, startDirection);
+    segmentDirections = layoutHorizontal ? "h:v" : "v:h";
+    if (layoutTurn) {
+      if (layoutHorizontal) {
+        turnNextDirections = ymid === a.y;
+        segmentEnd = {
+          x: a.x + MIN_SEGMENT_LENGTH * (/l/.test(startDirection) ? -1 : 1),
+          y: turnNextDirections ? ymid + MIN_SEGMENT_LENGTH : ymid
+        };
+      } else {
+        turnNextDirections = xmid === a.x;
+        segmentEnd = {
+          x: turnNextDirections ? xmid + MIN_SEGMENT_LENGTH : xmid,
+          y: a.y + MIN_SEGMENT_LENGTH * (/t/.test(startDirection) ? -1 : 1)
+        };
+      }
+    } else {
+      segmentEnd = {
+        x: xmid,
+        y: ymid
+      };
+    }
+  }
+  return {
+    waypoints: getBendpoints(a, segmentEnd, segmentDirections).concat(segmentEnd),
+    directions: segmentDirections,
+    turnNextDirections
+  };
+}
+function getStartSegment(a, b, directions2) {
+  return getSegmentBendpoints(a, b, directions2);
+}
+function getEndSegment(a, b, directions2) {
+  var invertedSegment = getSegmentBendpoints(b, a, invertDirections(directions2));
+  return {
+    waypoints: invertedSegment.waypoints.slice().reverse(),
+    directions: invertDirections(invertedSegment.directions),
+    turnNextDirections: invertedSegment.turnNextDirections
+  };
+}
+function getMidSegment(startSegment, endSegment) {
+  var startDirection = startSegment.directions.split(":")[1], endDirection = endSegment.directions.split(":")[0];
+  if (startSegment.turnNextDirections) {
+    startDirection = startDirection == "h" ? "v" : "h";
+  }
+  if (endSegment.turnNextDirections) {
+    endDirection = endDirection == "h" ? "v" : "h";
+  }
+  var directions2 = startDirection + ":" + endDirection;
+  var bendpoints = getBendpoints(
+    startSegment.waypoints[startSegment.waypoints.length - 1],
+    endSegment.waypoints[0],
+    directions2
+  );
+  return {
+    waypoints: bendpoints,
+    directions: directions2
+  };
+}
+function invertDirections(directions2) {
+  return directions2.split(":").reverse().join(":");
+}
+function getSimpleBendpoints(a, b, directions2) {
+  var xmid = round10((b.x - a.x) / 2 + a.x), ymid = round10((b.y - a.y) / 2 + a.y);
+  if (directions2 === "h:v") {
+    return [{ x: b.x, y: a.y }];
+  }
+  if (directions2 === "v:h") {
+    return [{ x: a.x, y: b.y }];
+  }
+  if (directions2 === "h:h") {
+    return [
+      { x: xmid, y: a.y },
+      { x: xmid, y: b.y }
+    ];
+  }
+  if (directions2 === "v:v") {
+    return [
+      { x: a.x, y: ymid },
+      { x: b.x, y: ymid }
+    ];
+  }
+  throw new Error("invalid directions: can only handle varians of [hv]:[hv]");
+}
+function getBendpoints(a, b, directions2) {
+  directions2 = directions2 || "h:h";
+  if (!isValidDirections(directions2)) {
+    throw new Error(
+      "unknown directions: <" + directions2 + ">: must be specified as <start>:<end> with start/end in { h,v,t,r,b,l }"
+    );
+  }
+  if (isExplicitDirections(directions2)) {
+    var startSegment = getStartSegment(a, b, directions2), endSegment = getEndSegment(a, b, directions2), midSegment = getMidSegment(startSegment, endSegment);
+    return [].concat(
+      startSegment.waypoints,
+      midSegment.waypoints,
+      endSegment.waypoints
+    );
+  }
+  return getSimpleBendpoints(a, b, directions2);
+}
+function connectPoints(a, b, directions2) {
+  var points = getBendpoints(a, b, directions2);
+  points.unshift(a);
+  points.push(b);
+  return withoutRedundantPoints(points);
+}
+function connectRectangles(source, target, start, end, hints) {
+  var preferredLayouts = hints && hints.preferredLayouts || [];
+  var preferredLayout = without(preferredLayouts, "straight")[0] || "h:h";
+  var threshold = ORIENTATION_THRESHOLD[preferredLayout] || 0;
+  var orientation = getOrientation(source, target, threshold);
+  var directions2 = getDirections(orientation, preferredLayout);
+  start = start || getMid(source);
+  end = end || getMid(target);
+  var directionSplit = directions2.split(":");
+  var startDocking = getDockingPoint(start, source, directionSplit[0], invertOrientation(orientation)), endDocking = getDockingPoint(end, target, directionSplit[1], orientation);
+  return connectPoints(startDocking, endDocking, directions2);
+}
+function repairConnection(source, target, start, end, waypoints, hints) {
+  if (isArray2(start)) {
+    waypoints = start;
+    hints = end;
+    start = getMid(source);
+    end = getMid(target);
+  }
+  hints = assign({ preferredLayouts: [] }, hints);
+  waypoints = waypoints || [];
+  var preferredLayouts = hints.preferredLayouts, preferStraight = preferredLayouts.indexOf("straight") !== -1, repairedWaypoints;
+  repairedWaypoints = preferStraight && tryLayoutStraight(source, target, start, end, hints);
+  if (repairedWaypoints) {
+    return repairedWaypoints;
+  }
+  repairedWaypoints = hints.connectionEnd && tryRepairConnectionEnd(target, source, end, waypoints);
+  if (repairedWaypoints) {
+    return repairedWaypoints;
+  }
+  repairedWaypoints = hints.connectionStart && tryRepairConnectionStart(source, target, start, waypoints);
+  if (repairedWaypoints) {
+    return repairedWaypoints;
+  }
+  if (!hints.connectionStart && !hints.connectionEnd && waypoints && waypoints.length) {
+    return waypoints;
+  }
+  return connectRectangles(source, target, start, end, hints);
+}
+function inRange(a, start, end) {
+  return a >= start && a <= end;
+}
+function isInRange(axis, a, b) {
+  var size2 = {
+    x: "width",
+    y: "height"
+  };
+  return inRange(a[axis], b[axis], b[axis] + b[size2[axis]]);
+}
+function tryLayoutStraight(source, target, start, end, hints) {
+  var axis = {}, primaryAxis, orientation;
+  orientation = getOrientation(source, target);
+  if (!/^(top|bottom|left|right)$/.test(orientation)) {
+    return null;
+  }
+  if (/top|bottom/.test(orientation)) {
+    primaryAxis = "x";
+  }
+  if (/left|right/.test(orientation)) {
+    primaryAxis = "y";
+  }
+  if (hints.preserveDocking === "target") {
+    if (!isInRange(primaryAxis, end, source)) {
+      return null;
+    }
+    axis[primaryAxis] = end[primaryAxis];
+    return [
+      {
+        x: axis.x !== void 0 ? axis.x : start.x,
+        y: axis.y !== void 0 ? axis.y : start.y,
+        original: {
+          x: axis.x !== void 0 ? axis.x : start.x,
+          y: axis.y !== void 0 ? axis.y : start.y
+        }
+      },
+      {
+        x: end.x,
+        y: end.y
+      }
+    ];
+  } else {
+    if (!isInRange(primaryAxis, start, target)) {
+      return null;
+    }
+    axis[primaryAxis] = start[primaryAxis];
+    return [
+      {
+        x: start.x,
+        y: start.y
+      },
+      {
+        x: axis.x !== void 0 ? axis.x : end.x,
+        y: axis.y !== void 0 ? axis.y : end.y,
+        original: {
+          x: axis.x !== void 0 ? axis.x : end.x,
+          y: axis.y !== void 0 ? axis.y : end.y
+        }
+      }
+    ];
+  }
+}
+function tryRepairConnectionStart(moved, other, newDocking, points) {
+  return _tryRepairConnectionSide(moved, other, newDocking, points);
+}
+function tryRepairConnectionEnd(moved, other, newDocking, points) {
+  var waypoints = points.slice().reverse();
+  waypoints = _tryRepairConnectionSide(moved, other, newDocking, waypoints);
+  return waypoints ? waypoints.reverse() : null;
+}
+function _tryRepairConnectionSide(moved, other, newDocking, points) {
+  function needsRelayout(points2) {
+    if (points2.length < 3) {
+      return true;
+    }
+    if (points2.length > 4) {
+      return false;
+    }
+    return !!find(points2, function(p, idx) {
+      var q = points2[idx - 1];
+      return q && pointDistance(p, q) < 3;
+    });
+  }
+  function repairBendpoint(candidate, oldPeer, newPeer) {
+    var alignment = pointsAligned(oldPeer, candidate);
+    switch (alignment) {
+      case "v":
+        return { x: newPeer.x, y: candidate.y };
+      case "h":
+        return { x: candidate.x, y: newPeer.y };
+    }
+    return { x: candidate.x, y: candidate.y };
+  }
+  function removeOverlapping(points2, a, b) {
+    var i;
+    for (i = points2.length - 2; i !== 0; i--) {
+      if (pointInRect(points2[i], a, INTERSECTION_THRESHOLD2) || pointInRect(points2[i], b, INTERSECTION_THRESHOLD2)) {
+        return points2.slice(i);
+      }
+    }
+    return points2;
+  }
+  if (needsRelayout(points)) {
+    return null;
+  }
+  var oldDocking = points[0], newPoints = points.slice(), slicedPoints;
+  newPoints[0] = newDocking;
+  newPoints[1] = repairBendpoint(newPoints[1], oldDocking, newDocking);
+  slicedPoints = removeOverlapping(newPoints, moved, other);
+  if (slicedPoints !== newPoints) {
+    newPoints = _tryRepairConnectionSide(moved, other, newDocking, slicedPoints);
+  }
+  if (newPoints && pointsAligned(newPoints)) {
+    return null;
+  }
+  return newPoints;
+}
+function getDirections(orientation, defaultLayout) {
+  if (isExplicitDirections(defaultLayout)) {
+    return defaultLayout;
+  }
+  switch (orientation) {
+    case "intersect":
+      return "t:t";
+    case "top":
+    case "bottom":
+      return "v:v";
+    case "left":
+    case "right":
+      return "h:h";
+    // 'top-left'
+    // 'top-right'
+    // 'bottom-left'
+    // 'bottom-right'
+    default:
+      return defaultLayout;
+  }
+}
+function isValidDirections(directions2) {
+  return directions2 && /^h|v|t|r|b|l:h|v|t|r|b|l$/.test(directions2);
+}
+function isExplicitDirections(directions2) {
+  return directions2 && /t|r|b|l/.test(directions2);
+}
+function invertOrientation(orientation) {
+  return {
+    "top": "bottom",
+    "bottom": "top",
+    "left": "right",
+    "right": "left",
+    "top-left": "bottom-right",
+    "bottom-right": "top-left",
+    "top-right": "bottom-left",
+    "bottom-left": "top-right"
+  }[orientation];
+}
+function getDockingPoint(point, rectangle, dockingDirection, targetOrientation) {
+  if (dockingDirection === "h") {
+    dockingDirection = /left/.test(targetOrientation) ? "l" : "r";
+  }
+  if (dockingDirection === "v") {
+    dockingDirection = /top/.test(targetOrientation) ? "t" : "b";
+  }
+  if (dockingDirection === "t") {
+    return { original: point, x: point.x, y: rectangle.y };
+  }
+  if (dockingDirection === "r") {
+    return { original: point, x: rectangle.x + rectangle.width, y: point.y };
+  }
+  if (dockingDirection === "b") {
+    return { original: point, x: point.x, y: rectangle.y + rectangle.height };
+  }
+  if (dockingDirection === "l") {
+    return { original: point, x: rectangle.x, y: point.y };
+  }
+  throw new Error("unexpected dockingDirection: <" + dockingDirection + ">");
+}
+function withoutRedundantPoints(waypoints) {
+  return waypoints.reduce(function(points, p, idx) {
+    var previous = points[points.length - 1], next = waypoints[idx + 1];
+    if (!pointsOnLine(previous, next, p, 0)) {
+      points.push(p);
+    }
+    return points;
+  }, []);
+}
+
+// ../../../../.gemini/antigravity/brain/ce06b095-9b85-4c0e-891a-8452cdd5dfbe/scratch/diagram_build/entry.js
+var THEMES = {
+  slate: {
+    fill: "#ffffff",
+    headerFill: "#f1f5f9",
+    stroke: "#475569",
+    badgeText: "#475569",
+    titleText: "#0f172a"
+  },
+  blue: {
+    fill: "#ffffff",
+    headerFill: "#eff6ff",
+    stroke: "#2563eb",
+    badgeText: "#1d4ed8",
+    titleText: "#0f172a"
+  },
+  emerald: {
+    fill: "#ffffff",
+    headerFill: "#ecfdf5",
+    stroke: "#059669",
+    badgeText: "#047857",
+    titleText: "#0f172a"
+  },
+  amber: {
+    fill: "#ffffff",
+    headerFill: "#fffbeb",
+    stroke: "#d97706",
+    badgeText: "#b45309",
+    titleText: "#0f172a"
+  },
+  rose: {
+    fill: "#ffffff",
+    headerFill: "#fff1f2",
+    stroke: "#C21057",
+    badgeText: "#C21057",
+    titleText: "#0f172a"
+  }
+};
+var FONT_STACK = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+function ensureMarkerDefs(svgRoot) {
+  if (!svgRoot) return;
+  let defs = svgRoot.querySelector("defs");
+  if (!defs) {
+    defs = create("defs");
+    append(svgRoot, defs);
+  }
+  if (!defs.querySelector("#cq-arrow-end")) {
+    const marker = create("marker");
+    attr(marker, {
+      id: "cq-arrow-end",
+      viewBox: "0 0 10 10",
+      refX: "8",
+      refY: "5",
+      markerWidth: "6.5",
+      markerHeight: "6.5",
+      orient: "auto-start-reverse"
+    });
+    const path = create("path");
+    attr(path, {
+      d: "M 0 1.5 L 8.5 5 L 0 8.5 z",
+      fill: "#475569"
+    });
+    append(marker, path);
+    append(defs, marker);
+  }
+}
+function wrapLines(text, maxCharsPerLine = 20) {
+  const words = String(text || "").trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return [""];
+  const lines = [];
+  let current = words[0];
+  for (let i = 1; i < words.length; i++) {
+    if ((current + " " + words[i]).length <= maxCharsPerLine) {
+      current += " " + words[i];
+    } else {
+      lines.push(current);
+      current = words[i];
+    }
+  }
+  lines.push(current);
+  return lines.slice(0, 3);
+}
+var CloudQubesRenderer = class extends BaseRenderer {
+  constructor(eventBus, canvas) {
+    super(eventBus, 1500);
+    this._canvas = canvas;
+  }
+  canRender(element) {
+    return !element.labelTarget;
+  }
+  drawShape(parentGfx, element) {
+    ensureMarkerDefs(this._canvas.getContainer().querySelector("svg"));
+    const w = element.width || 168;
+    const h = element.height || 76;
+    const shapeType = element.shapeType || "service";
+    const theme = THEMES[element.theme] || THEMES.slate;
+    const label = element.nodeTitle !== void 0 ? element.nodeTitle : "Service";
+    const subtitle = element.subtitle !== void 0 ? element.subtitle : "";
+    if (shapeType === "group") {
+      const rect = create("rect");
+      attr(rect, {
+        x: 0,
+        y: 0,
+        width: w,
+        height: h,
+        rx: 14,
+        ry: 14,
+        fill: "rgba(248, 250, 252, 0.55)",
+        stroke: theme.stroke,
+        "stroke-width": 1.75,
+        "stroke-dasharray": "7 5"
+      });
+      append(parentGfx, rect);
+      const badgeW = Math.min(w - 20, Math.max(90, label.length * 7.5 + 24));
+      const badgeRect = create("rect");
+      attr(badgeRect, {
+        x: 12,
+        y: 10,
+        width: badgeW,
+        height: 24,
+        rx: 6,
+        ry: 6,
+        fill: theme.headerFill,
+        stroke: theme.stroke,
+        "stroke-width": 1
+      });
+      append(parentGfx, badgeRect);
+      const titleEl = create("text");
+      attr(titleEl, {
+        x: 22,
+        y: 26,
+        fill: theme.titleText,
+        "font-family": FONT_STACK,
+        "font-size": "11px",
+        "font-weight": "700"
+      });
+      titleEl.textContent = label;
+      append(parentGfx, titleEl);
+      return rect;
+    }
+    if (shapeType === "database") {
+      const ry = 11;
+      const bodyPath = create("path");
+      const d = [
+        `M 0 ${ry}`,
+        `L 0 ${h - ry}`,
+        `A ${w / 2} ${ry} 0 0 0 ${w} ${h - ry}`,
+        `L ${w} ${ry}`,
+        `A ${w / 2} ${ry} 0 0 0 0 ${ry}`,
+        "Z"
+      ].join(" ");
+      attr(bodyPath, {
+        d,
+        fill: theme.fill,
+        stroke: theme.stroke,
+        "stroke-width": 2
+      });
+      append(parentGfx, bodyPath);
+      const topEllipse = create("ellipse");
+      attr(topEllipse, {
+        cx: w / 2,
+        cy: ry,
+        rx: w / 2,
+        ry,
+        fill: theme.headerFill,
+        stroke: theme.stroke,
+        "stroke-width": 2
+      });
+      append(parentGfx, topEllipse);
+      this._renderTextBlock(parentGfx, w, h, label, subtitle, theme, 8);
+      return bodyPath;
+    }
+    if (shapeType === "queue") {
+      const rx = 12;
+      const bodyPath = create("path");
+      const d = [
+        `M ${rx} 0`,
+        `L ${w - rx} 0`,
+        `A ${rx} ${h / 2} 0 0 1 ${w - rx} ${h}`,
+        `L ${rx} ${h}`,
+        `A ${rx} ${h / 2} 0 0 1 ${rx} 0`,
+        "Z"
+      ].join(" ");
+      attr(bodyPath, {
+        d,
+        fill: theme.fill,
+        stroke: theme.stroke,
+        "stroke-width": 2
+      });
+      append(parentGfx, bodyPath);
+      const rightCap = create("ellipse");
+      attr(rightCap, {
+        cx: w - rx,
+        cy: h / 2,
+        rx,
+        ry: h / 2,
+        fill: theme.headerFill,
+        stroke: theme.stroke,
+        "stroke-width": 1.75
+      });
+      append(parentGfx, rightCap);
+      this._renderTextBlock(parentGfx, w - 10, h, label, subtitle, theme, 0);
+      return bodyPath;
+    }
+    if (shapeType === "client") {
+      const r2 = Math.min(34, h / 2);
+      const rect = create("rect");
+      attr(rect, {
+        x: 0,
+        y: 0,
+        width: w,
+        height: h,
+        rx: r2,
+        ry: r2,
+        fill: theme.headerFill,
+        stroke: theme.stroke,
+        "stroke-width": 2
+      });
+      append(parentGfx, rect);
+      this._renderTextBlock(parentGfx, w, h, label, subtitle, theme, 0);
+      return rect;
+    }
+    if (shapeType === "gateway") {
+      const polygon = create("polygon");
+      const pts = [
+        `${w / 2},0`,
+        `${w},${h / 2}`,
+        `${w / 2},${h}`,
+        `0,${h / 2}`
+      ].join(" ");
+      attr(polygon, {
+        points: pts,
+        fill: theme.headerFill,
+        stroke: theme.stroke,
+        "stroke-width": 2,
+        "stroke-linejoin": "round"
+      });
+      append(parentGfx, polygon);
+      this._renderTextBlock(parentGfx, w, h, label, subtitle, theme, 0, 14);
+      return polygon;
+    }
+    const card = create("rect");
+    attr(card, {
+      x: 0,
+      y: 0,
+      width: w,
+      height: h,
+      rx: 12,
+      ry: 12,
+      fill: theme.fill,
+      stroke: theme.stroke,
+      "stroke-width": 2
+    });
+    append(parentGfx, card);
+    const accentStrip = create("path");
+    const r = 11;
+    const stripH = 22;
+    const stripPath = [
+      `M 1 ${stripH}`,
+      `L 1 ${r}`,
+      `Q 1 1 ${r} 1`,
+      `L ${w - r} 1`,
+      `Q ${w - 1} 1 ${w - 1} ${r}`,
+      `L ${w - 1} ${stripH}`,
+      "Z"
+    ].join(" ");
+    attr(accentStrip, {
+      d: stripPath,
+      fill: theme.headerFill
+    });
+    append(parentGfx, accentStrip);
+    const divider = create("line");
+    attr(divider, {
+      x1: 1,
+      y1: stripH,
+      x2: w - 1,
+      y2: stripH,
+      stroke: theme.stroke,
+      "stroke-width": 1,
+      "stroke-opacity": 0.25
+    });
+    append(parentGfx, divider);
+    if (subtitle) {
+      const subText = create("text");
+      attr(subText, {
+        x: w / 2,
+        y: 15,
+        "text-anchor": "middle",
+        fill: theme.badgeText,
+        "font-family": FONT_STACK,
+        "font-size": "9.5px",
+        "font-weight": "700",
+        "letter-spacing": "0.06em"
+      });
+      subText.textContent = String(subtitle).toUpperCase();
+      append(parentGfx, subText);
+    }
+    this._renderMainLabel(parentGfx, w, h, label, theme, subtitle ? 11 : 0, 20);
+    return card;
+  }
+  _renderTextBlock(parentGfx, w, h, label, subtitle, theme, yOffset = 0, maxChars = 19) {
+    if (subtitle) {
+      const subText = create("text");
+      attr(subText, {
+        x: w / 2,
+        y: h / 2 - 8 + yOffset,
+        "text-anchor": "middle",
+        fill: theme.badgeText,
+        "font-family": FONT_STACK,
+        "font-size": "9.5px",
+        "font-weight": "700",
+        "letter-spacing": "0.05em"
+      });
+      subText.textContent = String(subtitle).toUpperCase();
+      append(parentGfx, subText);
+    }
+    this._renderMainLabel(parentGfx, w, h, label, theme, yOffset + (subtitle ? 8 : 0), maxChars);
+  }
+  _renderMainLabel(parentGfx, w, h, label, theme, yShift = 0, maxChars = 20) {
+    const lines = wrapLines(label, maxChars);
+    const lineHeight = 15;
+    const totalH = (lines.length - 1) * lineHeight;
+    const startY = h / 2 + yShift - totalH / 2 + 4;
+    lines.forEach((lineStr, idx) => {
+      const t = create("text");
+      attr(t, {
+        x: w / 2,
+        y: startY + idx * lineHeight,
+        "text-anchor": "middle",
+        fill: theme.titleText,
+        "font-family": FONT_STACK,
+        "font-size": "12.5px",
+        "font-weight": "700"
+      });
+      t.textContent = lineStr;
+      append(parentGfx, t);
+    });
+  }
+  drawConnection(parentGfx, connection) {
+    ensureMarkerDefs(this._canvas.getContainer().querySelector("svg"));
+    const waypoints = connection.waypoints || [];
+    if (waypoints.length < 2) return create("g");
+    const d = this._buildRoundedPath(waypoints, 8);
+    const path = create("path");
+    attr(path, {
+      d,
+      fill: "none",
+      stroke: "#475569",
+      "stroke-width": 2,
+      "stroke-linecap": "round",
+      "stroke-linejoin": "round",
+      "marker-end": "url(#cq-arrow-end)"
+    });
+    append(parentGfx, path);
+    if (connection.nodeTitle && String(connection.nodeTitle).trim().length > 0) {
+      const mid3 = this._getConnectionMidpoint(waypoints);
+      const labelText = String(connection.nodeTitle).trim();
+      const pillW = Math.max(40, labelText.length * 6.5 + 16);
+      const pillH = 20;
+      const bg = create("rect");
+      attr(bg, {
+        x: mid3.x - pillW / 2,
+        y: mid3.y - pillH / 2,
+        width: pillW,
+        height: pillH,
+        rx: 6,
+        ry: 6,
+        fill: "#ffffff",
+        stroke: "#cbd5e1",
+        "stroke-width": 1.25
+      });
+      append(parentGfx, bg);
+      const textEl = create("text");
+      attr(textEl, {
+        x: mid3.x,
+        y: mid3.y + 3.5,
+        "text-anchor": "middle",
+        fill: "#334155",
+        "font-family": FONT_STACK,
+        "font-size": "10.5px",
+        "font-weight": "600"
+      });
+      textEl.textContent = labelText;
+      append(parentGfx, textEl);
+    }
+    return path;
+  }
+  _buildRoundedPath(pts, radius = 8) {
+    if (pts.length === 2) {
+      return `M ${pts[0].x} ${pts[0].y} L ${pts[1].x} ${pts[1].y}`;
+    }
+    let d = `M ${pts[0].x} ${pts[0].y}`;
+    for (let i = 1; i < pts.length - 1; i++) {
+      const prev = pts[i - 1];
+      const curr = pts[i];
+      const next = pts[i + 1];
+      const dx1 = curr.x - prev.x;
+      const dy1 = curr.y - prev.y;
+      const len1 = Math.hypot(dx1, dy1);
+      const dx2 = next.x - curr.x;
+      const dy2 = next.y - curr.y;
+      const len2 = Math.hypot(dx2, dy2);
+      const r = Math.min(radius, len1 / 2, len2 / 2);
+      if (r < 1) {
+        d += ` L ${curr.x} ${curr.y}`;
+      } else {
+        const p1x = curr.x - dx1 / len1 * r;
+        const p1y = curr.y - dy1 / len1 * r;
+        const p2x = curr.x + dx2 / len2 * r;
+        const p2y = curr.y + dy2 / len2 * r;
+        d += ` L ${p1x} ${p1y} Q ${curr.x} ${curr.y} ${p2x} ${p2y}`;
+      }
+    }
+    const last = pts[pts.length - 1];
+    d += ` L ${last.x} ${last.y}`;
+    return d;
+  }
+  _getConnectionMidpoint(pts) {
+    const midIdx = Math.floor((pts.length - 1) / 2);
+    const a = pts[midIdx];
+    const b = pts[midIdx + 1] || a;
+    return {
+      x: (a.x + b.x) / 2,
+      y: (a.y + b.y) / 2
+    };
+  }
+  getShapePath(shape) {
+    const x = shape.x || 0;
+    const y = shape.y || 0;
+    const width = shape.width || 168;
+    const height = shape.height || 76;
+    return componentsToPath([
+      ["M", x, y],
+      ["l", width, 0],
+      ["l", 0, height],
+      ["l", -width, 0],
+      ["z"]
+    ]);
+  }
+  getConnectionPath(connection) {
+    const waypoints = connection.waypoints || [];
+    const connectionPath = [];
+    for (let idx = 0; idx < waypoints.length; idx++) {
+      let point = waypoints[idx];
+      point = point.original || point;
+      connectionPath.push([idx === 0 ? "M" : "L", point.x, point.y]);
+    }
+    return componentsToPath(connectionPath);
+  }
+};
+CloudQubesRenderer.$inject = ["eventBus", "canvas"];
+var CloudQubesLayouter = class extends BaseLayouter {
+  layoutConnection(connection, hints = {}) {
+    const source = hints.source || connection.source;
+    const target = hints.target || connection.target;
+    const start = hints.connectionStart || getMid(source);
+    const end = hints.connectionEnd || getMid(target);
+    const waypoints = repairConnection(
+      source,
+      target,
+      start,
+      end,
+      connection.waypoints,
+      Object.assign({ preferredLayouts: ["h:h"] }, hints)
+    );
+    return waypoints;
+  }
+};
+CloudQubesLayouter.$inject = [];
+var CloudQubesRules = class extends RuleProvider {
+  init() {
+    this.addRule("elements.move", () => true);
+    this.addRule("shape.create", () => true);
+    this.addRule("shape.resize", (context) => {
+      if (!context.newBounds) return true;
+      return context.newBounds.width >= 90 && context.newBounds.height >= 48;
+    });
+    this.addRule("connection.create", (context) => {
+      const { source, target } = context;
+      if (!source || !target || source === target) return false;
+      if (!source.parent || !target.parent) return false;
+      if (source.waypoints || target.waypoints) return false;
+      return true;
+    });
+    this.addRule("connection.reconnect", () => true);
+    this.addRule("connection.updateWaypoints", () => true);
+  }
+};
+CloudQubesRules.$inject = ["eventBus"];
+var CloudQubesContextPadProvider = class {
+  constructor(contextPad, connect, modeling, elementFactory, canvas, selection) {
+    this._connect = connect;
+    this._modeling = modeling;
+    this._elementFactory = elementFactory;
+    this._canvas = canvas;
+    this._selection = selection;
+    contextPad.registerProvider(this);
+  }
+  getContextPadEntries(element) {
+    const connect = this._connect;
+    const modeling = this._modeling;
+    const elementFactory = this._elementFactory;
+    const canvas = this._canvas;
+    const selection = this._selection;
+    const entries = {};
+    if (!element.waypoints) {
+      entries["connect"] = {
+        group: "connect",
+        className: "cq-pad-connect",
+        title: "Drag or click to connect arrow to another node",
+        html: '<div class="entry" title="Connect Arrow">\u2192</div>',
+        action: {
+          click: (event2, el) => {
+            connect.start(event2, el);
+          },
+          dragstart: (event2, el) => {
+            connect.start(event2, el);
+          }
+        }
+      };
+      entries["append"] = {
+        group: "edit",
+        className: "cq-pad-append",
+        title: "Append connected node to the right",
+        html: '<div class="entry" title="Append Connected Node">+</div>',
+        action: {
+          click: (_event, el) => {
+            const root = canvas.getRootElement();
+            const newShape = elementFactory.createShape({
+              width: el.width || 168,
+              height: el.height || 76,
+              shapeType: el.shapeType === "group" ? "service" : el.shapeType || "service",
+              nodeTitle: "New Service",
+              subtitle: "Compute",
+              theme: el.theme || "slate"
+            });
+            const pos = {
+              x: el.x + (el.width || 168) + 160,
+              y: el.y + (el.height || 76) / 2
+            };
+            const created = modeling.createShape(newShape, pos, root);
+            modeling.connect(el, created, { nodeTitle: "" });
+            selection.select(created);
+          }
+        }
+      };
+    }
+    entries["delete"] = {
+      group: "edit",
+      className: "cq-pad-delete",
+      title: "Delete element",
+      html: '<div class="entry cq-pad-danger" title="Delete">\xD7</div>',
+      action: {
+        click: (_event, el) => {
+          modeling.removeElements([el]);
+        }
+      }
+    };
+    return entries;
+  }
+};
+CloudQubesContextPadProvider.$inject = [
+  "contextPad",
+  "connect",
+  "modeling",
+  "elementFactory",
+  "canvas",
+  "selection"
+];
+var CloudQubesCustomModule = {
+  __init__: ["cloudQubesRenderer", "cloudQubesRules", "cloudQubesContextPadProvider"],
+  cloudQubesRenderer: ["type", CloudQubesRenderer],
+  cloudQubesRules: ["type", CloudQubesRules],
+  cloudQubesContextPadProvider: ["type", CloudQubesContextPadProvider],
+  layouter: ["type", CloudQubesLayouter]
+};
+var CloudQubesDiagramStudio = class {
+  constructor(container, callbacks = {}) {
+    this.container = container;
+    this.callbacks = callbacks;
+    this.diagram = new Diagram({
+      canvas: { container },
+      modules: [
+        modeling_default,
+        move_default,
+        selection_default,
+        connect_default,
+        create_default,
+        bendpoints_default,
+        resize_default,
+        snapping_default,
+        grid_snapping_default,
+        keyboard_default,
+        keyboard_move_selection_default,
+        outline_default,
+        context_pad_default,
+        rules_default,
+        zoomscroll_default,
+        movecanvas_default,
+        CloudQubesCustomModule
+      ]
+    });
+    this.canvas = this.diagram.get("canvas");
+    this.modeling = this.diagram.get("modeling");
+    this.elementFactory = this.diagram.get("elementFactory");
+    this.elementRegistry = this.diagram.get("elementRegistry");
+    this.selection = this.diagram.get("selection");
+    this.commandStack = this.diagram.get("commandStack");
+    this.eventBus = this.diagram.get("eventBus");
+    this.root = this.elementFactory.createRoot({ id: "cq-root" });
+    this.canvas.setRootElement(this.root);
+    this.pendingConnectSource = null;
+    this._bindEvents();
+  }
+  _bindEvents() {
+    this.eventBus.on("selection.changed", (e2) => {
+      const selected = e2.newSelection && e2.newSelection[0] ? e2.newSelection[0] : null;
+      if (this.callbacks.onSelectionChange) {
+        this.callbacks.onSelectionChange(selected);
+      }
+    });
+    this.eventBus.on("element.click", (e2) => {
+      const el = e2.element;
+      if (!el || el === this.root || el.waypoints) return;
+      if (this.pendingConnectSource !== void 0 && this.pendingConnectSource !== false) {
+        if (this.pendingConnectSource === null) {
+          this.pendingConnectSource = el;
+          if (this.callbacks.onConnectStep) {
+            this.callbacks.onConnectStep("target", el);
+          }
+        } else if (this.pendingConnectSource !== el) {
+          const src = this.pendingConnectSource;
+          this.pendingConnectSource = false;
+          const conn = this.modeling.connect(src, el, { nodeTitle: "" });
+          this.selection.select(conn);
+          if (this.callbacks.onConnectStep) {
+            this.callbacks.onConnectStep("done", conn);
+          }
+        }
+      }
+    });
+    this.eventBus.on("element.dblclick", (e2) => {
+      const el = e2.element;
+      if (!el || el === this.root) return;
+      if (this.callbacks.onElementDoubleClick) {
+        this.callbacks.onElementDoubleClick(el);
+      }
+    });
+  }
+  startTwoClickConnect() {
+    this.pendingConnectSource = null;
+  }
+  cancelTwoClickConnect() {
+    this.pendingConnectSource = false;
+  }
+  addNode({ shapeType = "service", label = "Service", subtitle = "Compute", theme = "slate", x, y, width, height }) {
+    const isGroup = shapeType === "group";
+    const isGateway = shapeType === "gateway";
+    const w = width || (isGroup ? 440 : isGateway ? 156 : 172);
+    const h = height || (isGroup ? 240 : isGateway ? 86 : 76);
+    const existingShapes = this.elementRegistry.filter((el) => el !== this.root && !el.waypoints);
+    const posX = x !== void 0 ? x : 160 + existingShapes.length % 3 * 230;
+    const posY = y !== void 0 ? y : 140 + Math.floor(existingShapes.length / 3) * 135;
+    const shape = this.elementFactory.createShape({
+      width: w,
+      height: h,
+      shapeType,
+      nodeTitle: label,
+      subtitle,
+      theme
+    });
+    const created = this.modeling.createShape(shape, { x: posX + w / 2, y: posY + h / 2 }, this.root);
+    if (isGroup) {
+      const gfx = this.canvas.getGraphics(created);
+      if (gfx && gfx.parentNode) {
+        gfx.parentNode.insertBefore(gfx, gfx.parentNode.firstChild);
+      }
+    }
+    this.selection.select(created);
+    return created;
+  }
+  connectNodes(source, target, label = "") {
+    return this.modeling.connect(source, target, { nodeTitle: label });
+  }
+  updateElement(element, props = {}) {
+    if (!element || element === this.root) return;
+    if (props.label !== void 0) {
+      element.nodeTitle = props.label;
+    }
+    if (props.subtitle !== void 0) {
+      element.subtitle = props.subtitle;
+    }
+    if (props.theme !== void 0) {
+      element.theme = props.theme;
+    }
+    const gfx = this.canvas.getGraphics(element);
+    if (gfx) {
+      const visual = gfx.querySelector(".djs-visual");
+      if (visual) {
+        while (visual.firstChild) visual.removeChild(visual.firstChild);
+        const renderer = this.diagram.get("cloudQubesRenderer");
+        if (element.waypoints) {
+          renderer.drawConnection(visual, element);
+        } else {
+          renderer.drawShape(visual, element);
+        }
+      }
+    }
+  }
+  duplicateElement(element) {
+    if (!element || element === this.root || element.waypoints) return null;
+    return this.addNode({
+      shapeType: element.shapeType,
+      label: element.nodeTitle,
+      subtitle: element.subtitle,
+      theme: element.theme,
+      width: element.width,
+      height: element.height,
+      x: element.x + 36,
+      y: element.y + 36
+    });
+  }
+  deleteElement(element) {
+    if (!element || element === this.root) return;
+    this.modeling.removeElements([element]);
+  }
+  clear() {
+    const all2 = this.elementRegistry.filter((el) => el !== this.root);
+    if (all2.length > 0) {
+      this.modeling.removeElements(all2);
+    }
+    this.commandStack.clear();
+  }
+  undo() {
+    if (this.commandStack.canUndo()) this.commandStack.undo();
+  }
+  redo() {
+    if (this.commandStack.canRedo()) this.commandStack.redo();
+  }
+  zoomIn() {
+    const current = this.canvas.zoom();
+    this.canvas.zoom(Math.min(2.5, current * 1.2));
+  }
+  zoomOut() {
+    const current = this.canvas.zoom();
+    this.canvas.zoom(Math.max(0.3, current / 1.2));
+  }
+  zoomFit() {
+    this.canvas.zoom("fit-viewport", "auto");
+  }
+  loadTemplate(templateName) {
+    this.clear();
+    if (templateName === "blank") {
+      return;
+    }
+    if (templateName === "event_driven") {
+      const client2 = this.addNode({ shapeType: "client", label: "Producer API", subtitle: "Ingress", theme: "rose", x: 70, y: 170 });
+      const bus = this.addNode({ shapeType: "queue", label: "Cloud Pub/Sub", subtitle: "Event Stream", theme: "amber", x: 310, y: 170 });
+      const workerA = this.addNode({ shapeType: "service", label: "Billing Worker", subtitle: "Cloud Run", theme: "emerald", x: 565, y: 95 });
+      const workerB = this.addNode({ shapeType: "service", label: "Analytics Worker", subtitle: "Dataflow", theme: "blue", x: 565, y: 245 });
+      const db2 = this.addNode({ shapeType: "database", label: "BigQuery Warehouse", subtitle: "OLAP Store", theme: "blue", x: 810, y: 170 });
+      this.connectNodes(client2, bus, "Publish");
+      this.connectNodes(bus, workerA, "Push");
+      this.connectNodes(bus, workerB, "Pull");
+      this.connectNodes(workerA, db2, "Write");
+      this.connectNodes(workerB, db2, "Stream");
+      this.selection.select([]);
+      return;
+    }
+    if (templateName === "rag_pipeline") {
+      const user = this.addNode({ shapeType: "client", label: "User Prompt", subtitle: "Client App", theme: "rose", x: 60, y: 170 });
+      const orchestrator = this.addNode({ shapeType: "service", label: "RAG Orchestrator", subtitle: "API Service", theme: "slate", x: 295, y: 170 });
+      const vectorDb = this.addNode({ shapeType: "database", label: "Vector Search DB", subtitle: "Embeddings", theme: "blue", x: 545, y: 90 });
+      const llm = this.addNode({ shapeType: "service", label: "Foundation LLM", subtitle: "Vertex AI", theme: "emerald", x: 545, y: 250 });
+      this.connectNodes(user, orchestrator, "Query");
+      this.connectNodes(orchestrator, vectorDb, "Top-K Cosine");
+      this.connectNodes(orchestrator, llm, "Augmented Prompt");
+      this.selection.select([]);
+      return;
+    }
+    this.addNode({ shapeType: "group", label: "Production VPC (us-central1)", subtitle: "Boundary", theme: "slate", x: 280, y: 55, width: 515, height: 315 });
+    const client = this.addNode({ shapeType: "client", label: "Web & Mobile Clients", subtitle: "External", theme: "rose", x: 55, y: 175 });
+    const lb = this.addNode({ shapeType: "gateway", label: "Cloud Load Balancer", subtitle: "Gateway", theme: "emerald", x: 310, y: 170 });
+    const app = this.addNode({ shapeType: "service", label: "Cloud Run API", subtitle: "Stateless Compute", theme: "slate", x: 540, y: 105 });
+    const cache = this.addNode({ shapeType: "queue", label: "Memorystore Redis", subtitle: "In-Memory Cache", theme: "amber", x: 540, y: 240 });
+    const db = this.addNode({ shapeType: "database", label: "Cloud SQL Primary", subtitle: "PostgreSQL HA", theme: "blue", x: 830, y: 105 });
+    this.connectNodes(client, lb, "HTTPS");
+    this.connectNodes(lb, app, "Route");
+    this.connectNodes(app, cache, "Cache Lookup");
+    this.connectNodes(app, db, "Read / Write");
+    this.selection.select([]);
+  }
+  /**
+   * Exports the current diagram as a standalone SVG string and 2x Retina PNG Blob.
+   */
+  async exportToPngBlob(scale = 2) {
+    this.selection.select([]);
+    const elements = this.elementRegistry.filter((el) => el !== this.root);
+    if (elements.length === 0) {
+      throw new Error("Canvas is empty. Add at least one shape before exporting.");
+    }
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    elements.forEach((el) => {
+      if (el.waypoints) {
+        el.waypoints.forEach((pt) => {
+          minX = Math.min(minX, pt.x - 40);
+          minY = Math.min(minY, pt.y - 24);
+          maxX = Math.max(maxX, pt.x + 40);
+          maxY = Math.max(maxY, pt.y + 24);
+        });
+      } else {
+        minX = Math.min(minX, el.x);
+        minY = Math.min(minY, el.y);
+        maxX = Math.max(maxX, el.x + (el.width || 160));
+        maxY = Math.max(maxY, el.y + (el.height || 76));
+      }
+    });
+    const pad = 36;
+    const boxX = Math.floor(minX - pad);
+    const boxY = Math.floor(minY - pad);
+    const boxW = Math.ceil(maxX - minX + pad * 2);
+    const boxH = Math.ceil(maxY - minY + pad * 2);
+    const liveSvg = this.container.querySelector("svg");
+    const viewport = liveSvg.querySelector("g.viewport");
+    const cloneViewport = viewport.cloneNode(true);
+    cloneViewport.setAttribute("transform", `translate(${-boxX}, ${-boxY})`);
+    cloneViewport.querySelectorAll(".djs-outline, .djs-resizer, .djs-bendpoint, .djs-segment-dragger, .djs-hit").forEach((node2) => node2.remove());
+    const exportSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    exportSvg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    exportSvg.setAttribute("width", String(boxW));
+    exportSvg.setAttribute("height", String(boxH));
+    exportSvg.setAttribute("viewBox", `0 0 ${boxW} ${boxH}`);
+    const defs = liveSvg.querySelector("defs");
+    if (defs) {
+      exportSvg.appendChild(defs.cloneNode(true));
+    }
+    const bgRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    bgRect.setAttribute("x", "0");
+    bgRect.setAttribute("y", "0");
+    bgRect.setAttribute("width", String(boxW));
+    bgRect.setAttribute("height", String(boxH));
+    bgRect.setAttribute("rx", "16");
+    bgRect.setAttribute("ry", "16");
+    bgRect.setAttribute("fill", "#ffffff");
+    exportSvg.appendChild(bgRect);
+    exportSvg.appendChild(cloneViewport);
+    const svgData = new XMLSerializer().serializeToString(exportSvg);
+    const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(svgBlob);
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const offscreen = document.createElement("canvas");
+        offscreen.width = boxW * scale;
+        offscreen.height = boxH * scale;
+        const ctx = offscreen.getContext("2d");
+        ctx.scale(scale, scale);
+        ctx.drawImage(img, 0, 0, boxW, boxH);
+        URL.revokeObjectURL(url);
+        offscreen.toBlob((pngBlob) => {
+          if (pngBlob) {
+            resolve(pngBlob);
+          } else {
+            reject(new Error("Failed to encode diagram PNG"));
+          }
+        }, "image/png");
+      };
+      img.onerror = (err) => {
+        URL.revokeObjectURL(url);
+        reject(err);
+      };
+      img.src = url;
+    });
+  }
+  destroy() {
+    if (this.diagram) {
+      this.diagram.destroy();
+      this.diagram = null;
+    }
+  }
+};
+var entry_default = CloudQubesDiagramStudio;
+export {
+  CloudQubesDiagramStudio,
+  entry_default as default
+};
