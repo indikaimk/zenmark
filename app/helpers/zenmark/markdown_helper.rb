@@ -1,7 +1,13 @@
+# frozen_string_literal: true
+
 module Zenmark
   module MarkdownHelper
     def render_markdown(text)
       return "" if text.blank?
+
+      if Zenmark.markdown_renderer.respond_to?(:call)
+        return Zenmark.markdown_renderer.call(text)
+      end
 
       renderer = Redcarpet::Render::HTML.new(
         hard_wrap: true,

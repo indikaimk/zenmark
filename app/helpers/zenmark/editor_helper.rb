@@ -8,12 +8,14 @@ module Zenmark
       content_tag :div, class: "zenmark-editor", data: {
         controller: "zenmark-editor",
         "zenmark-editor-image-upload-url-value": image_upload_url,
+        "zenmark-editor-save-url-value": options[:save_url] || image_upload_url,
         "zenmark-editor-sgid-value": sgid
       } do
         safe_join([
           render("zenmark/toolbar"),
           render("zenmark/link_dialog"),
           render("zenmark/image_dialog"),
+          render("zenmark/diagram_dialog"),
 
           # Hidden file input for image picker
           file_field_tag(:file,

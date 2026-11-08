@@ -2,6 +2,10 @@
 
 .zenmark-editor {
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
@@ -79,14 +83,20 @@
 .zenmark-workspace {
   position: relative;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   min-height: 550px;
   display: flex;
+  overflow: hidden;
 }
 
 /* Write Mode (Default) */
 .zenmark-workspace.zenmark-mode-write .zenmark-editor-pane {
   flex: 1 1 100%;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   display: block;
 }
 
@@ -103,6 +113,9 @@
 .zenmark-workspace.zenmark-mode-split .zenmark-editor-pane {
   flex: 1 1 50%;
   width: 50%;
+  max-width: 50%;
+  min-width: 0;
+  box-sizing: border-box;
   border-right: 1px solid #e2e8f0;
   display: block;
 }
@@ -110,7 +123,11 @@
 .zenmark-workspace.zenmark-mode-split .zenmark-preview-pane {
   flex: 1 1 50%;
   width: 50%;
+  max-width: 50%;
+  min-width: 0;
+  box-sizing: border-box;
   display: block;
+  overflow-x: auto;
   overflow-y: auto;
   max-height: 750px;
   padding: 1.5rem;
@@ -125,7 +142,11 @@
 .zenmark-workspace.zenmark-mode-preview .zenmark-preview-pane {
   flex: 1 1 100%;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   display: block;
+  overflow-x: auto;
   overflow-y: auto;
   min-height: 550px;
   padding: 2rem;
@@ -143,7 +164,7 @@
   resize: vertical;
   background-color: #ffffff;
   color: #0f172a;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 15px;
   line-height: 1.7;
   letter-spacing: -0.01em;
@@ -161,6 +182,10 @@
   color: #1e293b;
   font-size: 15px;
   line-height: 1.75;
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .zenmark-preview-content h1,
@@ -245,6 +270,8 @@
   color: #f8fafc;
   padding: 1rem 1.25rem;
   border-radius: 12px;
+  max-width: 100%;
+  box-sizing: border-box;
   overflow-x: auto;
   margin: 1.25em 0;
   font-size: 13.5px;
@@ -373,6 +400,11 @@
   animation: zenmarkToastFadeIn 0.2s ease;
 }
 
+.zenmark-toast.hidden,
+.zenmark-toast:empty {
+  display: none !important;
+}
+
 .zenmark-toast.zenmark-toast-error {
   background-color: #e11d48;
 }
@@ -386,4 +418,180 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* ==========================================================================
+   Zenmark Visual Architecture Studio (diagram-js Integration)
+   ========================================================================== */
+
+.djs-parent {
+  --accent-color: #C21057;
+  --bendpoint-fill-color: #C21057;
+  --bendpoint-stroke-color: #ffffff;
+  --resizer-fill-color: #C21057;
+  --resizer-stroke-color: #ffffff;
+  --snap-line-stroke-color: rgba(194, 16, 87, 0.35);
+}
+
+.djs-container {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.djs-outline,
+.djs-selection-outline {
+  fill: none;
+  shape-rendering: geometricPrecision;
+  stroke-width: 2px;
+}
+
+.djs-outline {
+  visibility: hidden;
+}
+
+.djs-element.selected .djs-outline {
+  visibility: visible;
+  stroke: #C21057;
+  stroke-dasharray: 4 3;
+}
+
+.djs-connection.selected .djs-outline {
+  display: none;
+}
+
+.djs-visual,
+.djs-outline {
+  pointer-events: none;
+}
+
+.djs-element > .djs-hit-all,
+.djs-element > .djs-hit-no-move {
+  pointer-events: all;
+  cursor: move;
+}
+
+.djs-element > .djs-hit-stroke,
+.djs-element > .djs-hit-click-stroke {
+  pointer-events: stroke;
+  cursor: pointer;
+}
+
+.djs-dragger * {
+  fill: none !important;
+  stroke: #C21057 !important;
+}
+
+.djs-dragging,
+.djs-dragging > * {
+  opacity: 0.35 !important;
+  pointer-events: none !important;
+}
+
+.djs-snap-line {
+  stroke: rgba(194, 16, 87, 0.35);
+  stroke-linecap: round;
+  stroke-width: 1.5px;
+  pointer-events: none;
+}
+
+/* Resize Handles */
+.djs-resize-overlay {
+  fill: none;
+  stroke-dasharray: 5 2;
+  stroke: #C21057;
+  pointer-events: none;
+}
+
+.djs-resizer-hit {
+  fill: none;
+  pointer-events: all;
+}
+
+.djs-resizer-visual {
+  fill: #C21057;
+  stroke-width: 1.5px;
+  stroke: #ffffff;
+}
+
+.djs-resizer-n, .djs-resizer-s { cursor: ns-resize; }
+.djs-resizer-e, .djs-resizer-w { cursor: ew-resize; }
+.djs-resizer-nw, .djs-resizer-se { cursor: nwse-resize; }
+.djs-resizer-ne, .djs-resizer-sw { cursor: nesw-resize; }
+
+/* Bendpoints on Connections */
+.djs-segment-dragger,
+.djs-bendpoint {
+  display: none;
+}
+
+.djs-segment-dragger .djs-visual,
+.djs-bendpoint .djs-visual {
+  fill: #C21057;
+  stroke: #ffffff;
+  stroke-width: 1.5px;
+}
+
+.djs-segment-dragger:hover,
+.djs-bendpoints.hover .djs-segment-dragger,
+.djs-bendpoints.selected .djs-segment-dragger,
+.djs-bendpoint:hover,
+.djs-bendpoints.hover .djs-bendpoint,
+.djs-bendpoints.selected .djs-bendpoint {
+  display: block;
+}
+
+.djs-segment-dragger .djs-hit,
+.djs-bendpoint .djs-hit {
+  fill: none;
+  pointer-events: all;
+}
+
+.djs-segment-dragger.horizontal .djs-hit { cursor: ns-resize; }
+.djs-segment-dragger.vertical .djs-hit { cursor: ew-resize; }
+
+/* On-Canvas Context Pad */
+.djs-context-pad {
+  position: absolute;
+  display: none;
+  pointer-events: none;
+  line-height: 1;
+  width: 36px;
+  z-index: 100;
+}
+
+.djs-context-pad.open {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.djs-context-pad .entry {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  pointer-events: all;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.1);
+  transition: all 0.12s ease;
+}
+
+.djs-context-pad .entry:hover {
+  background-color: #f8fafc;
+  border-color: #C21057;
+  color: #C21057;
+  transform: scale(1.06);
+}
+
+.djs-context-pad .entry.cq-pad-danger:hover {
+  background-color: #fff1f2;
+  border-color: #e11d48;
+  color: #e11d48;
 }

@@ -49,7 +49,7 @@
       </button>
     </div>
 
-    <!-- Group 4: Inserts (Link, Image) -->
+    <!-- Group 4: Inserts (Link, Image, Diagram) -->
     <div class="flex items-center gap-0.5">
       <button type="button" data-action="click->zenmark-editor#link" title="Insert Link (⌘K)" class="zenmark-tool-btn" aria-label="Link">
         <span class="material-symbols-outlined text-[19px]">link</span>
@@ -57,11 +57,32 @@
       <button type="button" data-action="click->zenmark-editor#image" title="Upload Image (or paste/drag)" class="zenmark-tool-btn" aria-label="Image">
         <span class="material-symbols-outlined text-[19px]">image</span>
       </button>
+      <button type="button" data-action="click->zenmark-editor#openDiagramModal" title="Visual Architecture Diagram (diagram-js)" class="zenmark-tool-btn" aria-label="Draw Diagram">
+        <span class="material-symbols-outlined text-[19px]">account_tree</span>
+      </button>
     </div>
   </div>
 
-  <!-- Right Side: View Modes & Zen Fullscreen -->
+  <!-- Right Side: Unsaved Indicator, Save Button, View Modes & Zen Fullscreen -->
   <div class="flex items-center gap-2">
+    <!-- Unsaved Indicator Pill (hidden when clean) -->
+    <span data-zenmark-editor-target="unsavedBadge" class="hidden">
+      <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 border border-amber-200 text-amber-800 font-semibold rounded-md text-[11px]">
+        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+        <span>Unsaved</span>
+      </span>
+    </span>
+
+    <!-- Context-Aware Save Button -->
+    <button type="button"
+            data-zenmark-editor-target="saveBtn"
+            data-action="mousedown->zenmark-editor#preserveSelection click->zenmark-editor#saveForm"
+            title="Save changes (⌘S)"
+            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-200/90 shadow-2xs transition-colors cursor-pointer">
+      <span class="material-symbols-outlined text-[15px] text-slate-500" data-zenmark-editor-target="saveIcon">check</span>
+      <span data-zenmark-editor-target="saveLabel">Save</span>
+    </button>
+
     <!-- View Switcher Pills -->
     <div class="inline-flex items-center p-0.5 rounded-lg bg-slate-200/70 border border-slate-200/80 text-xs">
       <button type="button" 

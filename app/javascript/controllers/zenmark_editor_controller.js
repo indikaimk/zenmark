@@ -7,11 +7,18 @@ export default class extends Controller {
     "wordCount", "charCount", "readingTime",
     "linkDialog", "linkText", "linkUrl",
     "imageMdDialog", "toast", "fullscreenBtn", "fullscreenIcon",
-    "modeWriteBtn", "modeSplitBtn", "modePreviewBtn"
+    "modeWriteBtn", "modeSplitBtn", "modePreviewBtn",
+    "unsavedBadge", "saveBtn", "saveIcon", "saveLabel",
+    "diagramDialog", "diagramCanvas", "diagramTemplateSelect", "diagramTitle",
+    "diagramNoSelection", "diagramInspector", "diagramNodeLabel", "diagramNodeSub",
+    "diagramNodeSubWrapper", "diagramNodeThemeWrapper",
+    "diagramConnectModeBtn", "diagramConnectModeLabel", "diagramConnectHint", "diagramConnectHintText",
+    "diagramStatusText", "diagramInsertBtn", "diagramInsertLabel"
   ]
 
   static values = {
     imageUploadUrl: String,
+    saveUrl: String,
     sgid: String
   }
 
@@ -20,6 +27,8 @@ export default class extends Controller {
     this.isFullscreen = false
     this.previewDebounceTimer = null
     this.toastTimer = null
+    this.saveFeedbackTimer = null
+    this.initialValue = this.textarea ? this.textarea.value : ""
 
     // Register event listeners
     this.boundKeydown = this.onKeydown.bind(this)
@@ -31,8 +40,9 @@ export default class extends Controller {
     this.boundInput = this.onInput.bind(this)
     this.textarea.addEventListener("input", this.boundInput)
 
-    // Calculate initial statistics
+    // Calculate initial statistics & unsaved state
     this.updateStats()
+    this.syncUnsavedState()
   }
 
   disconnect() {
@@ -41,6 +51,11 @@ export default class extends Controller {
     if (this.boundInput) this.textarea.removeEventListener("input", this.boundInput)
     if (this.previewDebounceTimer) clearTimeout(this.previewDebounceTimer)
     if (this.toastTimer) clearTimeout(this.toastTimer)
+    if (this.saveFeedbackTimer) clearTimeout(this.saveFeedbackTimer)
+    if (this.diagramStudio) {
+      this.diagramStudio.destroy()
+      this.diagramStudio = null
+    }
   }
 
   // Universal accessor for the textarea element
@@ -79,6 +94,17 @@ export default class extends Controller {
     const readMinutes = Math.max(1, Math.ceil(words / 200))
     if (this.hasReadingTimeTarget) {
       this.readingTimeTarget.textContent = words === 0 ? "0 min read" : `~${readMinutes} min read`
+    }
+
+    this.syncUnsavedState()
+  }
+
+  syncUnsavedState() {
+    if (!this.hasUnsavedBadgeTarget || !this.textarea) return
+    if (this.textarea.value !== this.initialValue) {
+      this.unsavedBadgeTarget.classList.remove("hidden")
+    } else {
+      this.unsavedBadgeTarget.classList.add("hidden")
     }
   }
 
@@ -148,6 +174,10 @@ export default class extends Controller {
 
     // 2. Escape key handling
     if (event.key === "Escape") {
+      if (this.hasDiagramDialogTarget && !this.diagramDialogTarget.classList.contains("hidden")) {
+        this.closeDiagramModal(event)
+        return
+      }
       if (this.hasLinkDialogTarget && !this.linkDialogTarget.classList.contains("hidden")) {
         this.closeLinkDialog(event)
         return
@@ -291,15 +321,110 @@ export default class extends Controller {
     this.updateStats()
   }
 
-  saveForm(event) {
+  preserveSelection(event) {
+    if (this.textarea) {
+      this.savedSelectionStart = this.textarea.selectionStart
+      this.savedSelectionEnd = this.textarea.selectionEnd
+      this.savedScrollTop = this.textarea.scrollTop
+    }
+    event?.preventDefault?.()
+  }
+
+  async saveForm(event) {
     event?.preventDefault?.()
     const form = this.element.closest("form")
-    if (form) {
-      this.showToast("Saving...")
-      if (typeof form.requestSubmit === "function") {
-        form.requestSubmit()
-      } else {
-        form.submit()
+    const targetUrl = form?.action || this.saveUrlValue || this.imageUploadUrlValue
+    if (!targetUrl && !form) return
+
+    const selectionStart = this.textarea ? (this.textarea.selectionStart ?? this.savedSelectionStart) : null
+    const selectionEnd = this.textarea ? (this.textarea.selectionEnd ?? this.savedSelectionEnd) : null
+    const scrollTop = this.textarea ? (this.textarea.scrollTop ?? this.savedScrollTop) : null
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
+    if (this.hasSaveBtnTarget) this.saveBtnTarget.disabled = true
+    if (this.hasSaveLabelTarget) this.saveLabelTarget.textContent = "Saving..."
+
+    try {
+      const formData = form ? new FormData(form) : new FormData()
+      if (!form && this.textarea?.name) {
+        formData.set(this.textarea.name, this.textarea.value)
+        formData.set("_method", "patch")
+      }
+      if (!formData.has("commit")) {
+        formData.set("commit", "Save")
+      }
+
+      const response = await fetch(targetUrl, {
+        method: form?.method?.toUpperCase() || "POST",
+        headers: {
+          "X-CSRF-Token": csrfToken || "",
+          "X-Zenmark-Save": "true",
+          "Accept": "application/json, text/html"
+        },
+        body: formData
+      })
+
+      let data = null
+      const contentType = response.headers.get("content-type") || ""
+      if (contentType.includes("application/json")) {
+        data = await response.json()
+      }
+
+      if (!response.ok || (data && data.success === false)) {
+        const errMsg = data?.error || "Failed to save changes."
+        this.showToast(errMsg, "error")
+        if (this.hasSaveLabelTarget) this.saveLabelTarget.textContent = "Save"
+        return
+      }
+
+      this.initialValue = this.textarea ? this.textarea.value : ""
+      this.syncUnsavedState()
+      this.showToast("Saved")
+
+      if (this.hasSaveLabelTarget) this.saveLabelTarget.textContent = "Saved"
+      if (this.hasSaveIconTarget) {
+        this.saveIconTarget.classList.remove("text-slate-500")
+        this.saveIconTarget.classList.add("text-emerald-600")
+      }
+
+      if (data?.rendered_html !== undefined) {
+        const previewEl = document.getElementById("lesson_markdown")
+        if (previewEl) {
+          previewEl.innerHTML = data.rendered_html
+          const previewCard = document.getElementById("lesson_markdown_card")
+          if (previewCard) previewCard.classList.remove("hidden")
+          if (window.mermaid && typeof window.mermaid.run === "function") {
+            const nodes = previewEl.querySelectorAll(".mermaid")
+            if (nodes.length > 0) {
+              window.mermaid.run({ nodes: nodes }).catch(() => {})
+            }
+          }
+        }
+      }
+
+      this.element.dispatchEvent(new CustomEvent("zenmark:saved", { bubbles: true, detail: data }))
+
+      if (this.saveFeedbackTimer) clearTimeout(this.saveFeedbackTimer)
+      this.saveFeedbackTimer = setTimeout(() => {
+        if (this.hasSaveLabelTarget) this.saveLabelTarget.textContent = "Save"
+        if (this.hasSaveIconTarget) {
+          this.saveIconTarget.classList.remove("text-emerald-600")
+          this.saveIconTarget.classList.add("text-slate-500")
+        }
+      }, 2000)
+    } catch (error) {
+      this.showToast(`Save error: ${error.message}`, "error")
+      if (this.hasSaveLabelTarget) this.saveLabelTarget.textContent = "Save"
+    } finally {
+      if (this.hasSaveBtnTarget) this.saveBtnTarget.disabled = false
+      if (this.textarea && this.currentMode !== "preview") {
+        this.textarea.focus({ preventScroll: true })
+        if (typeof selectionStart === "number" && typeof selectionEnd === "number") {
+          this.textarea.setSelectionRange(selectionStart, selectionEnd)
+        }
+        if (typeof scrollTop === "number") {
+          this.textarea.scrollTop = scrollTop
+        }
       }
     }
   }
@@ -678,11 +803,37 @@ export default class extends Controller {
     .then(html => {
       if (this.hasPreviewAreaTarget) {
         this.previewAreaTarget.innerHTML = html
+        this.renderMermaidInPreview()
       }
     })
     .catch(err => {
       console.error("Zenmark preview fetch error:", err)
     })
+  }
+
+  renderMermaidInPreview() {
+    if (!this.hasPreviewAreaTarget) return
+
+    // Convert any fallback <pre><code class="mermaid|language-mermaid"> blocks into .mermaid divs
+    const codeBlocks = this.previewAreaTarget.querySelectorAll("pre > code.mermaid, pre > code.language-mermaid")
+    codeBlocks.forEach((codeEl) => {
+      const pre = codeEl.parentElement
+      const div = document.createElement("div")
+      div.className = "mermaid"
+      div.setAttribute("data-controller", "mermaid")
+      div.textContent = codeEl.textContent
+      pre.replaceWith(div)
+    })
+
+    // Run Mermaid on any standalone .mermaid nodes without the Stimulus controller
+    if (window.mermaid && typeof window.mermaid.run === "function") {
+      const standaloneNodes = Array.from(
+        this.previewAreaTarget.querySelectorAll('.mermaid:not([data-controller="mermaid"]):not([data-processed])')
+      )
+      if (standaloneNodes.length > 0) {
+        window.mermaid.run({ nodes: standaloneNodes }).catch(() => {})
+      }
+    }
   }
 
   preview(event) {
@@ -727,5 +878,253 @@ export default class extends Controller {
     this.toastTimer = setTimeout(() => {
       this.toastTarget.classList.add("hidden")
     }, 2600)
+  }
+
+  // --- Visual Architecture Diagram Studio (diagram-js) ---
+
+  async openDiagramModal(event) {
+    event?.preventDefault?.()
+    if (!this.hasDiagramDialogTarget) return
+
+    this.preserveSelection()
+    this.diagramDialogTarget.classList.remove("hidden")
+
+    if (!this.diagramStudio && this.hasDiagramCanvasTarget) {
+      if (this.hasDiagramStatusTextTarget) {
+        this.diagramStatusTextTarget.textContent = "Loading diagram-js engine..."
+      }
+      try {
+        const mod = await import("zenmark_diagram")
+        const CloudQubesDiagramStudio = mod.CloudQubesDiagramStudio || mod.default
+        this.diagramStudio = new CloudQubesDiagramStudio(this.diagramCanvasTarget, {
+          onSelectionChange: (el) => this.handleDiagramSelectionChange(el),
+          onConnectStep: (step) => this.handleDiagramConnectStep(step),
+          onElementDoubleClick: (el) => {
+            this.handleDiagramSelectionChange(el)
+            if (this.hasDiagramNodeLabelTarget) {
+              this.diagramNodeLabelTarget.focus()
+              this.diagramNodeLabelTarget.select()
+            }
+          }
+        })
+        this.diagramStudio.loadTemplate("three_tier")
+        if (this.hasDiagramStatusTextTarget) {
+          this.diagramStatusTextTarget.textContent = "Ready · Powered by diagram-js (MIT)"
+        }
+      } catch (err) {
+        console.error("Failed to initialize diagram-js studio:", err)
+        if (this.hasDiagramStatusTextTarget) {
+          this.diagramStatusTextTarget.textContent = "Error loading diagram engine"
+        }
+      }
+    }
+  }
+
+  closeDiagramModal(event) {
+    event?.preventDefault?.()
+    if (this.hasDiagramDialogTarget) {
+      this.diagramDialogTarget.classList.add("hidden")
+    }
+    if (this.diagramStudio) {
+      this.diagramStudio.cancelTwoClickConnect()
+      this.resetDiagramConnectUI()
+    }
+  }
+
+  loadDiagramTemplate(event) {
+    if (!this.diagramStudio) return
+    const template = event?.currentTarget?.value || "three_tier"
+    this.diagramStudio.loadTemplate(template)
+  }
+
+  addDiagramNode(event) {
+    event?.preventDefault?.()
+    if (!this.diagramStudio) return
+
+    const btn = event.currentTarget
+    const shapeType = btn.dataset.shapeType || "service"
+    const label = btn.dataset.defaultLabel || "Service"
+    const subtitle = btn.dataset.defaultSub || "Compute"
+    const theme = btn.dataset.defaultTheme || "slate"
+
+    this.diagramStudio.addNode({ shapeType, label, subtitle, theme })
+  }
+
+  startDiagramConnectMode(event) {
+    event?.preventDefault?.()
+    if (!this.diagramStudio) return
+
+    this.diagramStudio.startTwoClickConnect()
+    if (this.hasDiagramConnectHintTarget) {
+      this.diagramConnectHintTarget.classList.remove("hidden")
+    }
+    if (this.hasDiagramConnectHintTextTarget) {
+      this.diagramConnectHintTextTarget.textContent = "Step 1: Click the source node on the canvas"
+    }
+    if (this.hasDiagramConnectModeBtnTarget) {
+      this.diagramConnectModeBtnTarget.classList.add("border-[#C21057]", "text-[#C21057]", "bg-rose-50/40")
+    }
+  }
+
+  handleDiagramConnectStep(step) {
+    if (step === "target") {
+      if (this.hasDiagramConnectHintTextTarget) {
+        this.diagramConnectHintTextTarget.textContent = "Step 2: Now click the target node to complete the arrow"
+      }
+    } else {
+      this.resetDiagramConnectUI()
+    }
+  }
+
+  resetDiagramConnectUI() {
+    if (this.hasDiagramConnectHintTarget) {
+      this.diagramConnectHintTarget.classList.add("hidden")
+    }
+    if (this.hasDiagramConnectModeBtnTarget) {
+      this.diagramConnectModeBtnTarget.classList.remove("border-[#C21057]", "text-[#C21057]", "bg-rose-50/40")
+    }
+  }
+
+  handleDiagramSelectionChange(el) {
+    this.selectedDiagramElement = el
+
+    if (!el) {
+      if (this.hasDiagramNoSelectionTarget) this.diagramNoSelectionTarget.classList.remove("hidden")
+      if (this.hasDiagramInspectorTarget) this.diagramInspectorTarget.classList.add("hidden")
+      return
+    }
+
+    if (this.hasDiagramNoSelectionTarget) this.diagramNoSelectionTarget.classList.add("hidden")
+    if (this.hasDiagramInspectorTarget) this.diagramInspectorTarget.classList.remove("hidden")
+
+    const isConnection = Boolean(el.waypoints)
+    if (this.hasDiagramNodeLabelTarget) {
+      this.diagramNodeLabelTarget.value = el.label || ""
+      this.diagramNodeLabelTarget.placeholder = isConnection ? "e.g. HTTPS / gRPC / Async" : "e.g. Cloud SQL Primary"
+    }
+    if (this.hasDiagramNodeSubWrapperTarget) {
+      this.diagramNodeSubWrapperTarget.classList.toggle("hidden", isConnection)
+    }
+    if (this.hasDiagramNodeThemeWrapperTarget) {
+      this.diagramNodeThemeWrapperTarget.classList.toggle("hidden", isConnection)
+    }
+    if (!isConnection && this.hasDiagramNodeSubTarget) {
+      this.diagramNodeSubTarget.value = el.subtitle || ""
+    }
+  }
+
+  updateSelectedDiagramElement() {
+    if (!this.diagramStudio || !this.selectedDiagramElement) return
+    const label = this.hasDiagramNodeLabelTarget ? this.diagramNodeLabelTarget.value : ""
+    const subtitle = this.hasDiagramNodeSubTarget ? this.diagramNodeSubTarget.value : ""
+
+    if (this.selectedDiagramElement.waypoints) {
+      this.diagramStudio.updateElement(this.selectedDiagramElement, { label })
+    } else {
+      this.diagramStudio.updateElement(this.selectedDiagramElement, { label, subtitle })
+    }
+  }
+
+  setDiagramElementTheme(event) {
+    event?.preventDefault?.()
+    if (!this.diagramStudio || !this.selectedDiagramElement) return
+    const theme = event.currentTarget.dataset.theme || "slate"
+    this.diagramStudio.updateElement(this.selectedDiagramElement, { theme })
+  }
+
+  duplicateSelectedDiagramElement(event) {
+    event?.preventDefault?.()
+    if (!this.diagramStudio || !this.selectedDiagramElement) return
+    this.diagramStudio.duplicateElement(this.selectedDiagramElement)
+  }
+
+  deleteSelectedDiagramElement(event) {
+    event?.preventDefault?.()
+    if (!this.diagramStudio || !this.selectedDiagramElement) return
+    this.diagramStudio.deleteElement(this.selectedDiagramElement)
+  }
+
+  diagramUndo(event) {
+    event?.preventDefault?.()
+    this.diagramStudio?.undo()
+  }
+
+  diagramRedo(event) {
+    event?.preventDefault?.()
+    this.diagramStudio?.redo()
+  }
+
+  diagramZoomIn(event) {
+    event?.preventDefault?.()
+    this.diagramStudio?.zoomIn()
+  }
+
+  diagramZoomOut(event) {
+    event?.preventDefault?.()
+    this.diagramStudio?.zoomOut()
+  }
+
+  diagramZoomReset(event) {
+    event?.preventDefault?.()
+    this.diagramStudio?.zoomFit()
+  }
+
+  clearDiagramCanvas(event) {
+    event?.preventDefault?.()
+    this.diagramStudio?.clear()
+  }
+
+  async insertDiagramIntoMarkdown(event) {
+    event?.preventDefault?.()
+    if (!this.diagramStudio) return
+
+    const title = (this.hasDiagramTitleTarget ? this.diagramTitleTarget.value.trim() : "") || "Architecture Diagram"
+    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "architecture-diagram"
+    const filename = `${slug}-${Date.now()}.png`
+
+    if (this.hasDiagramInsertBtnTarget) this.diagramInsertBtnTarget.disabled = true
+    if (this.hasDiagramInsertLabelTarget) this.diagramInsertLabelTarget.textContent = "Rendering & Uploading..."
+
+    try {
+      const pngBlob = await this.diagramStudio.exportToPngBlob(2)
+      const file = new File([pngBlob], filename, { type: "image/png" })
+
+      const formData = new FormData()
+      formData.append("file", file)
+      if (this.hasSgidValue && this.sgidValue) {
+        formData.append("sgid", this.sgidValue)
+      }
+
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
+      const response = await fetch("/zenmark/images", {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          ...(csrfToken ? { "X-CSRF-Token": csrfToken } : {})
+        },
+        body: formData
+      })
+
+      if (!response.ok) {
+        throw new Error(`Upload failed (${response.status})`)
+      }
+
+      const data = await response.json()
+      const imageUrl = data.url || `/rails/active_storage/blobs/${data.signed_id}/${filename}`
+      const mdImage = `\n![${title}](${imageUrl})\n`
+
+      this.closeDiagramModal()
+      this.restoreSelection()
+      this.insertAtCursor(mdImage)
+      this.updateStats()
+      this.showToast("Architecture diagram inserted!")
+      if (this.currentMode === "split") this.scheduleLivePreview()
+    } catch (err) {
+      console.error("Diagram export/upload failed:", err)
+      this.showToast(err.message || "Failed to insert diagram", true)
+    } finally {
+      if (this.hasDiagramInsertBtnTarget) this.diagramInsertBtnTarget.disabled = false
+      if (this.hasDiagramInsertLabelTarget) this.diagramInsertLabelTarget.textContent = "Insert Diagram"
+    }
   }
 }
