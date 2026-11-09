@@ -10,8 +10,9 @@ export default class extends Controller {
     "modeWriteBtn", "modeSplitBtn", "modePreviewBtn",
     "unsavedBadge", "saveBtn", "saveIcon", "saveLabel",
     "diagramDialog", "diagramCanvas", "diagramTemplateSelect", "diagramTitle",
+    "diagramCatalogSearch", "diagramProviderTabs", "diagramCatalogList",
     "diagramNoSelection", "diagramInspector", "diagramNodeLabel", "diagramNodeSub",
-    "diagramNodeSubWrapper", "diagramNodeThemeWrapper",
+    "diagramNodeSubWrapper", "diagramNodePresetWrapper", "diagramNodePresetSelect", "diagramNodeThemeWrapper",
     "diagramConnectModeBtn", "diagramConnectModeLabel", "diagramConnectHint", "diagramConnectHintText",
     "diagramStatusText", "diagramInsertBtn", "diagramInsertLabel"
   ]
@@ -236,7 +237,6 @@ export default class extends Controller {
     if (taskMatch) {
       event.preventDefault()
       if (taskMatch[2].trim() === "") {
-        // Empty task item -> exit list
         textarea.setRangeText("", lineStart, pos, "end")
       } else {
         this.insertAtCursor("\n- [ ] ")
@@ -250,7 +250,6 @@ export default class extends Controller {
     if (bulletMatch) {
       event.preventDefault()
       if (bulletMatch[2].trim() === "") {
-        // Empty bullet item -> exit list
         textarea.setRangeText("", lineStart, pos, "end")
       } else {
         this.insertAtCursor(`\n${bulletMatch[1]}`)
@@ -264,7 +263,6 @@ export default class extends Controller {
     if (numberedMatch) {
       event.preventDefault()
       if (numberedMatch[3].trim() === "") {
-        // Empty numbered item -> exit list
         textarea.setRangeText("", lineStart, pos, "end")
       } else {
         const nextNum = parseInt(numberedMatch[2], 10) + 1
@@ -296,14 +294,12 @@ export default class extends Controller {
     const end = textarea.selectionEnd
     const val = textarea.value
 
-    // Single cursor position without selection
     if (start === end && !isShift) {
       this.insertAtCursor("  ")
       this.updateStats()
       return
     }
 
-    // Multi-line indent/unindent
     const lineStart = val.lastIndexOf("\n", start - 1) + 1
     const nextNewline = val.indexOf("\n", end)
     const lineEnd = nextNewline === -1 ? val.length : nextNewline
@@ -328,6 +324,16 @@ export default class extends Controller {
       this.savedScrollTop = this.textarea.scrollTop
     }
     event?.preventDefault?.()
+  }
+
+  restoreSelection() {
+    if (!this.textarea) return
+    if (typeof this.savedSelectionStart === "number" && typeof this.savedSelectionEnd === "number") {
+      this.textarea.setSelectionRange(this.savedSelectionStart, this.savedSelectionEnd)
+    }
+    if (typeof this.savedScrollTop === "number") {
+      this.textarea.scrollTop = this.savedScrollTop
+    }
   }
 
   async saveForm(event) {
@@ -814,7 +820,6 @@ export default class extends Controller {
   renderMermaidInPreview() {
     if (!this.hasPreviewAreaTarget) return
 
-    // Convert any fallback <pre><code class="mermaid|language-mermaid"> blocks into .mermaid divs
     const codeBlocks = this.previewAreaTarget.querySelectorAll("pre > code.mermaid, pre > code.language-mermaid")
     codeBlocks.forEach((codeEl) => {
       const pre = codeEl.parentElement
@@ -825,7 +830,6 @@ export default class extends Controller {
       pre.replaceWith(div)
     })
 
-    // Run Mermaid on any standalone .mermaid nodes without the Stimulus controller
     if (window.mermaid && typeof window.mermaid.run === "function") {
       const standaloneNodes = Array.from(
         this.previewAreaTarget.querySelectorAll('.mermaid:not([data-controller="mermaid"]):not([data-processed])')
@@ -837,7 +841,6 @@ export default class extends Controller {
   }
 
   preview(event) {
-    // Toolbar legacy preview action
     this.setPreviewMode(event)
   }
 
@@ -896,6 +899,13 @@ export default class extends Controller {
       try {
         const mod = await import("zenmark_diagram")
         const CloudQubesDiagramStudio = mod.CloudQubesDiagramStudio || mod.default
+        this.cloudCatalog = mod.CLOUD_CATALOG || []
+        this.getCatalogIconSvg = mod.getCatalogIconSvg
+        this.activeCatalogProvider = this.activeCatalogProvider || "all"
+
+        this.populateDiagramPresetDropdown()
+        this.renderDiagramCatalog()
+
         this.diagramStudio = new CloudQubesDiagramStudio(this.diagramCanvasTarget, {
           onSelectionChange: (el) => this.handleDiagramSelectionChange(el),
           onConnectStep: (step) => this.handleDiagramConnectStep(step),
@@ -909,7 +919,7 @@ export default class extends Controller {
         })
         this.diagramStudio.loadTemplate("three_tier")
         if (this.hasDiagramStatusTextTarget) {
-          this.diagramStatusTextTarget.textContent = "Ready · Powered by diagram-js (MIT)"
+          this.diagramStatusTextTarget.textContent = `Ready · ${this.cloudCatalog.length} Cloud & K8s icons loaded · Powered by diagram-js (MIT)`
         }
       } catch (err) {
         console.error("Failed to initialize diagram-js studio:", err)
@@ -918,6 +928,184 @@ export default class extends Controller {
         }
       }
     }
+  }
+
+  selectDiagramProviderTab(event) {
+    event?.preventDefault?.()
+    const btn = event.currentTarget
+    this.activeCatalogProvider = btn.dataset.provider || "all"
+
+    if (this.hasDiagramProviderTabsTarget) {
+      const buttons = this.diagramProviderTabsTarget.querySelectorAll("button[data-provider]")
+      buttons.forEach(b => {
+        if (b.dataset.provider === this.activeCatalogProvider) {
+          b.className = "px-1.5 py-1 rounded-lg text-[10px] font-bold text-slate-900 bg-white shadow-2xs transition-all cursor-pointer text-center"
+        } else {
+          b.className = "px-1.5 py-1 rounded-lg text-[10px] font-bold text-slate-600 hover:text-slate-900 transition-all cursor-pointer text-center"
+        }
+      })
+    }
+
+    this.renderDiagramCatalog()
+  }
+
+  filterDiagramCatalog() {
+    this.renderDiagramCatalog()
+  }
+
+  renderDiagramCatalog() {
+    if (!this.hasDiagramCatalogListTarget || !this.cloudCatalog) return
+
+    const rawQuery = this.hasDiagramCatalogSearchTarget ? this.diagramCatalogSearchTarget.value.trim().toLowerCase() : ""
+    const activeProvider = this.activeCatalogProvider || "all"
+
+    const matchesQuery = (item) => {
+      if (!rawQuery) return true
+      const haystack = `${item.label} ${item.subtitle} ${item.provider} ${item.category} ${item.keywords || ""}`.toLowerCase()
+      return rawQuery.split(/\s+/).every(token => haystack.includes(token))
+    }
+
+    let items = this.cloudCatalog.filter(item => {
+      const providerMatch = activeProvider === "all" || item.provider === activeProvider
+      return providerMatch && matchesQuery(item)
+    })
+
+    // If user typed a search query while inside a specific tab that has 0 results, fall back to searching across all providers
+    let crossProviderFallback = false
+    if (items.length === 0 && rawQuery && activeProvider !== "all") {
+      items = this.cloudCatalog.filter(matchesQuery)
+      crossProviderFallback = items.length > 0
+    }
+
+    if (items.length === 0) {
+      this.diagramCatalogListTarget.innerHTML = `
+        <div class="p-4 text-center rounded-xl bg-white border border-slate-200/80 text-xs text-slate-500">
+          No cloud services matching "<strong>${this.escapeHtml(rawQuery)}</strong>".
+        </div>
+      `
+      return
+    }
+
+    const providerLabels = {
+      general: "Core Architecture Shapes",
+      aws: "Amazon Web Services (AWS)",
+      gcp: "Google Cloud Platform (GCP)",
+      azure: "Microsoft Azure",
+      k8s: "Kubernetes (K8s)"
+    }
+
+    const providerBadges = {
+      aws: `<span class="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-amber-50 text-amber-800 border border-amber-200">AWS</span>`,
+      gcp: `<span class="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-blue-50 text-blue-700 border border-blue-200">GCP</span>`,
+      azure: `<span class="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-sky-50 text-sky-700 border border-sky-200">AZURE</span>`,
+      k8s: `<span class="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">K8S</span>`,
+      general: ""
+    }
+
+    // Group by category (when a single provider is active) or by provider (when 'all' is active)
+    const groups = new Map()
+    items.forEach(item => {
+      const groupKey = activeProvider === "all" || crossProviderFallback
+        ? (providerLabels[item.provider] || item.provider.toUpperCase())
+        : item.category
+      if (!groups.has(groupKey)) groups.set(groupKey, [])
+      groups.get(groupKey).push(item)
+    })
+
+    let html = ""
+    if (crossProviderFallback) {
+      html += `<div class="text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1.5">Showing matches across all providers</div>`
+    }
+
+    for (const [groupTitle, groupItems] of groups.entries()) {
+      html += `
+        <div>
+          <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 px-0.5">
+            <span>${this.escapeHtml(groupTitle)}</span>
+            <span class="text-[9px] font-semibold text-slate-400">${groupItems.length}</span>
+          </div>
+          <div class="grid grid-cols-1 gap-1.5">
+      `
+
+      groupItems.forEach(item => {
+        const svgHtml = this.getCatalogIconSvg ? this.getCatalogIconSvg(item.iconKey, item.shapeType) : ""
+        const badgeHtml = providerBadges[item.provider] || ""
+        const isGroup = item.shapeType === "group"
+
+        html += `
+          <button type="button"
+                  draggable="true"
+                  data-action="click->zenmark-editor#addDiagramNode dragstart->zenmark-editor#handleCatalogItemDragStart"
+                  data-catalog-id="${this.escapeHtml(item.id)}"
+                  data-shape-type="${this.escapeHtml(item.shapeType)}"
+                  data-default-label="${this.escapeHtml(item.label)}"
+                  data-default-sub="${this.escapeHtml(item.subtitle)}"
+                  data-default-theme="${this.escapeHtml(item.theme)}"
+                  data-provider="${this.escapeHtml(item.provider)}"
+                  data-icon-key="${this.escapeHtml(item.iconKey)}"
+                  data-icon-color="${this.escapeHtml(item.iconColor)}"
+                  class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-100/80 border ${isGroup ? 'border-dashed border-slate-300' : 'border-slate-200/90'} shadow-2xs transition-all cursor-pointer text-left group">
+            <span class="w-7 h-7 rounded-lg flex items-center justify-center text-white shrink-0 shadow-2xs group-hover:scale-105 transition-transform"
+                  style="background-color: ${this.escapeHtml(item.iconColor || '#475569')};">
+              ${svgHtml}
+            </span>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center justify-between gap-1">
+                <span class="leading-tight truncate text-slate-800">${this.escapeHtml(item.label)}</span>
+                ${badgeHtml}
+              </div>
+              <div class="text-[10px] font-normal text-slate-400 truncate">${this.escapeHtml(item.subtitle)}</div>
+            </div>
+          </button>
+        `
+      })
+
+      html += `
+          </div>
+        </div>
+      `
+    }
+
+    this.diagramCatalogListTarget.innerHTML = html
+  }
+
+  populateDiagramPresetDropdown() {
+    if (!this.hasDiagramNodePresetSelectTarget || !this.cloudCatalog) return
+
+    const providerNames = {
+      general: "Classic Shapes",
+      aws: "Amazon Web Services (AWS)",
+      gcp: "Google Cloud Platform (GCP)",
+      azure: "Microsoft Azure",
+      k8s: "Kubernetes (K8s)"
+    }
+
+    const grouped = new Map()
+    this.cloudCatalog.forEach(item => {
+      if (item.shapeType === "group") return
+      const g = providerNames[item.provider] || item.provider
+      if (!grouped.has(g)) grouped.set(g, [])
+      grouped.get(g).push(item)
+    })
+
+    let optionsHtml = `<option value="">Custom / Keep Current</option>`
+    for (const [groupLabel, items] of grouped.entries()) {
+      optionsHtml += `<optgroup label="${this.escapeHtml(groupLabel)}">`
+      items.forEach(item => {
+        optionsHtml += `<option value="${this.escapeHtml(item.id)}">${this.escapeHtml(item.label)} (${this.escapeHtml(item.subtitle)})</option>`
+      })
+      optionsHtml += `</optgroup>`
+    }
+
+    this.diagramNodePresetSelectTarget.innerHTML = optionsHtml
+  }
+
+  escapeHtml(str) {
+    return String(str || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
   }
 
   closeDiagramModal(event) {
@@ -946,8 +1134,53 @@ export default class extends Controller {
     const label = btn.dataset.defaultLabel || "Service"
     const subtitle = btn.dataset.defaultSub || "Compute"
     const theme = btn.dataset.defaultTheme || "slate"
+    const provider = btn.dataset.provider || ""
+    const iconKey = btn.dataset.iconKey || ""
+    const iconColor = btn.dataset.iconColor || ""
 
-    this.diagramStudio.addNode({ shapeType, label, subtitle, theme })
+    this.diagramStudio.addNode({ shapeType, label, subtitle, theme, provider, iconKey, iconColor })
+  }
+
+  handleCatalogItemDragStart(event) {
+    const btn = event.currentTarget
+    const payload = {
+      shapeType: btn.dataset.shapeType || "service",
+      label: btn.dataset.defaultLabel || "Service",
+      subtitle: btn.dataset.defaultSub || "Compute",
+      theme: btn.dataset.defaultTheme || "slate",
+      provider: btn.dataset.provider || "",
+      iconKey: btn.dataset.iconKey || "",
+      iconColor: btn.dataset.iconColor || ""
+    }
+    event.dataTransfer.effectAllowed = "copy"
+    event.dataTransfer.setData("application/x-zenmark-node", JSON.stringify(payload))
+  }
+
+  handleDiagramCanvasDragOver(event) {
+    if (event.dataTransfer?.types?.includes("application/x-zenmark-node")) {
+      event.preventDefault()
+      event.dataTransfer.dropEffect = "copy"
+    }
+  }
+
+  handleDiagramCanvasDrop(event) {
+    const raw = event.dataTransfer?.getData("application/x-zenmark-node")
+    if (!raw || !this.diagramStudio) return
+
+    event.preventDefault()
+    try {
+      const payload = JSON.parse(raw)
+      const coords = this.diagramStudio.clientToCanvasCoords(event.clientX, event.clientY)
+      const w = payload.shapeType === "group" ? 480 : payload.iconKey ? 196 : 172
+      const h = payload.shapeType === "group" ? 260 : 76
+      this.diagramStudio.addNode({
+        ...payload,
+        x: Math.round(coords.x - w / 2),
+        y: Math.round(coords.y - h / 2)
+      })
+    } catch (err) {
+      console.error("Failed to drop catalog node onto diagram canvas:", err)
+    }
   }
 
   startDiagramConnectMode(event) {
@@ -998,6 +1231,8 @@ export default class extends Controller {
     if (this.hasDiagramInspectorTarget) this.diagramInspectorTarget.classList.remove("hidden")
 
     const isConnection = Boolean(el.waypoints)
+    const isGroup = el.shapeType === "group"
+
     if (this.hasDiagramNodeLabelTarget) {
       this.diagramNodeLabelTarget.value = el.nodeTitle || ""
       this.diagramNodeLabelTarget.placeholder = isConnection ? "e.g. HTTPS / gRPC / Async" : "e.g. Cloud SQL Primary"
@@ -1005,11 +1240,21 @@ export default class extends Controller {
     if (this.hasDiagramNodeSubWrapperTarget) {
       this.diagramNodeSubWrapperTarget.classList.toggle("hidden", isConnection)
     }
+    if (this.hasDiagramNodePresetWrapperTarget) {
+      this.diagramNodePresetWrapperTarget.classList.toggle("hidden", isConnection || isGroup)
+    }
     if (this.hasDiagramNodeThemeWrapperTarget) {
       this.diagramNodeThemeWrapperTarget.classList.toggle("hidden", isConnection)
     }
     if (!isConnection && this.hasDiagramNodeSubTarget) {
       this.diagramNodeSubTarget.value = el.subtitle || ""
+    }
+    if (!isConnection && !isGroup && this.hasDiagramNodePresetSelectTarget && this.cloudCatalog) {
+      const matched = this.cloudCatalog.find(item =>
+        (el.iconKey && item.iconKey === el.iconKey && item.provider === el.provider) ||
+        (!el.iconKey && item.provider === "general" && item.shapeType === el.shapeType)
+      )
+      this.diagramNodePresetSelectTarget.value = matched ? matched.id : ""
     }
   }
 
@@ -1022,6 +1267,25 @@ export default class extends Controller {
       this.diagramStudio.updateElement(this.selectedDiagramElement, { label })
     } else {
       this.diagramStudio.updateElement(this.selectedDiagramElement, { label, subtitle })
+    }
+  }
+
+  changeSelectedDiagramNodePreset(event) {
+    if (!this.diagramStudio || !this.selectedDiagramElement || !this.cloudCatalog) return
+    const presetId = event.currentTarget.value
+    const item = this.cloudCatalog.find(c => c.id === presetId)
+    if (!item) return
+
+    this.selectedDiagramElement.shapeType = item.shapeType
+    this.diagramStudio.updateElement(this.selectedDiagramElement, {
+      provider: item.provider,
+      iconKey: item.iconKey,
+      iconColor: item.iconColor,
+      theme: item.theme,
+      subtitle: item.subtitle
+    })
+    if (this.hasDiagramNodeSubTarget) {
+      this.diagramNodeSubTarget.value = item.subtitle
     }
   }
 
