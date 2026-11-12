@@ -1223,8 +1223,22 @@ export class CloudQubesDiagramStudio {
     return created;
   }
 
-  connectNodes(source, target, label = '') {
-    return this.modeling.connect(source, target, { nodeTitle: label });
+  connectNodes(source, target, options = '') {
+    const label = typeof options === 'string' ? options : (options?.label || '');
+    const theme = typeof options === 'object' ? (options?.theme || 'slate') : 'slate';
+    const conn = this.modeling.connect(source, target, { nodeTitle: label, theme });
+    if (typeof options === 'object' && Array.isArray(options.waypoints) && options.waypoints.length >= 2) {
+      try {
+        this.modeling.updateWaypoints(conn, options.waypoints);
+      } catch (err) {
+        // Fall back to default orthogonal routing
+      }
+    }
+    return conn;
+  }
+
+  connect(source, target, options = '') {
+    return this.connectNodes(source, target, options);
   }
 
   updateElement(element, props = {}) {
@@ -1423,10 +1437,114 @@ export class CloudQubesDiagramStudio {
   }
 
   /**
-   * Exports the current diagram as a standalone SVG and 2x Retina PNG Blob.
+   * Serializes current canvas elements into an editable JSON diagram state.
    */
-  async exportToPngBlob(scale = 2) {
-    // Clear selection so selection outlines and context pads aren't in the exported image
+  toJSON(title = '') {
+    const all = this.elementRegistry.getAll();
+    const nodes = [];
+    const connections = [];
+
+    all.forEach(el => {
+      if (el === this.root) return;
+      if (el.waypoints) {
+        connections.push({
+          id: el.id,
+          sourceId: el.source ? el.source.id : null,
+          targetId: el.target ? el.target.id : null,
+          waypoints: (el.waypoints || []).map(wp => ({ x: wp.x, y: wp.y })),
+          label: el.nodeTitle !== undefined ? el.nodeTitle : (el.label || ''),
+          theme: el.theme || 'slate'
+        });
+      } else {
+        nodes.push({
+          id: el.id,
+          shapeType: el.shapeType || 'service',
+          provider: el.provider || 'general',
+          iconKey: el.iconKey || '',
+          iconColor: el.iconColor || '',
+          label: el.nodeTitle !== undefined ? el.nodeTitle : (el.label || 'Service'),
+          subtitle: el.subtitle || '',
+          theme: el.theme || 'slate',
+          x: el.x,
+          y: el.y,
+          width: el.width,
+          height: el.height
+        });
+      }
+    });
+
+    return {
+      version: 1,
+      generator: 'zenmark-diagram',
+      title: title || 'Cloud Architecture Diagram',
+      timestamp: Date.now(),
+      nodes,
+      connections
+    };
+  }
+
+  /**
+   * Reconstitutes canvas state from a serialized diagram JSON object.
+   */
+  loadJSON(data) {
+    if (!data || typeof data !== 'object') {
+      throw new Error('Invalid diagram JSON state');
+    }
+
+    this.clear();
+
+    const nodes = data.nodes || [];
+    const connections = data.connections || [];
+    const nodeMap = new Map();
+
+    // Add groups/boundaries first so child shapes can be placed on top
+    const sortedNodes = [...nodes].sort((a, b) => {
+      if (a.shapeType === 'group' && b.shapeType !== 'group') return -1;
+      if (a.shapeType !== 'group' && b.shapeType === 'group') return 1;
+      return 0;
+    });
+
+    for (const nodeData of sortedNodes) {
+      const created = this.addNode({
+        shapeType: nodeData.shapeType,
+        provider: nodeData.provider,
+        iconKey: nodeData.iconKey,
+        iconColor: nodeData.iconColor,
+        label: nodeData.label,
+        subtitle: nodeData.subtitle,
+        theme: nodeData.theme,
+        x: nodeData.x,
+        y: nodeData.y,
+        width: nodeData.width,
+        height: nodeData.height
+      });
+      if (nodeData.id) {
+        nodeMap.set(nodeData.id, created);
+      }
+      if (created?.id) {
+        nodeMap.set(created.id, created);
+      }
+    }
+
+    for (const connData of connections) {
+      const source = nodeMap.get(connData.sourceId);
+      const target = nodeMap.get(connData.targetId);
+      if (source && target) {
+        this.connectNodes(source, target, {
+          waypoints: connData.waypoints,
+          label: connData.label,
+          theme: connData.theme
+        });
+      }
+    }
+
+    setTimeout(() => this.zoomFit(), 60);
+  }
+
+  /**
+   * Builds an isolated export SVG element, optionally embedding diagram JSON metadata for re-editing.
+   */
+  buildExportSvgElement(title = '', embedState = true) {
     this.selection.select([]);
 
     const elements = this.elementRegistry.filter(el => el !== this.root);
@@ -1473,6 +1591,18 @@ export class CloudQubesDiagramStudio {
     exportSvg.setAttribute('height', String(boxH));
     exportSvg.setAttribute('viewBox', `0 0 ${boxW} ${boxH}`);
 
+    // Embed Diagram JSON State into SVG Metadata for Full Re-editing (Excalidraw / Draw.io style)
+    if (embedState) {
+      const diagramState = this.toJSON(title);
+      const metadata = document.createElementNS('http://www.w3.org/2000/svg', 'metadata');
+      metadata.setAttribute('id', 'zenmark-diagram-state');
+      metadata.setAttribute('type', 'application/json');
+      const jsonStr = JSON.stringify(diagramState);
+      const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
+      metadata.textContent = encoded;
+      exportSvg.appendChild(metadata);
+    }
+
     const defs = liveSvg.querySelector('defs');
     if (defs) {
       exportSvg.appendChild(defs.cloneNode(true));
@@ -1490,6 +1620,30 @@ export class CloudQubesDiagramStudio {
 
     exportSvg.appendChild(cloneViewport);
 
+    return { exportSvg, boxW, boxH };
+  }
+
+  /**
+   * Exports the diagram as an SVG string containing embedded editable metadata.
+   */
+  exportToSvgString(title = '', embedState = true) {
+    const { exportSvg } = this.buildExportSvgElement(title, embedState);
+    return new XMLSerializer().serializeToString(exportSvg);
+  }
+
+  /**
+   * Exports the diagram as an SVG Blob with embedded editable metadata.
+   */
+  exportToSvgBlob(title = '', embedState = true) {
+    const svgData = this.exportToSvgString(title, embedState);
+    return new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+  }
+
+  /**
+   * Exports the current diagram as a 2x Retina PNG Blob.
+   */
+  async exportToPngBlob(scale = 2, title = '') {
+    const { exportSvg, boxW, boxH } = this.buildExportSvgElement(title, true);
     const svgData = new XMLSerializer().serializeToString(exportSvg);
     const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
     const url = URL.createObjectURL(svgBlob);
@@ -1526,6 +1680,33 @@ export class CloudQubesDiagramStudio {
       this.diagram.destroy();
       this.diagram = null;
     }
+  }
+}
+
+/**
+ * Extracts embedded diagram JSON state from an SVG text document.
+ */
+export function extractDiagramStateFromSvg(svgText) {
+  if (!svgText || typeof svgText !== 'string') return null;
+  try {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(svgText, 'image/svg+xml');
+    const metadata = doc.querySelector('#zenmark-diagram-state, metadata[id="zenmark-diagram-state"]');
+    if (!metadata) return null;
+    const raw = (metadata.textContent || '').trim();
+    if (!raw) return null;
+
+    let jsonStr;
+    try {
+      jsonStr = decodeURIComponent(escape(atob(raw)));
+    } catch {
+      jsonStr = raw;
+    }
+    const parsed = JSON.parse(jsonStr);
+    return parsed && Array.isArray(parsed.nodes) ? parsed : null;
+  } catch (err) {
+    console.warn('Failed to parse diagram state from SVG:', err);
+    return null;
   }
 }
 

@@ -424,6 +424,114 @@
    Zenmark Visual Architecture Studio (diagram-js Integration)
    ========================================================================== */
 
+/* Dialogs & Modal Overlays */
+.zenmark-dialog {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 100 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1rem !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+.zenmark-dialog.hidden {
+  display: none !important;
+}
+
+/* Visual Architecture Studio Modal (Contained strictly within Viewport) */
+.zenmark-diagram-modal {
+  width: 100% !important;
+  max-width: 72rem !important;
+  height: 88vh !important;
+  height: 88dvh !important;
+  max-height: calc(100vh - 2.5rem) !important;
+  max-height: calc(100dvh - 2.5rem) !important;
+  min-height: 0 !important;
+  margin: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-height: 640px) {
+  .zenmark-dialog {
+    padding: 0.5rem !important;
+  }
+  .zenmark-diagram-modal {
+    height: 94vh !important;
+    height: 94dvh !important;
+    max-height: calc(100vh - 1rem) !important;
+    max-height: calc(100dvh - 1rem) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .zenmark-dialog {
+    padding: 0.5rem !important;
+  }
+}
+
+/* Editable Diagram Figure & Hover Action Badge in Preview */
+.zenmark-diagram-figure {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  margin: 1.25em 0;
+  border-radius: 14px;
+}
+
+.zenmark-diagram-figure img {
+  display: block;
+  margin: 0 !important;
+  cursor: pointer;
+  transition: box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.zenmark-diagram-figure:hover img {
+  border-color: #C21057;
+  box-shadow: 0 4px 14px rgba(194, 16, 87, 0.15);
+}
+
+.zenmark-diagram-edit-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  background-color: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 11px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(-3px);
+  transition: opacity 0.18s ease, transform 0.18s ease, background-color 0.15s ease;
+  pointer-events: none;
+}
+
+.zenmark-diagram-figure:hover .zenmark-diagram-edit-badge {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.zenmark-diagram-edit-badge:hover {
+  background-color: #C21057;
+  border-color: #C21057;
+}
+
 .djs-parent {
   --accent-color: #C21057;
   --bendpoint-fill-color: #C21057;

@@ -14,7 +14,7 @@ export default class extends Controller {
     "diagramNoSelection", "diagramInspector", "diagramNodeLabel", "diagramNodeSub",
     "diagramNodeSubWrapper", "diagramNodePresetWrapper", "diagramNodePresetSelect", "diagramNodeThemeWrapper",
     "diagramConnectModeBtn", "diagramConnectModeLabel", "diagramConnectHint", "diagramConnectHintText",
-    "diagramStatusText", "diagramInsertBtn", "diagramInsertLabel"
+    "diagramStatusText", "diagramInsertBtn", "diagramInsertLabel", "diagramFileInput"
   ]
 
   static values = {
@@ -810,6 +810,7 @@ export default class extends Controller {
       if (this.hasPreviewAreaTarget) {
         this.previewAreaTarget.innerHTML = html
         this.renderMermaidInPreview()
+        this.attachDiagramEditBadgesInPreview()
       }
     })
     .catch(err => {
@@ -901,6 +902,7 @@ export default class extends Controller {
         const CloudQubesDiagramStudio = mod.CloudQubesDiagramStudio || mod.default
         this.cloudCatalog = mod.CLOUD_CATALOG || []
         this.getCatalogIconSvg = mod.getCatalogIconSvg
+        this.extractDiagramStateFromSvg = mod.extractDiagramStateFromSvg
         this.activeCatalogProvider = this.activeCatalogProvider || "all"
 
         this.populateDiagramPresetDropdown()
@@ -917,7 +919,10 @@ export default class extends Controller {
             }
           }
         })
-        this.diagramStudio.loadTemplate("three_tier")
+        if (!this.activeDiagramEditingUrl) {
+          this.diagramStudio.loadTemplate("three_tier")
+        }
+        setTimeout(() => this.diagramStudio?.zoomFit?.(), 80)
         if (this.hasDiagramStatusTextTarget) {
           this.diagramStatusTextTarget.textContent = `Ready · ${this.cloudCatalog.length} Cloud & K8s icons loaded · Powered by diagram-js (MIT)`
         }
@@ -927,6 +932,8 @@ export default class extends Controller {
           this.diagramStatusTextTarget.textContent = `Error loading diagram engine: ${err.message || err}`
         }
       }
+    } else if (this.diagramStudio) {
+      setTimeout(() => this.diagramStudio?.zoomFit?.(), 80)
     }
   }
 
@@ -1116,6 +1123,17 @@ export default class extends Controller {
     if (this.diagramStudio) {
       this.diagramStudio.cancelTwoClickConnect()
       this.resetDiagramConnectUI()
+    }
+    this.activeDiagramEditingUrl = null
+    this.activeDiagramEditingAlt = null
+    if (this.hasDiagramInsertLabelTarget) {
+      this.diagramInsertLabelTarget.textContent = "Insert Diagram"
+    }
+  }
+
+  closeDiagramModalOnBackdrop(event) {
+    if (event.target === this.diagramDialogTarget) {
+      this.closeDiagramModal(event)
     }
   }
 
@@ -1344,14 +1362,17 @@ export default class extends Controller {
 
     const title = (this.hasDiagramTitleTarget ? this.diagramTitleTarget.value.trim() : "") || "Architecture Diagram"
     const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "architecture-diagram"
-    const filename = `${slug}-${Date.now()}.png`
+    const filename = `${slug}-${Date.now()}.svg`
 
     if (this.hasDiagramInsertBtnTarget) this.diagramInsertBtnTarget.disabled = true
-    if (this.hasDiagramInsertLabelTarget) this.diagramInsertLabelTarget.textContent = "Rendering & Uploading..."
+    if (this.hasDiagramInsertLabelTarget) {
+      this.diagramInsertLabelTarget.textContent = this.activeDiagramEditingUrl ? "Updating..." : "Rendering & Uploading..."
+    }
 
     try {
-      const pngBlob = await this.diagramStudio.exportToPngBlob(2)
-      const file = new File([pngBlob], filename, { type: "image/png" })
+      // Export self-contained SVG with embedded JSON metadata for full re-editing
+      const svgBlob = this.diagramStudio.exportToSvgBlob(title, true)
+      const file = new File([svgBlob], filename, { type: "image/svg+xml" })
 
       const formData = new FormData()
       formData.append("file", file)
@@ -1375,20 +1396,194 @@ export default class extends Controller {
 
       const data = await response.json()
       const imageUrl = data.url || `/rails/active_storage/blobs/${data.signed_id}/${filename}`
-      const mdImage = `\n![${title}](${imageUrl})\n`
+      const newMdImage = `![${title}](${imageUrl})`
 
+      const editingUrl = this.activeDiagramEditingUrl
       this.closeDiagramModal()
-      this.restoreSelection()
-      this.insertAtCursor(mdImage)
+
+      if (editingUrl && this.textarea) {
+        // Replace existing diagram markdown with updated diagram
+        const text = this.textarea.value
+        const escapedUrl = editingUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+        const regex = new RegExp(`!\\[[^\\]]*\\]\\(${escapedUrl}\\)`, "g")
+        if (regex.test(text)) {
+          this.textarea.value = text.replace(regex, newMdImage)
+        } else {
+          this.restoreSelection()
+          this.insertAtCursor(`\n${newMdImage}\n`)
+        }
+        this.activeDiagramEditingUrl = null
+        this.activeDiagramEditingAlt = null
+        this.showToast("Architecture diagram updated!")
+      } else {
+        this.restoreSelection()
+        this.insertAtCursor(`\n${newMdImage}\n`)
+        this.showToast("Architecture diagram inserted!")
+      }
+
       this.updateStats()
-      this.showToast("Architecture diagram inserted!")
-      if (this.currentMode === "split") this.scheduleLivePreview()
+      if (this.currentMode === "split" || this.currentMode === "preview") {
+        this.scheduleLivePreview()
+      }
     } catch (err) {
       console.error("Diagram export/upload failed:", err)
       this.showToast(err.message || "Failed to insert diagram", true)
     } finally {
       if (this.hasDiagramInsertBtnTarget) this.diagramInsertBtnTarget.disabled = false
-      if (this.hasDiagramInsertLabelTarget) this.diagramInsertLabelTarget.textContent = "Insert Diagram"
+      if (this.hasDiagramInsertLabelTarget) {
+        this.diagramInsertLabelTarget.textContent = this.activeDiagramEditingUrl ? "Update Diagram" : "Insert Diagram"
+      }
+    }
+  }
+
+  // --- Re-Editing Diagrams from Markdown Preview & File Import/Export ---
+
+  triggerDiagramFileInput(event) {
+    event?.preventDefault?.()
+    if (this.hasDiagramFileInputTarget) {
+      this.diagramFileInputTarget.click()
+    }
+  }
+
+  async importDiagramFile(event) {
+    const file = event?.target?.files?.[0]
+    if (!file || !this.diagramStudio) return
+
+    try {
+      const text = await file.text()
+      let state = null
+
+      if (file.name.endsWith(".json")) {
+        state = JSON.parse(text)
+      } else {
+        if (!this.extractDiagramStateFromSvg) {
+          const mod = await import("zenmark_diagram")
+          this.extractDiagramStateFromSvg = mod.extractDiagramStateFromSvg
+        }
+        state = this.extractDiagramStateFromSvg(text)
+      }
+
+      if (!state) {
+        throw new Error("Could not find valid diagram data in this file")
+      }
+
+      this.diagramStudio.loadJSON(state)
+      if (this.hasDiagramTitleTarget && state.title) {
+        this.diagramTitleTarget.value = state.title
+      }
+      this.showToast(`Imported ${file.name}!`)
+    } catch (err) {
+      console.error("Failed to import diagram file:", err)
+      this.showToast(err.message || "Failed to import file", true)
+    } finally {
+      if (event?.target) event.target.value = ""
+    }
+  }
+
+  downloadDiagramSvg(event) {
+    event?.preventDefault?.()
+    if (!this.diagramStudio) return
+
+    try {
+      const title = (this.hasDiagramTitleTarget ? this.diagramTitleTarget.value.trim() : "") || "Architecture Diagram"
+      const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "architecture-diagram"
+      const svgBlob = this.diagramStudio.exportToSvgBlob(title, true)
+      const url = URL.createObjectURL(svgBlob)
+
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `${slug}.svg`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+
+      this.showToast("Exported editable SVG!")
+    } catch (err) {
+      console.error("Download failed:", err)
+      this.showToast(err.message || "Failed to export SVG", true)
+    }
+  }
+
+  attachDiagramEditBadgesInPreview() {
+    if (!this.hasPreviewAreaTarget) return
+
+    const images = this.previewAreaTarget.querySelectorAll("img")
+    images.forEach(img => {
+      const src = img.getAttribute("src") || ""
+      const isCandidate = src.endsWith(".svg") || src.includes("active_storage") || src.includes("diagram")
+      if (!isCandidate) return
+
+      if (img.closest(".zenmark-diagram-figure")) return
+
+      const figure = document.createElement("span")
+      figure.className = "zenmark-diagram-figure"
+      img.parentNode.insertBefore(figure, img)
+      figure.appendChild(img)
+
+      const editBtn = document.createElement("button")
+      editBtn.type = "button"
+      editBtn.className = "zenmark-diagram-edit-badge"
+      editBtn.innerHTML = '<span class="material-symbols-outlined text-[14px]">edit</span><span>Edit Diagram</span>'
+      editBtn.title = "Edit this architecture diagram in Studio"
+
+      editBtn.addEventListener("click", (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        this.editDiagramFromImageUrl(img.src, img.alt)
+      })
+
+      img.addEventListener("dblclick", (e) => {
+        e.preventDefault()
+        this.editDiagramFromImageUrl(img.src, img.alt)
+      })
+
+      figure.appendChild(editBtn)
+    })
+  }
+
+  async editDiagramFromImageUrl(imageUrl, alt = '') {
+    if (!imageUrl) return
+
+    try {
+      this.showToast("Loading diagram data...")
+      const response = await fetch(imageUrl)
+      if (!response.ok) {
+        throw new Error(`Failed to fetch diagram SVG (${response.status})`)
+      }
+      const svgText = await response.text()
+
+      if (!this.extractDiagramStateFromSvg) {
+        const mod = await import("zenmark_diagram")
+        this.extractDiagramStateFromSvg = mod.extractDiagramStateFromSvg
+      }
+
+      const state = this.extractDiagramStateFromSvg(svgText)
+      if (!state) {
+        this.showToast("This image does not contain editable diagram data", true)
+        return
+      }
+
+      this.activeDiagramEditingUrl = imageUrl
+      this.activeDiagramEditingAlt = alt
+      await this.openDiagramModal()
+
+      if (this.hasDiagramTitleTarget) {
+        this.diagramTitleTarget.value = state.title || alt || "Cloud Architecture Diagram"
+      }
+
+      if (this.diagramStudio) {
+        this.diagramStudio.loadJSON(state)
+      }
+
+      if (this.hasDiagramInsertLabelTarget) {
+        this.diagramInsertLabelTarget.textContent = "Update Diagram"
+      }
+
+      this.showToast("Diagram loaded for editing!")
+    } catch (err) {
+      console.error("Failed to load diagram for editing:", err)
+      this.showToast(err.message || "Failed to load diagram", true)
     }
   }
 }

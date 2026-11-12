@@ -4,10 +4,14 @@ module Zenmark
   class Engine < ::Rails::Engine
     isolate_namespace Zenmark
 
-    config.assets.paths << root.join("app/javascript")
+    if config.respond_to?(:assets)
+      config.assets.paths << root.join("app/javascript")
+    end
 
     initializer "zenmark.assets.precompile" do |app|
-      app.config.assets.precompile += %w( zenmark/editor.js )
+      if app.config.respond_to?(:assets)
+        app.config.assets.precompile += %w( zenmark/editor.js )
+      end
     end
 
     initializer "zenmark.helpers" do
@@ -17,13 +21,28 @@ module Zenmark
     end
 
     initializer "zenmark.importmap", before: "importmap" do |app|
-      app.config.importmap.paths << root.join("config/importmap.rb")
-      app.config.importmap.cache_sweepers << root.join("app/javascript")
+      if app.config.respond_to?(:importmap)
+        app.config.importmap.paths << root.join("config/importmap.rb")
+        app.config.importmap.cache_sweepers << root.join("app/javascript")
+      end
     end
 
     initializer "zenmark.assets" do |app|
-      app.config.assets.paths << root.join("app/javascript")
-      app.config.assets.precompile += %w[myengine/manifest.js]
+      if app.config.respond_to?(:assets)
+        app.config.assets.paths << root.join("app/javascript")
+        app.config.assets.precompile += %w[myengine/manifest.js]
+      end
+    end
+
+    initializer "zenmark.tailwind" do |app|
+      if app.config.respond_to?(:tailwind_content_paths)
+        app.config.tailwind_content_paths ||= []
+        app.config.tailwind_content_paths += [
+          root.join("app/views/**/*.{erb,slim}").to_s,
+          root.join("app/helpers/**/*.rb").to_s,
+          root.join("app/javascript/**/*.js").to_s
+        ]
+      end
     end
   end
 end

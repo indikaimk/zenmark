@@ -1,6 +1,10 @@
-<div class="zenmark-dialog hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5"
-     data-zenmark-editor-target="diagramDialog">
-  <div class="bg-white rounded-2xl border border-slate-200/90 shadow-2xl w-full max-w-6xl h-[88vh] flex flex-col overflow-hidden text-slate-800">
+<div class="zenmark-dialog zenmark-diagram-dialog hidden fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden"
+     data-zenmark-editor-target="diagramDialog"
+     data-action="click->zenmark-editor#closeDiagramModalOnBackdrop"
+     style="box-sizing: border-box;">
+  <div class="zenmark-diagram-modal bg-white rounded-2xl border border-slate-200/90 shadow-2xl w-full max-w-6xl flex flex-col overflow-hidden text-slate-800 my-auto"
+       data-action="click->zenmark-editor#stopEventPropagation"
+       style="height: 88vh; height: 88dvh; max-height: calc(100vh - 2.5rem); max-height: calc(100dvh - 2.5rem); min-height: 0;">
 
     <!-- Modal Header / Toolbar -->
     <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-3.5 border-b border-slate-200 bg-slate-50/70 shrink-0">
@@ -68,6 +72,31 @@
                   title="Zoom In"
                   class="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer">
             <span class="material-symbols-outlined text-[17px] block">add</span>
+          </button>
+        </div>
+
+        <!-- Import / Export Controls -->
+        <input type="file"
+               data-zenmark-editor-target="diagramFileInput"
+               data-action="change->zenmark-editor#importDiagramFile"
+               accept=".svg,.json"
+               style="display: none;" />
+
+        <div class="inline-flex items-center rounded-xl border border-slate-200 bg-white p-0.5 shadow-2xs">
+          <button type="button"
+                  data-action="click->zenmark-editor#triggerDiagramFileInput"
+                  title="Import editable diagram (.svg or .json)"
+                  class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer">
+            <span class="material-symbols-outlined text-[15px]">file_open</span>
+            <span class="hidden sm:inline">Import</span>
+          </button>
+          <span class="w-px h-4 bg-slate-200 mx-0.5"></span>
+          <button type="button"
+                  data-action="click->zenmark-editor#downloadDiagramSvg"
+                  title="Download editable SVG diagram"
+                  class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer">
+            <span class="material-symbols-outlined text-[15px]">download</span>
+            <span class="hidden sm:inline">Export SVG</span>
           </button>
         </div>
 
@@ -139,7 +168,7 @@
         </div>
 
         <!-- Scrollable Component Catalog List -->
-        <div class="flex-1 overflow-y-auto p-3 space-y-3.5" data-zenmark-editor-target="diagramCatalogList">
+        <div class="flex-1 overflow-y-auto p-3 space-y-3.5 min-h-0" data-zenmark-editor-target="diagramCatalogList">
           <!-- Initial Core Shapes (replaced/enhanced dynamically by renderDiagramCatalog) -->
           <div>
             <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 px-0.5">Core Shapes</div>
@@ -183,11 +212,11 @@
       </div>
 
       <!-- Center: Interactive diagram-js Canvas -->
-      <div class="flex-1 relative bg-slate-50 overflow-hidden"
+      <div class="flex-1 relative bg-slate-50 overflow-hidden min-h-0"
            style="background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 20px 20px;"
            data-action="dragover->zenmark-editor#handleDiagramCanvasDragOver drop->zenmark-editor#handleDiagramCanvasDrop">
         <div data-zenmark-editor-target="diagramCanvas"
-             class="w-full h-full"></div>
+             class="w-full h-full min-h-0"></div>
 
         <!-- Floating Connect Mode Hint Banner -->
         <div data-zenmark-editor-target="diagramConnectHint"
@@ -198,7 +227,7 @@
       </div>
 
       <!-- Right Sidebar: Selected Element Properties Inspector -->
-      <div class="w-64 border-l border-slate-200 bg-white p-4 overflow-y-auto shrink-0 flex flex-col justify-between">
+      <div class="w-64 border-l border-slate-200 bg-white p-4 overflow-y-auto shrink-0 flex flex-col justify-between min-h-0">
         <div class="space-y-4">
           <div>
             <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Diagram Title / Alt Text</label>
