@@ -9,6 +9,7 @@ export default class extends Controller {
     "imageMdDialog", "toast", "fullscreenBtn", "fullscreenIcon",
     "modeWriteBtn", "modeSplitBtn", "modePreviewBtn",
     "unsavedBadge", "saveBtn", "saveIcon", "saveLabel",
+    "autosaveStatus", "autosaveTime",
     "diagramDialog", "diagramCanvas", "diagramTemplateSelect", "diagramTitle",
     "diagramCatalogSearch", "diagramProviderTabs", "diagramCatalogList",
     "diagramNoSelection", "diagramInspector", "diagramNodeLabel", "diagramNodeSub",
@@ -20,7 +21,9 @@ export default class extends Controller {
   static values = {
     imageUploadUrl: String,
     saveUrl: String,
-    sgid: String
+    sgid: String,
+    autosave: { type: Boolean, default: false },
+    autosaveInterval: { type: Number, default: 2500 }
   }
 
   connect() {
@@ -29,6 +32,9 @@ export default class extends Controller {
     this.previewDebounceTimer = null
     this.toastTimer = null
     this.saveFeedbackTimer = null
+    this.autosaveTimer = null
+    this.isSaving = false
+    this.pendingAutosave = false
     this.initialValue = this.textarea ? this.textarea.value : ""
 
     // Register event listeners
@@ -41,15 +47,32 @@ export default class extends Controller {
     this.boundInput = this.onInput.bind(this)
     this.textarea.addEventListener("input", this.boundInput)
 
+    this.boundBlur = this.onBlur.bind(this)
+    this.textarea.addEventListener("blur", this.boundBlur)
+
+    this.boundBeforeUnload = (e) => {
+      if (this.textarea && this.textarea.value !== this.initialValue) {
+        e.preventDefault()
+        e.returnValue = ""
+      }
+    }
+    window.addEventListener("beforeunload", this.boundBeforeUnload)
+
     // Calculate initial statistics & unsaved state
     this.updateStats()
     this.syncUnsavedState()
+
+    // Restore draft from local storage if initial textarea is empty
+    this.checkLocalStorageRecovery()
   }
 
   disconnect() {
     if (this.boundKeydown) this.textarea.removeEventListener("keydown", this.boundKeydown)
     if (this.boundPaste) this.textarea.removeEventListener("paste", this.boundPaste)
     if (this.boundInput) this.textarea.removeEventListener("input", this.boundInput)
+    if (this.boundBlur) this.textarea.removeEventListener("blur", this.boundBlur)
+    if (this.boundBeforeUnload) window.removeEventListener("beforeunload", this.boundBeforeUnload)
+    if (this.autosaveTimer) clearTimeout(this.autosaveTimer)
     if (this.previewDebounceTimer) clearTimeout(this.previewDebounceTimer)
     if (this.toastTimer) clearTimeout(this.toastTimer)
     if (this.saveFeedbackTimer) clearTimeout(this.saveFeedbackTimer)
@@ -73,6 +96,70 @@ export default class extends Controller {
     if (this.currentMode === "split") {
       this.scheduleLivePreview()
     }
+    if (this.autosaveValue) {
+      this.scheduleAutosave()
+    }
+  }
+
+  onBlur() {
+    if (this.autosaveValue && this.textarea && this.textarea.value !== this.initialValue) {
+      if (this.autosaveTimer) clearTimeout(this.autosaveTimer)
+      this.performAutosave()
+    }
+  }
+
+  scheduleAutosave() {
+    if (this.autosaveTimer) clearTimeout(this.autosaveTimer)
+    if (!this.textarea || this.textarea.value === this.initialValue) return
+
+    const delay = this.autosaveIntervalValue > 0 ? this.autosaveIntervalValue : 2500
+    this.autosaveTimer = setTimeout(() => {
+      this.performAutosave()
+    }, delay)
+  }
+
+  async performAutosave() {
+    if (!this.textarea || this.textarea.value === this.initialValue) return
+    if (this.isSaving) {
+      this.pendingAutosave = true
+      return
+    }
+    await this.saveForm(null, { isAutosave: true, silent: true })
+  }
+
+  get localStorageKey() {
+    const identifier = this.sgidValue || this.saveUrlValue || window.location.pathname
+    return `zenmark_draft_${identifier}`
+  }
+
+  backupToLocalStorage() {
+    try {
+      if (this.textarea && this.textarea.value) {
+        localStorage.setItem(this.localStorageKey, JSON.stringify({
+          content: this.textarea.value,
+          savedAt: new Date().toISOString()
+        }))
+      }
+    } catch (_e) {}
+  }
+
+  clearLocalStorageBackup() {
+    try {
+      localStorage.removeItem(this.localStorageKey)
+    } catch (_e) {}
+  }
+
+  checkLocalStorageRecovery() {
+    try {
+      const raw = localStorage.getItem(this.localStorageKey)
+      if (!raw) return
+      const backup = JSON.parse(raw)
+      if (backup && backup.content && backup.content !== this.initialValue && !this.initialValue) {
+        this.textarea.value = backup.content
+        this.updateStats()
+        this.showToast("Restored unsaved draft from local storage")
+      }
+    } catch (_e) {}
   }
 
   updateStats() {
@@ -336,11 +423,32 @@ export default class extends Controller {
     }
   }
 
-  async saveForm(event) {
+  async saveForm(event, options = {}) {
     event?.preventDefault?.()
+    const isAutosave = Boolean(options?.isAutosave)
+    const silent = Boolean(options?.silent || isAutosave)
+
+    // Cancel pending autosave timer if manual save is triggered
+    if (this.autosaveTimer) clearTimeout(this.autosaveTimer)
+
+    // Prevent concurrent save requests
+    if (this.isSaving) {
+      if (isAutosave) {
+        this.pendingAutosave = true
+      }
+      return
+    }
+
     const form = this.element.closest("form")
     const targetUrl = form?.action || this.saveUrlValue || this.imageUploadUrlValue
     if (!targetUrl && !form) return
+
+    // If nothing changed and this is an autosave, skip
+    if (isAutosave && this.textarea && this.textarea.value === this.initialValue) {
+      return
+    }
+
+    this.isSaving = true
 
     const selectionStart = this.textarea ? (this.textarea.selectionStart ?? this.savedSelectionStart) : null
     const selectionEnd = this.textarea ? (this.textarea.selectionEnd ?? this.savedSelectionEnd) : null
@@ -348,7 +456,11 @@ export default class extends Controller {
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
     if (this.hasSaveBtnTarget) this.saveBtnTarget.disabled = true
-    if (this.hasSaveLabelTarget) this.saveLabelTarget.textContent = "Saving..."
+    if (this.hasSaveLabelTarget) this.saveLabelTarget.textContent = isAutosave ? "Autosaving..." : "Saving..."
+    if (this.hasSaveIconTarget && isAutosave) {
+      this.saveIconTarget.classList.add("animate-spin")
+      this.saveIconTarget.textContent = "progress_activity"
+    }
 
     try {
       const formData = form ? new FormData(form) : new FormData()
@@ -378,19 +490,45 @@ export default class extends Controller {
 
       if (!response.ok || (data && data.success === false)) {
         const errMsg = data?.error || "Failed to save changes."
-        this.showToast(errMsg, "error")
+        this.backupToLocalStorage()
+        if (!silent) {
+          this.showToast(errMsg, true)
+        }
         if (this.hasSaveLabelTarget) this.saveLabelTarget.textContent = "Save"
+        if (this.hasSaveIconTarget) {
+          this.saveIconTarget.classList.remove("animate-spin", "text-emerald-600")
+          this.saveIconTarget.classList.add("text-slate-500")
+          this.saveIconTarget.textContent = "check"
+        }
         return
       }
 
       this.initialValue = this.textarea ? this.textarea.value : ""
+      this.clearLocalStorageBackup()
       this.syncUnsavedState()
-      this.showToast("Saved")
 
-      if (this.hasSaveLabelTarget) this.saveLabelTarget.textContent = "Saved"
+      const now = new Date()
+      const timeStr = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })
+      this.lastSavedTime = timeStr
+
+      if (!silent) {
+        this.showToast("Saved")
+      }
+
+      if (this.hasAutosaveStatusTarget) {
+        this.autosaveStatusTarget.classList.remove("hidden")
+        if (this.hasAutosaveTimeTarget) {
+          this.autosaveTimeTarget.textContent = `Saved ${timeStr}`
+        }
+      }
+
+      if (this.hasSaveLabelTarget) {
+        this.saveLabelTarget.textContent = isAutosave ? `Saved ${timeStr}` : "Saved"
+      }
       if (this.hasSaveIconTarget) {
-        this.saveIconTarget.classList.remove("text-slate-500")
+        this.saveIconTarget.classList.remove("animate-spin", "text-slate-500")
         this.saveIconTarget.classList.add("text-emerald-600")
+        this.saveIconTarget.textContent = "check"
       }
 
       if (data?.rendered_html !== undefined) {
@@ -414,16 +552,26 @@ export default class extends Controller {
       this.saveFeedbackTimer = setTimeout(() => {
         if (this.hasSaveLabelTarget) this.saveLabelTarget.textContent = "Save"
         if (this.hasSaveIconTarget) {
-          this.saveIconTarget.classList.remove("text-emerald-600")
+          this.saveIconTarget.classList.remove("text-emerald-600", "animate-spin")
           this.saveIconTarget.classList.add("text-slate-500")
+          this.saveIconTarget.textContent = "check"
         }
-      }, 2000)
+      }, 3000)
     } catch (error) {
-      this.showToast(`Save error: ${error.message}`, "error")
+      this.backupToLocalStorage()
+      if (!silent) {
+        this.showToast(`Save error: ${error.message}`, true)
+      }
       if (this.hasSaveLabelTarget) this.saveLabelTarget.textContent = "Save"
+      if (this.hasSaveIconTarget) {
+        this.saveIconTarget.classList.remove("animate-spin", "text-emerald-600")
+        this.saveIconTarget.classList.add("text-slate-500")
+        this.saveIconTarget.textContent = "check"
+      }
     } finally {
+      this.isSaving = false
       if (this.hasSaveBtnTarget) this.saveBtnTarget.disabled = false
-      if (this.textarea && this.currentMode !== "preview") {
+      if (this.textarea && this.currentMode !== "preview" && !isAutosave) {
         this.textarea.focus({ preventScroll: true })
         if (typeof selectionStart === "number" && typeof selectionEnd === "number") {
           this.textarea.setSelectionRange(selectionStart, selectionEnd)
@@ -431,6 +579,11 @@ export default class extends Controller {
         if (typeof scrollTop === "number") {
           this.textarea.scrollTop = scrollTop
         }
+      }
+
+      if (this.pendingAutosave) {
+        this.pendingAutosave = false
+        this.scheduleAutosave()
       }
     }
   }
@@ -770,6 +923,9 @@ export default class extends Controller {
     this.applyModeClasses("zenmark-mode-preview")
     this.updateModeButtonStates(this.modePreviewBtnTarget)
     this.fetchPreview()
+    if (this.autosaveValue && this.textarea && this.textarea.value !== this.initialValue) {
+      this.performAutosave()
+    }
   }
 
   applyModeClasses(modeClass) {

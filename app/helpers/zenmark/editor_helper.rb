@@ -3,13 +3,27 @@
 module Zenmark
   module EditorHelper
     def zenmark_editor(form, field, image_upload_url = nil, options = {})
+      if image_upload_url.is_a?(Hash) && options.empty?
+        options = image_upload_url
+        image_upload_url = options[:image_upload_url] || options[:save_url]
+      end
+
       sgid = form.object.respond_to?(:to_sgid) && form.object.persisted? ? form.object.to_sgid.to_s : nil
+      save_url = options[:save_url] || image_upload_url
+
+      # Autosave configuration:
+      # Enabled by default for persisted records with a save URL, or when explicitly passed.
+      is_persisted = form.object.respond_to?(:persisted?) ? form.object.persisted? : true
+      autosave_enabled = options.key?(:autosave) ? !!options[:autosave] : (is_persisted && save_url.present?)
+      autosave_interval = options[:autosave_interval] || 2500
 
       content_tag :div, class: "zenmark-editor", data: {
         controller: "zenmark-editor",
         "zenmark-editor-image-upload-url-value": image_upload_url,
-        "zenmark-editor-save-url-value": options[:save_url] || image_upload_url,
-        "zenmark-editor-sgid-value": sgid
+        "zenmark-editor-save-url-value": save_url,
+        "zenmark-editor-sgid-value": sgid,
+        "zenmark-editor-autosave-value": autosave_enabled,
+        "zenmark-editor-autosave-interval-value": autosave_interval
       } do
         safe_join([
           render("zenmark/toolbar"),
