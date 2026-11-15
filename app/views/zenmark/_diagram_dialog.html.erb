@@ -1,35 +1,51 @@
-<div class="zenmark-dialog zenmark-diagram-dialog hidden fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden"
+<div class="zenmark-dialog zenmark-diagram-dialog hidden fixed inset-0 z-[100] bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-0 overflow-hidden"
      data-zenmark-editor-target="diagramDialog"
      data-action="click->zenmark-editor#closeDiagramModalOnBackdrop"
      style="box-sizing: border-box;">
-  <div class="zenmark-diagram-modal bg-white rounded-2xl border border-slate-200/90 shadow-2xl w-full max-w-6xl flex flex-col overflow-hidden text-slate-800 my-auto"
+  <div class="zenmark-diagram-modal bg-white w-screen h-screen max-w-none flex flex-col overflow-hidden text-slate-800 m-0 rounded-none border-0 shadow-none"
        data-action="click->zenmark-editor#stopEventPropagation"
-       style="height: 88vh; height: 88dvh; max-height: calc(100vh - 2.5rem); max-height: calc(100dvh - 2.5rem); min-height: 0;">
+       style="width: 100vw; width: 100dvw; height: 100vh; height: 100dvh; max-height: 100vh; max-height: 100dvh; min-height: 0;">
 
     <!-- Modal Header / Toolbar -->
-    <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-3.5 border-b border-slate-200 bg-slate-50/70 shrink-0">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 shrink-0">
-          <span class="material-symbols-outlined text-[18px]">account_tree</span>
+    <div class="flex flex-wrap items-center justify-between gap-2 px-4 py-2 border-b border-slate-200 bg-slate-50/80 shrink-0">
+      <div class="flex items-center gap-2.5">
+        <div class="w-7 h-7 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 shrink-0">
+          <span class="material-symbols-outlined text-[17px]">account_tree</span>
         </div>
         <div>
-          <div class="flex items-center gap-2">
-            <h3 class="text-sm font-bold text-slate-900">Visual Architecture Studio</h3>
-            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-slate-600">diagram-js</span>
-            <span class="hidden sm:inline-block text-[10px] font-semibold px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-700">AWS · GCP · Azure · K8s</span>
-          </div>
-          <p class="text-[11px] text-slate-500">Click or drag cloud services onto the canvas, double-click to edit labels, and connect with orthogonal arrows</p>
+          <h3 class="text-sm font-bold text-slate-900 leading-none">Visual Architecture Studio</h3>
         </div>
       </div>
 
       <!-- Canvas Controls & Starter Templates -->
       <div class="flex flex-wrap items-center gap-2">
+        <!-- Sidebar Toggle Buttons (Catalog & Inspector) -->
+        <div class="inline-flex items-center rounded-xl border border-slate-200 bg-white p-0.5 shadow-2xs">
+          <button type="button"
+                  data-zenmark-editor-target="diagramCatalogToggleBtn"
+                  data-action="click->zenmark-editor#toggleDiagramCatalog"
+                  title="Toggle Cloud Catalog (Left Sidebar)"
+                  class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer">
+            <span class="material-symbols-outlined text-[15px]">left_panel_open</span>
+            <span class="hidden xl:inline">Catalog</span>
+          </button>
+          <span class="w-px h-4 bg-slate-200 mx-0.5"></span>
+          <button type="button"
+                  data-zenmark-editor-target="diagramInspectorToggleBtn"
+                  data-action="click->zenmark-editor#toggleDiagramInspector"
+                  title="Toggle Inspector (Right Sidebar)"
+                  class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer">
+            <span class="material-symbols-outlined text-[15px]">right_panel_open</span>
+            <span class="hidden xl:inline">Inspector</span>
+          </button>
+        </div>
+
         <!-- Starter Template Selector -->
         <div class="flex items-center gap-1.5 mr-1">
-          <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 hidden md:inline">Template:</span>
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 hidden lg:inline">Template:</span>
           <select data-zenmark-editor-target="diagramTemplateSelect"
                   data-action="change->zenmark-editor#loadDiagramTemplate"
-                  class="rounded-xl border border-slate-200 px-2.5 py-1.5 text-xs font-medium text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#C21057]/15 focus:border-[#C21057] shadow-2xs cursor-pointer">
+                  class="rounded-xl border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#C21057]/15 focus:border-[#C21057] shadow-2xs cursor-pointer">
             <option value="three_tier">GCP 3-Tier Cloud Architecture</option>
             <option value="aws_serverless">AWS Serverless & Event-Driven</option>
             <option value="azure_microservices">Azure Microservices & OpenAI</option>
@@ -46,20 +62,20 @@
                   data-action="click->zenmark-editor#diagramUndo"
                   title="Undo (⌘Z)"
                   class="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer">
-            <span class="material-symbols-outlined text-[17px] block">undo</span>
+            <span class="material-symbols-outlined text-[16px] block">undo</span>
           </button>
           <button type="button"
                   data-action="click->zenmark-editor#diagramRedo"
                   title="Redo (⌘⇧Z)"
                   class="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer">
-            <span class="material-symbols-outlined text-[17px] block">redo</span>
+            <span class="material-symbols-outlined text-[16px] block">redo</span>
           </button>
           <span class="w-px h-4 bg-slate-200 mx-0.5"></span>
           <button type="button"
                   data-action="click->zenmark-editor#diagramZoomOut"
                   title="Zoom Out"
                   class="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer">
-            <span class="material-symbols-outlined text-[17px] block">remove</span>
+            <span class="material-symbols-outlined text-[16px] block">remove</span>
           </button>
           <button type="button"
                   data-action="click->zenmark-editor#diagramZoomReset"
@@ -71,7 +87,7 @@
                   data-action="click->zenmark-editor#diagramZoomIn"
                   title="Zoom In"
                   class="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer">
-            <span class="material-symbols-outlined text-[17px] block">add</span>
+            <span class="material-symbols-outlined text-[16px] block">add</span>
           </button>
         </div>
 
@@ -102,7 +118,7 @@
 
         <button type="button"
                 data-action="click->zenmark-editor#closeDiagramModal"
-                class="text-slate-400 hover:text-slate-700 rounded-xl p-1.5 hover:bg-slate-100 transition-colors cursor-pointer"
+                class="text-slate-400 hover:text-slate-700 rounded-xl p-1.5 hover:bg-slate-100 transition-colors cursor-pointer ml-1"
                 aria-label="Close diagram studio">
           <span class="material-symbols-outlined text-[20px] block">close</span>
         </button>
@@ -113,7 +129,8 @@
     <div class="flex-1 flex min-h-0 overflow-hidden">
 
       <!-- Left Sidebar: Searchable Multi-Cloud & Kubernetes Catalog -->
-      <div class="w-64 border-r border-slate-200 bg-slate-50/60 flex flex-col min-h-0 shrink-0">
+      <div class="w-60 border-r border-slate-200 bg-slate-50/60 flex flex-col min-h-0 shrink-0 transition-all duration-200"
+           data-zenmark-editor-target="diagramCatalogSidebar">
 
         <!-- Search Input & Provider Filter Tabs -->
         <div class="p-3 border-b border-slate-200/80 bg-white space-y-2.5 shrink-0">
@@ -227,7 +244,8 @@
       </div>
 
       <!-- Right Sidebar: Selected Element Properties Inspector -->
-      <div class="w-64 border-l border-slate-200 bg-white p-4 overflow-y-auto shrink-0 flex flex-col justify-between min-h-0">
+      <div class="w-60 border-l border-slate-200 bg-white p-3.5 overflow-y-auto shrink-0 flex flex-col justify-between min-h-0 transition-all duration-200"
+           data-zenmark-editor-target="diagramInspectorSidebar">
         <div class="space-y-4">
           <div>
             <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Diagram Title / Alt Text</label>
@@ -316,21 +334,21 @@
     </div>
 
     <!-- Modal Footer -->
-    <div class="flex items-center justify-between px-5 py-3.5 border-t border-slate-200 bg-slate-50/70 shrink-0">
-      <div class="text-xs text-slate-500" data-zenmark-editor-target="diagramStatusText">
+    <div class="flex items-center justify-between px-4 py-2 border-t border-slate-200 bg-slate-50/80 shrink-0">
+      <div class="text-xs text-slate-500 truncate" data-zenmark-editor-target="diagramStatusText">
         Ready · Powered by diagram-js (MIT)
       </div>
 
-      <div class="flex items-center gap-2.5">
+      <div class="flex items-center gap-2 shrink-0">
         <button type="button"
                 data-action="click->zenmark-editor#closeDiagramModal"
-                class="inline-flex items-center px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-200 shadow-2xs transition-colors cursor-pointer">
+                class="inline-flex items-center px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-200 shadow-2xs transition-colors cursor-pointer">
           Cancel
         </button>
         <button type="button"
                 data-zenmark-editor-target="diagramInsertBtn"
                 data-action="click->zenmark-editor#insertDiagramIntoMarkdown"
-                class="inline-flex items-center justify-center gap-1.5 px-5 py-2 rounded-xl font-semibold text-xs bg-[#C21057] hover:bg-[#a80e4b] text-white shadow-xs transition-colors cursor-pointer">
+                class="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-xl font-semibold text-xs bg-[#C21057] hover:bg-[#a80e4b] text-white shadow-xs transition-colors cursor-pointer">
           <span class="material-symbols-outlined text-[16px]">add_photo_alternate</span>
           <span data-zenmark-editor-target="diagramInsertLabel">Insert Diagram</span>
         </button>

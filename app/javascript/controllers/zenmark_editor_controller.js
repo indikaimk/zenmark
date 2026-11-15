@@ -11,6 +11,7 @@ export default class extends Controller {
     "unsavedBadge", "saveBtn", "saveIcon", "saveLabel",
     "autosaveStatus", "autosaveTime",
     "diagramDialog", "diagramCanvas", "diagramTemplateSelect", "diagramTitle",
+    "diagramCatalogSidebar", "diagramInspectorSidebar", "diagramCatalogToggleBtn", "diagramInspectorToggleBtn",
     "diagramCatalogSearch", "diagramProviderTabs", "diagramCatalogList",
     "diagramNoSelection", "diagramInspector", "diagramNodeLabel", "diagramNodeSub",
     "diagramNodeSubWrapper", "diagramNodePresetWrapper", "diagramNodePresetSelect", "diagramNodeThemeWrapper",
@@ -64,6 +65,9 @@ export default class extends Controller {
 
     // Restore draft from local storage if initial textarea is empty
     this.checkLocalStorageRecovery()
+
+    // Setup dynamic sticky toolbar offset
+    this.setupStickyToolbar()
   }
 
   disconnect() {
@@ -72,6 +76,11 @@ export default class extends Controller {
     if (this.boundInput) this.textarea.removeEventListener("input", this.boundInput)
     if (this.boundBlur) this.textarea.removeEventListener("blur", this.boundBlur)
     if (this.boundBeforeUnload) window.removeEventListener("beforeunload", this.boundBeforeUnload)
+    if (this.boundStickyResize) window.removeEventListener("resize", this.boundStickyResize)
+    if (this.stickyHeaderObserver) {
+      this.stickyHeaderObserver.disconnect()
+      this.stickyHeaderObserver = null
+    }
     if (this.autosaveTimer) clearTimeout(this.autosaveTimer)
     if (this.previewDebounceTimer) clearTimeout(this.previewDebounceTimer)
     if (this.toastTimer) clearTimeout(this.toastTimer)
@@ -188,11 +197,27 @@ export default class extends Controller {
   }
 
   syncUnsavedState() {
-    if (!this.hasUnsavedBadgeTarget || !this.textarea) return
-    if (this.textarea.value !== this.initialValue) {
-      this.unsavedBadgeTarget.classList.remove("hidden")
-    } else {
-      this.unsavedBadgeTarget.classList.add("hidden")
+    if (!this.textarea) return
+    const isDirty = this.textarea.value !== this.initialValue
+    if (this.hasUnsavedBadgeTarget) {
+      if (isDirty) {
+        this.unsavedBadgeTarget.classList.remove("hidden")
+      } else {
+        this.unsavedBadgeTarget.classList.add("hidden")
+      }
+    }
+
+    if (this.hasAutosaveStatusTarget && this.hasAutosaveTimeTarget) {
+      this.autosaveStatusTarget.classList.remove("hidden")
+      if (isDirty) {
+        this.autosaveTimeTarget.textContent = this.lastSavedTime
+          ? `Unsaved edits (last saved ${this.lastSavedTime})`
+          : "Unsaved edits"
+      } else {
+        this.autosaveTimeTarget.textContent = this.lastSavedTime
+          ? `All changes saved (${this.lastSavedTime})`
+          : "All changes saved"
+      }
     }
   }
 
@@ -456,10 +481,14 @@ export default class extends Controller {
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content
     if (this.hasSaveBtnTarget) this.saveBtnTarget.disabled = true
-    if (this.hasSaveLabelTarget) this.saveLabelTarget.textContent = isAutosave ? "Autosaving..." : "Saving..."
+    if (this.hasSaveLabelTarget) this.saveLabelTarget.textContent = isAutosave ? "Save" : "Saving..."
     if (this.hasSaveIconTarget && isAutosave) {
       this.saveIconTarget.classList.add("animate-spin")
       this.saveIconTarget.textContent = "progress_activity"
+    }
+    if (this.hasAutosaveStatusTarget && this.hasAutosaveTimeTarget) {
+      this.autosaveStatusTarget.classList.remove("hidden")
+      this.autosaveTimeTarget.textContent = isAutosave ? "Autosaving..." : "Saving changes..."
     }
 
     try {
@@ -523,7 +552,7 @@ export default class extends Controller {
       }
 
       if (this.hasSaveLabelTarget) {
-        this.saveLabelTarget.textContent = isAutosave ? `Saved ${timeStr}` : "Saved"
+        this.saveLabelTarget.textContent = isAutosave ? "Save" : "Saved"
       }
       if (this.hasSaveIconTarget) {
         this.saveIconTarget.classList.remove("animate-spin", "text-slate-500")
@@ -1017,7 +1046,47 @@ export default class extends Controller {
       if (this.hasFullscreenIconTarget) this.fullscreenIconTarget.textContent = "fullscreen"
       if (this.hasFullscreenBtnTarget) this.fullscreenBtnTarget.setAttribute("title", "Zen Mode (Esc)")
     }
+    this.adjustStickyToolbarOffset()
     this.textarea.focus()
+  }
+
+  // --- Sticky Toolbar Offset Handling ---
+
+  setupStickyToolbar() {
+    this.adjustStickyToolbarOffset()
+    requestAnimationFrame(() => this.adjustStickyToolbarOffset())
+
+    this.boundStickyResize = () => this.adjustStickyToolbarOffset()
+    window.addEventListener("resize", this.boundStickyResize)
+
+    const stickyHeader = document.querySelector("header.sticky, header.fixed, header[class*='sticky'], [data-header-scroll-target='container']")
+    if (window.ResizeObserver && stickyHeader) {
+      this.stickyHeaderObserver = new ResizeObserver(() => {
+        this.adjustStickyToolbarOffset()
+      })
+      this.stickyHeaderObserver.observe(stickyHeader)
+    }
+  }
+
+  adjustStickyToolbarOffset() {
+    if (this.isFullscreen) {
+      this.element.style.setProperty("--zenmark-sticky-top", "0px")
+      return
+    }
+
+    const stickyHeader = document.querySelector("header.sticky, header.fixed, header[class*='sticky'], [data-header-scroll-target='container']")
+    if (stickyHeader) {
+      const computed = window.getComputedStyle(stickyHeader)
+      if (computed.position === "sticky" || computed.position === "fixed") {
+        const height = Math.round(stickyHeader.getBoundingClientRect().height || stickyHeader.offsetHeight)
+        if (height > 0) {
+          this.element.style.setProperty("--zenmark-sticky-top", `${height}px`)
+          return
+        }
+      }
+    }
+
+    this.element.style.setProperty("--zenmark-sticky-top", "0px")
   }
 
   // --- Toast Notifications ---
@@ -1505,6 +1574,32 @@ export default class extends Controller {
   diagramZoomReset(event) {
     event?.preventDefault?.()
     this.diagramStudio?.zoomFit()
+  }
+
+  toggleDiagramCatalog(event) {
+    event?.preventDefault?.()
+    if (this.hasDiagramCatalogSidebarTarget) {
+      this.diagramCatalogSidebarTarget.classList.toggle("hidden")
+      if (this.hasDiagramCatalogToggleBtnTarget) {
+        const isHidden = this.diagramCatalogSidebarTarget.classList.contains("hidden")
+        this.diagramCatalogToggleBtnTarget.classList.toggle("bg-slate-100", isHidden)
+        this.diagramCatalogToggleBtnTarget.classList.toggle("text-slate-400", isHidden)
+      }
+      setTimeout(() => this.diagramStudio?.zoomFit?.(), 80)
+    }
+  }
+
+  toggleDiagramInspector(event) {
+    event?.preventDefault?.()
+    if (this.hasDiagramInspectorSidebarTarget) {
+      this.diagramInspectorSidebarTarget.classList.toggle("hidden")
+      if (this.hasDiagramInspectorToggleBtnTarget) {
+        const isHidden = this.diagramInspectorSidebarTarget.classList.contains("hidden")
+        this.diagramInspectorToggleBtnTarget.classList.toggle("bg-slate-100", isHidden)
+        this.diagramInspectorToggleBtnTarget.classList.toggle("text-slate-400", isHidden)
+      }
+      setTimeout(() => this.diagramStudio?.zoomFit?.(), 80)
+    }
   }
 
   clearDiagramCanvas(event) {
