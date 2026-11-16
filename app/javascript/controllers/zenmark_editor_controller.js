@@ -38,18 +38,28 @@ export default class extends Controller {
     this.pendingAutosave = false
     this.initialValue = this.textarea ? this.textarea.value : ""
 
-    // Register event listeners
-    this.boundKeydown = this.onKeydown.bind(this)
-    this.textarea.addEventListener("keydown", this.boundKeydown)
+    // Register event listeners (avoid duplicate bindings if already bound via Stimulus data-action)
+    const textareaActions = this.textarea ? (this.textarea.getAttribute("data-action") || "") : ""
 
-    this.boundPaste = this.handlePaste.bind(this)
-    this.textarea.addEventListener("paste", this.boundPaste)
+    if (!textareaActions.includes("zenmark-editor#onKeydown")) {
+      this.boundKeydown = this.onKeydown.bind(this)
+      this.textarea.addEventListener("keydown", this.boundKeydown)
+    }
 
-    this.boundInput = this.onInput.bind(this)
-    this.textarea.addEventListener("input", this.boundInput)
+    if (!textareaActions.includes("zenmark-editor#handlePaste")) {
+      this.boundPaste = this.handlePaste.bind(this)
+      this.textarea.addEventListener("paste", this.boundPaste)
+    }
 
-    this.boundBlur = this.onBlur.bind(this)
-    this.textarea.addEventListener("blur", this.boundBlur)
+    if (!textareaActions.includes("zenmark-editor#onInput")) {
+      this.boundInput = this.onInput.bind(this)
+      this.textarea.addEventListener("input", this.boundInput)
+    }
+
+    if (!textareaActions.includes("zenmark-editor#onBlur")) {
+      this.boundBlur = this.onBlur.bind(this)
+      this.textarea.addEventListener("blur", this.boundBlur)
+    }
 
     this.boundBeforeUnload = (e) => {
       if (this.textarea && this.textarea.value !== this.initialValue) {
@@ -224,6 +234,9 @@ export default class extends Controller {
   // --- Keyboard Shortcuts & Smart Typing ---
 
   onKeydown(event) {
+    if (event._zenmarkKeydownHandled) return
+    event._zenmarkKeydownHandled = true
+
     const isMetaOrCtrl = event.metaKey || event.ctrlKey
 
     // 1. Meta / Ctrl shortcuts
@@ -232,54 +245,63 @@ export default class extends Controller {
 
       if (key === "b" && !event.shiftKey) {
         event.preventDefault()
+        event.stopImmediatePropagation?.()
         this.bold(event)
         return
       }
 
       if (key === "i" && !event.shiftKey) {
         event.preventDefault()
+        event.stopImmediatePropagation?.()
         this.italic(event)
         return
       }
 
       if (key === "k" && !event.shiftKey) {
         event.preventDefault()
+        event.stopImmediatePropagation?.()
         this.link(event)
         return
       }
 
       if (key === "s" && !event.shiftKey) {
         event.preventDefault()
+        event.stopImmediatePropagation?.()
         this.saveForm(event)
         return
       }
 
       if (key === "x" && event.shiftKey) {
         event.preventDefault()
+        event.stopImmediatePropagation?.()
         this.strikethrough(event)
         return
       }
 
       if (key === "c" && event.shiftKey) {
         event.preventDefault()
+        event.stopImmediatePropagation?.()
         this.code(event)
         return
       }
 
       if (key === "h" && event.shiftKey) {
         event.preventDefault()
+        event.stopImmediatePropagation?.()
         this.heading2(event)
         return
       }
 
       if (key === "8" && event.shiftKey) {
         event.preventDefault()
+        event.stopImmediatePropagation?.()
         this.unorderedList(event)
         return
       }
 
       if (key === "7" && event.shiftKey) {
         event.preventDefault()
+        event.stopImmediatePropagation?.()
         this.orderedList(event)
         return
       }
@@ -695,39 +717,161 @@ export default class extends Controller {
 
   prefixText(prefix, defaultText = "") {
     const textarea = this.textarea
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
-    const selectedText = textarea.value.substring(start, end)
-    const textToInsert = selectedText || defaultText
-    const newText = `${prefix}${textToInsert}`
+    if (!textarea) return
 
+    let start = textarea.selectionStart
+    let end = textarea.selectionEnd
+
+    if (start === end && typeof this.savedSelectionStart === "number" && typeof this.savedSelectionEnd === "number" && this.savedSelectionStart !== this.savedSelectionEnd) {
+      start = this.savedSelectionStart
+      end = this.savedSelectionEnd
+    }
+
+    const selectedText = textarea.value.substring(start, end)
+
+    if (selectedText.length > 0) {
+      if (selectedText.includes("\n")) {
+        let counter = 1
+        const lines = selectedText.split("\n")
+        const newLines = lines.map(line => {
+          if (line.trim().length === 0) return line
+          if (prefix === "1. ") {
+            return `${counter++}. ${line}`
+          }
+          return `${prefix}${line}`
+        })
+        const replacement = newLines.join("\n")
+        textarea.setRangeText(replacement, start, end, "select")
+        this.updateAfterEdit()
+        return
+      }
+
+      const newText = `${prefix}${selectedText}`
+      textarea.setRangeText(newText, start, end, "select")
+      this.updateAfterEdit()
+      return
+    }
+
+    const newText = `${prefix}${defaultText}`
     textarea.setRangeText(newText, start, end, "end")
-    textarea.focus()
-    this.updateStats()
-    if (this.currentMode === "split") this.scheduleLivePreview()
+    if (defaultText.length > 0) {
+      textarea.setSelectionRange(start + prefix.length, start + newText.length)
+    }
+    this.updateAfterEdit()
   }
 
   wrapText(prefix, suffix, defaultText = "") {
     const textarea = this.textarea
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
-    const selectedText = textarea.value.substring(start, end)
-    const textToInsert = selectedText || defaultText
-    const newText = `${prefix}${textToInsert}${suffix}`
+    if (!textarea) return
 
+    let start = textarea.selectionStart
+    let end = textarea.selectionEnd
+
+    // Fallback to saved selection if current selection collapsed (e.g. from toolbar click)
+    if (start === end && typeof this.savedSelectionStart === "number" && typeof this.savedSelectionEnd === "number" && this.savedSelectionStart !== this.savedSelectionEnd) {
+      start = this.savedSelectionStart
+      end = this.savedSelectionEnd
+    }
+
+    const value = textarea.value
+    const selectedText = value.substring(start, end)
+
+    // CASE 1: Text is selected
+    if (selectedText.length > 0) {
+      // 1A. Check if selection itself starts with prefix and ends with suffix (Unwrap / Toggle off)
+      if (selectedText.length >= prefix.length + suffix.length &&
+          selectedText.startsWith(prefix) &&
+          selectedText.endsWith(suffix)) {
+        const unwrapped = selectedText.slice(prefix.length, -suffix.length)
+        textarea.setRangeText(unwrapped, start, end, "select")
+        this.updateAfterEdit()
+        return
+      }
+
+      // 1B. Check if characters immediately surrounding the selection match prefix and suffix (Unwrap / Toggle off)
+      const hasPrefixBefore = start >= prefix.length && value.substring(start - prefix.length, start) === prefix
+      const hasSuffixAfter = end + suffix.length <= value.length && value.substring(end, end + suffix.length) === suffix
+
+      if (hasPrefixBefore && hasSuffixAfter) {
+        textarea.setRangeText(selectedText, start - prefix.length, end + suffix.length, "select")
+        this.updateAfterEdit()
+        return
+      }
+
+      // 1C. Clean whitespace trimming & multi-paragraph handling
+      // In CommonMark / GFM, formatting delimiters cannot cross blank lines (\n\n)
+      // or have whitespace directly inside the delimiter.
+      const leadingWsMatch = selectedText.match(/^\s*/)
+      const trailingWsMatch = selectedText.match(/\s*$/)
+      const leadingWs = leadingWsMatch ? leadingWsMatch[0] : ""
+      const trailingWs = trailingWsMatch ? trailingWsMatch[0] : ""
+      const innerContent = selectedText.substring(leadingWs.length, selectedText.length - trailingWs.length)
+
+      if (innerContent.length === 0) {
+        // Only whitespace was selected
+        const replacement = `${selectedText}${prefix}${defaultText}${suffix}`
+        textarea.setRangeText(replacement, start, end, "end")
+        textarea.setSelectionRange(start + selectedText.length + prefix.length, start + selectedText.length + prefix.length + defaultText.length)
+        this.updateAfterEdit()
+        return
+      }
+
+      // If selection spans multiple paragraphs separated by blank lines (\n\n), wrap each paragraph block
+      let wrappedInner
+      if (innerContent.includes("\n\n")) {
+        wrappedInner = innerContent.split(/(\n\n+)/).map(segment => {
+          if (/^\n+$/.test(segment) || segment.trim().length === 0) return segment
+          return `${prefix}${segment}${suffix}`
+        }).join("")
+      } else {
+        wrappedInner = `${prefix}${innerContent}${suffix}`
+      }
+
+      const replacement = `${leadingWs}${wrappedInner}${trailingWs}`
+      textarea.setRangeText(replacement, start, end, "select")
+      this.updateAfterEdit()
+      return
+    }
+
+    // CASE 2: No text is selected (Cursor is at a single point)
+    // Check if cursor is right inside empty delimiters (e.g. **|**) - if so, remove them
+    const hasPrefixBefore = start >= prefix.length && value.substring(start - prefix.length, start) === prefix
+    const hasSuffixAfter = end + suffix.length <= value.length && value.substring(end, end + suffix.length) === suffix
+    if (hasPrefixBefore && hasSuffixAfter) {
+      textarea.setRangeText("", start - prefix.length, end + suffix.length, "end")
+      this.updateAfterEdit()
+      return
+    }
+
+    // Insert placeholder text with delimiters and select the placeholder text so user can immediately type over it
+    const newText = `${prefix}${defaultText}${suffix}`
     textarea.setRangeText(newText, start, end, "end")
-    textarea.focus()
-    this.updateStats()
-    if (this.currentMode === "split") this.scheduleLivePreview()
+    if (defaultText.length > 0) {
+      textarea.setSelectionRange(start + prefix.length, start + prefix.length + defaultText.length)
+    }
+    this.updateAfterEdit()
   }
 
   insertAtCursor(text) {
     const textarea = this.textarea
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
+    if (!textarea) return
+
+    let start = textarea.selectionStart
+    let end = textarea.selectionEnd
+
+    if (start === end && typeof this.savedSelectionStart === "number" && typeof this.savedSelectionEnd === "number" && this.savedSelectionStart !== this.savedSelectionEnd) {
+      start = this.savedSelectionStart
+      end = this.savedSelectionEnd
+    }
 
     textarea.setRangeText(text, start, end, "end")
-    textarea.focus()
+    this.updateAfterEdit()
+  }
+
+  updateAfterEdit() {
+    this.textarea.focus()
+    this.savedSelectionStart = this.textarea.selectionStart
+    this.savedSelectionEnd = this.textarea.selectionEnd
     this.updateStats()
     if (this.currentMode === "split") this.scheduleLivePreview()
   }
