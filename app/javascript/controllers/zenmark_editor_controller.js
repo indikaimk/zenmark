@@ -656,6 +656,199 @@ export default class extends Controller {
     this.wrapText("~~", "~~", "strikethrough text")
   }
 
+  toggleCase(event) {
+    event?.preventDefault?.()
+    const textarea = this.textarea
+    if (!textarea) return
+
+    let start = textarea.selectionStart
+    let end = textarea.selectionEnd
+
+    if (start === end && typeof this.savedSelectionStart === "number" && typeof this.savedSelectionEnd === "number" && this.savedSelectionStart !== this.savedSelectionEnd) {
+      start = this.savedSelectionStart
+      end = this.savedSelectionEnd
+    }
+
+    const value = textarea.value
+    const hasSelection = start !== end
+    let rangeStart = start
+    let rangeEnd = end
+
+    if (!hasSelection) {
+      rangeStart = value.lastIndexOf("\n", Math.max(0, start - 1)) + 1
+      const nextNewline = value.indexOf("\n", start)
+      rangeEnd = nextNewline === -1 ? value.length : nextNewline
+    }
+
+    const targetText = value.substring(rangeStart, rangeEnd)
+    if (!targetText.trim()) return
+
+    const minorWords = new Set([
+      "a", "an", "the", "and", "but", "or", "for", "nor",
+      "on", "at", "to", "from", "by", "in", "of", "with",
+      "as", "into", "onto", "per", "via", "vs"
+    ])
+
+    const strippedForCheck = targetText
+      .split("\n")
+      .map(line => line.replace(/^(\s*(?:#{1,6}\s+|>\s+|[-*+]\s+(?:\[[ xX]\]\s+)?|\d+\.\s+)?)/, ""))
+      .join("\n")
+      .replace(/`[^`]*`/g, "")
+
+    const preserveAcronyms = /[a-z]/.test(strippedForCheck)
+    const toTitleCase = !this.isTitleCaseText(strippedForCheck, minorWords, preserveAcronyms)
+
+    const transformed = targetText
+      .split("\n")
+      .map(line => this.transformLineCase(line, toTitleCase, preserveAcronyms, minorWords))
+      .join("\n")
+
+    textarea.setRangeText(transformed, rangeStart, rangeEnd, hasSelection ? "select" : "preserve")
+    if (!hasSelection) {
+      const clampedCursor = Math.min(start, rangeStart + transformed.length)
+      textarea.setSelectionRange(clampedCursor, clampedCursor)
+    }
+
+    this.updateAfterEdit()
+    this.syncUnsavedState()
+    if (this.autosaveValue) this.scheduleAutosave()
+  }
+
+  isAcronymToken(word) {
+    return word.length >= 2 && word === word.toUpperCase() && /[A-Z]/.test(word)
+  }
+
+  isTitleCaseText(text, minorWords, preserveAcronyms) {
+    const words = text
+      .split(/\s+/)
+      .map(token => token.replace(/^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$/g, ""))
+      .filter(word => /[a-zA-Z]/.test(word))
+
+    if (words.length === 0) return false
+
+    const majorWords = words.filter((word, idx) => {
+      if (preserveAcronyms && this.isAcronymToken(word)) return false
+      if (idx > 0 && idx < words.length - 1 && minorWords.has(word.toLowerCase())) return false
+      return true
+    })
+
+    if (majorWords.length === 0) return false
+    if (majorWords.length === 1) {
+      const firstAlpha = majorWords[0].match(/[a-zA-Z]/)?.[0]
+      return firstAlpha ? firstAlpha === firstAlpha.toUpperCase() : false
+    }
+
+    const capitalizedCount = majorWords.filter(word => {
+      const firstAlpha = word.match(/[a-zA-Z]/)?.[0]
+      return firstAlpha && firstAlpha === firstAlpha.toUpperCase()
+    }).length
+
+    return capitalizedCount === majorWords.length
+  }
+
+  transformLineCase(line, toTitleCase, preserveAcronyms, minorWords) {
+    const prefixMatch = line.match(/^(\s*(?:#{1,6}\s+|>\s+|[-*+]\s+(?:\[[ xX]\]\s+)?|\d+\.\s+)?)(.*)$/)
+    if (!prefixMatch) return line
+
+    const prefix = prefixMatch[1]
+    const body = prefixMatch[2]
+    if (!body) return line
+
+    // Preserve inline code spans (`...`)
+    const parts = body.split(/(`[^`]*`)/)
+    let isFirstSegmentWord = true
+
+    const transformedParts = parts.map(part => {
+      if (part.startsWith("`") && part.endsWith("`")) {
+        isFirstSegmentWord = false
+        return part
+      }
+      const result = toTitleCase
+        ? this.toTitleCaseSegment(part, preserveAcronyms, minorWords, isFirstSegmentWord)
+        : this.toSentenceCaseSegment(part, preserveAcronyms, isFirstSegmentWord)
+      if (/[a-zA-Z0-9]/.test(part)) isFirstSegmentWord = false
+      return result
+    })
+
+    return `${prefix}${transformedParts.join("")}`
+  }
+
+  toTitleCaseSegment(segment, preserveAcronyms, minorWords, startsLine) {
+    const tokens = segment.split(/(\s+)/)
+    const wordIndices = []
+    tokens.forEach((t, idx) => {
+      if (t.trim().length > 0 && /[a-zA-Z0-9]/.test(t)) wordIndices.push(idx)
+    })
+
+    let capitalizeNext = startsLine
+    return tokens.map((token, idx) => {
+      if (!token.trim()) return token
+
+      const match = token.match(/^([^a-zA-Z0-9]*)(.*?)([^a-zA-Z0-9]*)$/)
+      if (!match || !match[2]) return token
+
+      const [, lead, core, trail] = match
+      const isFirst = idx === wordIndices[0] && startsLine
+      const isLast = idx === wordIndices[wordIndices.length - 1]
+      const forceCap = capitalizeNext || isFirst || isLast
+
+      capitalizeNext = /[:—–-]$/.test(trail)
+
+      if (preserveAcronyms && this.isAcronymToken(core)) {
+        return `${lead}${core}${trail}`
+      }
+
+      if (core.includes("-")) {
+        const subParts = core.split("-")
+        const converted = subParts.map((sub, subIdx) => {
+          if (!sub) return sub
+          if (preserveAcronyms && this.isAcronymToken(sub)) return sub
+          if (!forceCap && subIdx > 0 && subIdx < subParts.length - 1 && minorWords.has(sub.toLowerCase())) {
+            return sub.toLowerCase()
+          }
+          return sub.charAt(0).toUpperCase() + sub.slice(1).toLowerCase()
+        }).join("-")
+        return `${lead}${converted}${trail}`
+      }
+
+      if (!forceCap && minorWords.has(core.toLowerCase())) {
+        return `${lead}${core.toLowerCase()}${trail}`
+      }
+
+      return `${lead}${core.charAt(0).toUpperCase()}${core.slice(1).toLowerCase()}${trail}`
+    }).join("")
+  }
+
+  toSentenceCaseSegment(segment, preserveAcronyms, startsLine) {
+    const tokens = segment.split(/(\s+)/)
+    let capitalizeNext = startsLine
+
+    return tokens.map(token => {
+      if (!token.trim()) return token
+
+      const match = token.match(/^([^a-zA-Z0-9]*)(.*?)([^a-zA-Z0-9]*)$/)
+      if (!match || !match[2]) return token
+
+      const [, lead, core, trail] = match
+      const shouldCap = capitalizeNext
+      capitalizeNext = /[.!?]$/.test(trail)
+
+      if (preserveAcronyms && this.isAcronymToken(core)) {
+        return `${lead}${core}${trail}`
+      }
+
+      if (core === "I" || core === "i") {
+        return `${lead}I${trail}`
+      }
+
+      if (shouldCap) {
+        return `${lead}${core.charAt(0).toUpperCase()}${core.slice(1).toLowerCase()}${trail}`
+      }
+
+      return `${lead}${core.toLowerCase()}${trail}`
+    }).join("")
+  }
+
   heading2(event) {
     event?.preventDefault?.()
     this.prefixText("## ", "Heading 2")
@@ -752,6 +945,38 @@ export default class extends Controller {
       return
     }
 
+    // No text selected: apply prefix to the current line if it has text
+    const value = textarea.value
+    const lineStart = value.lastIndexOf("\n", Math.max(0, start - 1)) + 1
+    const nextNewline = value.indexOf("\n", start)
+    const lineEnd = nextNewline === -1 ? value.length : nextNewline
+    const currentLine = value.substring(lineStart, lineEnd)
+
+    if (currentLine.trim().length > 0) {
+      const isHeadingPrefix = /^#{1,6}\s+$/.test(prefix)
+      const existingHeadingMatch = isHeadingPrefix ? currentLine.match(/^(#{1,6}\s+)/) : null
+
+      if (currentLine.startsWith(prefix)) {
+        // Toggle off existing prefix
+        textarea.setRangeText("", lineStart, lineStart + prefix.length, "end")
+        const newCursor = Math.max(lineStart, start - prefix.length)
+        textarea.setSelectionRange(newCursor, newCursor)
+      } else if (existingHeadingMatch) {
+        // Switch heading level (e.g. ### -> ##)
+        const oldPrefixLen = existingHeadingMatch[1].length
+        textarea.setRangeText(prefix, lineStart, lineStart + oldPrefixLen, "end")
+        const newCursor = Math.max(lineStart + prefix.length, start + (prefix.length - oldPrefixLen))
+        textarea.setSelectionRange(newCursor, newCursor)
+      } else {
+        // Prepend prefix at the beginning of the line
+        textarea.setRangeText(prefix, lineStart, lineStart, "end")
+        const newCursor = start + prefix.length
+        textarea.setSelectionRange(newCursor, newCursor)
+      }
+      this.updateAfterEdit()
+      return
+    }
+
     const newText = `${prefix}${defaultText}`
     textarea.setRangeText(newText, start, end, "end")
     if (defaultText.length > 0) {
@@ -841,6 +1066,36 @@ export default class extends Controller {
       textarea.setRangeText("", start - prefix.length, end + suffix.length, "end")
       this.updateAfterEdit()
       return
+    }
+
+    // Check if cursor is inside or touching a word; if so, format (or unwrap) that word
+    const wordCharRegex = /[a-zA-Z0-9_-]/
+    const charBefore = start > 0 ? value[start - 1] : ""
+    const charAfter = start < value.length ? value[start] : ""
+
+    if (wordCharRegex.test(charBefore) || wordCharRegex.test(charAfter)) {
+      let wordStart = start
+      let wordEnd = start
+      while (wordStart > 0 && wordCharRegex.test(value[wordStart - 1])) wordStart--
+      while (wordEnd < value.length && wordCharRegex.test(value[wordEnd])) wordEnd++
+
+      const word = value.substring(wordStart, wordEnd)
+      if (word.length > 0) {
+        const wordHasPrefix = wordStart >= prefix.length && value.substring(wordStart - prefix.length, wordStart) === prefix
+        const wordHasSuffix = wordEnd + suffix.length <= value.length && value.substring(wordEnd, wordEnd + suffix.length) === suffix
+
+        if (wordHasPrefix && wordHasSuffix) {
+          textarea.setRangeText(word, wordStart - prefix.length, wordEnd + suffix.length, "end")
+          const newCursor = Math.max(wordStart - prefix.length, start - prefix.length)
+          textarea.setSelectionRange(newCursor, newCursor)
+        } else {
+          textarea.setRangeText(`${prefix}${word}${suffix}`, wordStart, wordEnd, "end")
+          const newCursor = start + prefix.length
+          textarea.setSelectionRange(newCursor, newCursor)
+        }
+        this.updateAfterEdit()
+        return
+      }
     }
 
     // Insert placeholder text with delimiters and select the placeholder text so user can immediately type over it
