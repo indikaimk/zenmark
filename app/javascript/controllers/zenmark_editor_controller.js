@@ -351,7 +351,7 @@ export default class extends Controller {
         event.preventDefault()
         const selected = textarea.value.substring(start, end)
         const wrapped = `${event.key}${selected}${pairs[event.key]}`
-        textarea.setRangeText(wrapped, start, end, "select")
+        this.replaceRangeWithUndo(wrapped, start, end, "select")
         this.updateStats()
         return
       }
@@ -371,7 +371,7 @@ export default class extends Controller {
     if (taskMatch) {
       event.preventDefault()
       if (taskMatch[2].trim() === "") {
-        textarea.setRangeText("", lineStart, pos, "end")
+        this.replaceRangeWithUndo("", lineStart, pos, "end")
       } else {
         this.insertAtCursor("\n- [ ] ")
       }
@@ -384,7 +384,7 @@ export default class extends Controller {
     if (bulletMatch) {
       event.preventDefault()
       if (bulletMatch[2].trim() === "") {
-        textarea.setRangeText("", lineStart, pos, "end")
+        this.replaceRangeWithUndo("", lineStart, pos, "end")
       } else {
         this.insertAtCursor(`\n${bulletMatch[1]}`)
       }
@@ -397,7 +397,7 @@ export default class extends Controller {
     if (numberedMatch) {
       event.preventDefault()
       if (numberedMatch[3].trim() === "") {
-        textarea.setRangeText("", lineStart, pos, "end")
+        this.replaceRangeWithUndo("", lineStart, pos, "end")
       } else {
         const nextNum = parseInt(numberedMatch[2], 10) + 1
         this.insertAtCursor(`\n${numberedMatch[1]}${nextNum}. `)
@@ -411,7 +411,7 @@ export default class extends Controller {
     if (quoteMatch) {
       event.preventDefault()
       if (quoteMatch[2].trim() === "") {
-        textarea.setRangeText("", lineStart, pos, "end")
+        this.replaceRangeWithUndo("", lineStart, pos, "end")
       } else {
         this.insertAtCursor("\n> ")
       }
@@ -447,7 +447,7 @@ export default class extends Controller {
       newText = lines.map(line => "  " + line).join("\n")
     }
 
-    textarea.setRangeText(newText, lineStart, lineEnd, "select")
+    this.replaceRangeWithUndo(newText, lineStart, lineEnd, "select")
     this.updateStats()
   }
 
@@ -703,7 +703,7 @@ export default class extends Controller {
       .map(line => this.transformLineCase(line, toTitleCase, preserveAcronyms, minorWords))
       .join("\n")
 
-    textarea.setRangeText(transformed, rangeStart, rangeEnd, hasSelection ? "select" : "preserve")
+    this.replaceRangeWithUndo(transformed, rangeStart, rangeEnd, hasSelection ? "select" : "preserve")
     if (!hasSelection) {
       const clampedCursor = Math.min(start, rangeStart + transformed.length)
       textarea.setSelectionRange(clampedCursor, clampedCursor)
@@ -934,13 +934,13 @@ export default class extends Controller {
           return `${prefix}${line}`
         })
         const replacement = newLines.join("\n")
-        textarea.setRangeText(replacement, start, end, "select")
+        this.replaceRangeWithUndo(replacement, start, end, "select")
         this.updateAfterEdit()
         return
       }
 
       const newText = `${prefix}${selectedText}`
-      textarea.setRangeText(newText, start, end, "select")
+      this.replaceRangeWithUndo(newText, start, end, "select")
       this.updateAfterEdit()
       return
     }
@@ -958,18 +958,18 @@ export default class extends Controller {
 
       if (currentLine.startsWith(prefix)) {
         // Toggle off existing prefix
-        textarea.setRangeText("", lineStart, lineStart + prefix.length, "end")
+        this.replaceRangeWithUndo("", lineStart, lineStart + prefix.length, "end")
         const newCursor = Math.max(lineStart, start - prefix.length)
         textarea.setSelectionRange(newCursor, newCursor)
       } else if (existingHeadingMatch) {
         // Switch heading level (e.g. ### -> ##)
         const oldPrefixLen = existingHeadingMatch[1].length
-        textarea.setRangeText(prefix, lineStart, lineStart + oldPrefixLen, "end")
+        this.replaceRangeWithUndo(prefix, lineStart, lineStart + oldPrefixLen, "end")
         const newCursor = Math.max(lineStart + prefix.length, start + (prefix.length - oldPrefixLen))
         textarea.setSelectionRange(newCursor, newCursor)
       } else {
         // Prepend prefix at the beginning of the line
-        textarea.setRangeText(prefix, lineStart, lineStart, "end")
+        this.replaceRangeWithUndo(prefix, lineStart, lineStart, "end")
         const newCursor = start + prefix.length
         textarea.setSelectionRange(newCursor, newCursor)
       }
@@ -978,7 +978,7 @@ export default class extends Controller {
     }
 
     const newText = `${prefix}${defaultText}`
-    textarea.setRangeText(newText, start, end, "end")
+    this.replaceRangeWithUndo(newText, start, end, "end")
     if (defaultText.length > 0) {
       textarea.setSelectionRange(start + prefix.length, start + newText.length)
     }
@@ -1008,7 +1008,7 @@ export default class extends Controller {
           selectedText.startsWith(prefix) &&
           selectedText.endsWith(suffix)) {
         const unwrapped = selectedText.slice(prefix.length, -suffix.length)
-        textarea.setRangeText(unwrapped, start, end, "select")
+        this.replaceRangeWithUndo(unwrapped, start, end, "select")
         this.updateAfterEdit()
         return
       }
@@ -1018,7 +1018,7 @@ export default class extends Controller {
       const hasSuffixAfter = end + suffix.length <= value.length && value.substring(end, end + suffix.length) === suffix
 
       if (hasPrefixBefore && hasSuffixAfter) {
-        textarea.setRangeText(selectedText, start - prefix.length, end + suffix.length, "select")
+        this.replaceRangeWithUndo(selectedText, start - prefix.length, end + suffix.length, "select")
         this.updateAfterEdit()
         return
       }
@@ -1035,7 +1035,7 @@ export default class extends Controller {
       if (innerContent.length === 0) {
         // Only whitespace was selected
         const replacement = `${selectedText}${prefix}${defaultText}${suffix}`
-        textarea.setRangeText(replacement, start, end, "end")
+        this.replaceRangeWithUndo(replacement, start, end, "end")
         textarea.setSelectionRange(start + selectedText.length + prefix.length, start + selectedText.length + prefix.length + defaultText.length)
         this.updateAfterEdit()
         return
@@ -1053,7 +1053,7 @@ export default class extends Controller {
       }
 
       const replacement = `${leadingWs}${wrappedInner}${trailingWs}`
-      textarea.setRangeText(replacement, start, end, "select")
+      this.replaceRangeWithUndo(replacement, start, end, "select")
       this.updateAfterEdit()
       return
     }
@@ -1063,7 +1063,7 @@ export default class extends Controller {
     const hasPrefixBefore = start >= prefix.length && value.substring(start - prefix.length, start) === prefix
     const hasSuffixAfter = end + suffix.length <= value.length && value.substring(end, end + suffix.length) === suffix
     if (hasPrefixBefore && hasSuffixAfter) {
-      textarea.setRangeText("", start - prefix.length, end + suffix.length, "end")
+      this.replaceRangeWithUndo("", start - prefix.length, end + suffix.length, "end")
       this.updateAfterEdit()
       return
     }
@@ -1085,11 +1085,11 @@ export default class extends Controller {
         const wordHasSuffix = wordEnd + suffix.length <= value.length && value.substring(wordEnd, wordEnd + suffix.length) === suffix
 
         if (wordHasPrefix && wordHasSuffix) {
-          textarea.setRangeText(word, wordStart - prefix.length, wordEnd + suffix.length, "end")
+          this.replaceRangeWithUndo(word, wordStart - prefix.length, wordEnd + suffix.length, "end")
           const newCursor = Math.max(wordStart - prefix.length, start - prefix.length)
           textarea.setSelectionRange(newCursor, newCursor)
         } else {
-          textarea.setRangeText(`${prefix}${word}${suffix}`, wordStart, wordEnd, "end")
+          this.replaceRangeWithUndo(`${prefix}${word}${suffix}`, wordStart, wordEnd, "end")
           const newCursor = start + prefix.length
           textarea.setSelectionRange(newCursor, newCursor)
         }
@@ -1100,7 +1100,7 @@ export default class extends Controller {
 
     // Insert placeholder text with delimiters and select the placeholder text so user can immediately type over it
     const newText = `${prefix}${defaultText}${suffix}`
-    textarea.setRangeText(newText, start, end, "end")
+    this.replaceRangeWithUndo(newText, start, end, "end")
     if (defaultText.length > 0) {
       textarea.setSelectionRange(start + prefix.length, start + prefix.length + defaultText.length)
     }
@@ -1119,8 +1119,38 @@ export default class extends Controller {
       end = this.savedSelectionEnd
     }
 
-    textarea.setRangeText(text, start, end, "end")
+    this.replaceRangeWithUndo(text, start, end, "end")
     this.updateAfterEdit()
+  }
+
+  replaceRangeWithUndo(text, start, end, selectMode = "end") {
+    const textarea = this.textarea
+    if (!textarea) return
+
+    textarea.focus({ preventScroll: true })
+    textarea.setSelectionRange(start, end)
+
+    let inserted = false
+    try {
+      if (text === "") {
+        inserted = start === end ? true : document.execCommand("delete", false)
+      } else {
+        inserted = document.execCommand("insertText", false, text)
+      }
+    } catch (_) {
+      inserted = false
+    }
+
+    if (!inserted) {
+      textarea.setRangeText(text, start, end, selectMode)
+    } else if (selectMode === "select") {
+      textarea.setSelectionRange(start, start + text.length)
+    } else if (selectMode === "start") {
+      textarea.setSelectionRange(start, start)
+    } else if (selectMode === "end") {
+      const endPos = start + text.length
+      textarea.setSelectionRange(endPos, endPos)
+    }
   }
 
   updateAfterEdit() {
