@@ -1425,6 +1425,9 @@ export default class extends Controller {
         this.previewAreaTarget.innerHTML = html
         this.renderMermaidInPreview()
         this.attachDiagramEditBadgesInPreview()
+        if (typeof window.renderKatexIn === "function") {
+          window.renderKatexIn(this.previewAreaTarget)
+        }
       }
     })
     .catch(err => {
