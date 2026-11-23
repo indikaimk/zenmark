@@ -859,6 +859,11 @@ export default class extends Controller {
     this.prefixText("### ", "Heading 3")
   }
 
+  heading4(event) {
+    event?.preventDefault?.()
+    this.prefixText("#### ", "Heading 4")
+  }
+
   heading(event) {
     this.heading2(event)
   }
