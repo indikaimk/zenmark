@@ -294,6 +294,13 @@
   border: 1px solid #e2e8f0;
 }
 
+.zenmark-preview-content mark {
+  background-color: #fef08a;
+  color: #1e293b;
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+}
+
 .zenmark-preview-content pre {
   background-color: #0f172a;
   color: #f8fafc;

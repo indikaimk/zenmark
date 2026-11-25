@@ -656,6 +656,11 @@ export default class extends Controller {
     this.wrapText("~~", "~~", "strikethrough text")
   }
 
+  highlight(event) {
+    event?.preventDefault?.()
+    this.wrapText("==", "==", "highlighted text")
+  }
+
   toggleCase(event) {
     event?.preventDefault?.()
     const textarea = this.textarea

@@ -321,6 +321,11 @@ export default class extends Controller {
     this.wrapText("~~", "~~", "strikethrough text")
   }
 
+  highlight(event) {
+    event?.preventDefault?.()
+    this.wrapText("==", "==", "highlighted text")
+  }
+
   heading2(event) {
     event?.preventDefault?.()
     this.prefixText("## ", "Heading 2")
